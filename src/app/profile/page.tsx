@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import LocationIcon from "../icons/LocationIcon";
+import DateIcon from "../icons/DateIcon";
 
 const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -16,7 +18,7 @@ const Profile: React.FC = () => {
     usage: {
       chatMessages: 1247,
       templatesUsed: 89,
-      projectsCreated: 23,
+      decksCreated: 23,
       dataProcessed: "2.4 GB",
     },
   });
@@ -37,45 +39,33 @@ const Profile: React.FC = () => {
     { id: "overview", label: "Overview" },
     { id: "usage", label: "Usage Stats" },
     { id: "settings", label: "Settings" },
-    { id: "billing", label: "Billing" },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-900 items-center text-white ">
       {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-6xl mx-auto px-6 py-6">
+      <div className="border-b bg-gray-800 border-gray-700">
+        <div className="max-w-6xl mx-auto p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Profile</h1>
-              <p className="text-gray-400 mt-1">
-                Manage your account settings and preferences
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2 bg-orange-500 px-3 py-2 rounded-lg">
-                {/* <Crown className="w-4 h-4" /> */}
-                <span className="text-sm font-medium">{profileData.plan}</span>
-              </div>
-            </div>
+            <h1 className="text-3xl font-bold text-white">Profile</h1>
+            <p className="text-gray-400 mt-1">
+              Manage your account settings and preferences
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto p-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Profile Card */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+            <div className="bg-[#1E2939] rounded-xl p-6 h-[446px]">
               <div className="text-center">
                 {/* Profile Picture */}
                 <div className="relative inline-block mb-4">
                   <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-2xl font-bold">
                     AJ
                   </div>
-                  <button className="absolute bottom-0 right-0 w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors">
-                    {/* <Camera className="w-4 h-4" /> */}
-                  </button>
                 </div>
 
                 <h2 className="text-xl font-semibold mb-1">
@@ -87,12 +77,12 @@ const Profile: React.FC = () => {
 
                 {/* Quick Stats */}
                 <div className="space-y-3 text-sm">
-                  <div className="flex items-center space-x-3 text-gray-300">
-                    {/* <MapPin className="w-4 h-4 text-gray-400" /> */}
+                  <div className="flex justify-center items-center">
+                    <LocationIcon />
                     <span>{profileData.location}</span>
                   </div>
-                  <div className="flex items-center space-x-3 text-gray-300">
-                    {/* <Calendar className="w-4 h-4 text-gray-400" /> */}
+                  <div className="flex justify-center items-center space-x-3">
+                    <DateIcon />
                     <span>Joined {profileData.joinDate}</span>
                   </div>
                 </div>
@@ -101,9 +91,9 @@ const Profile: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div>
                       <div className="text-2xl font-bold text-orange-500">
-                        {profileData.usage.projectsCreated}
+                        {profileData.usage.decksCreated}
                       </div>
-                      <div className="text-xs text-gray-400">Projects</div>
+                      <div className="text-xs text-gray-400">Decks</div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-orange-500">
@@ -120,7 +110,7 @@ const Profile: React.FC = () => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Tabs */}
-            <div className="bg-gray-800 rounded-xl border border-gray-700 mb-6">
+            <div className="bg-[#1E2939] rounded-xl mb-6">
               <div className="flex border-b border-gray-700">
                 {tabs.map((tab) => (
                   <button
@@ -132,7 +122,6 @@ const Profile: React.FC = () => {
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
-                    {/* <tab.icon className="w-4 h-4" /> */}
                     <span>{tab.label}</span>
                   </button>
                 ))}
@@ -151,7 +140,6 @@ const Profile: React.FC = () => {
                           onClick={() => setIsEditing(true)}
                           className="flex items-center space-x-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors"
                         >
-                          {/* <Edit3 className="w-4 h-4" /> */}
                           <span>Edit</span>
                         </button>
                       ) : (
@@ -160,14 +148,12 @@ const Profile: React.FC = () => {
                             onClick={handleSave}
                             className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
                           >
-                            {/* <Save className="w-4 h-4" /> */}
                             <span>Save</span>
                           </button>
                           <button
                             onClick={handleCancel}
                             className="flex items-center space-x-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors"
                           >
-                            {/* <X className="w-4 h-4" /> */}
                             <span>Cancel</span>
                           </button>
                         </div>
@@ -294,7 +280,6 @@ const Profile: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                       <div className="bg-gray-700 rounded-lg p-4 text-center">
-                        {/* <MessageCircle className="w-8 h-8 text-orange-500 mx-auto mb-2" /> */}
                         <div className="text-2xl font-bold">
                           {profileData.usage.chatMessages}
                         </div>
@@ -304,7 +289,6 @@ const Profile: React.FC = () => {
                       </div>
 
                       <div className="bg-gray-700 rounded-lg p-4 text-center">
-                        {/* <FileText className="w-8 h-8 text-orange-500 mx-auto mb-2" /> */}
                         <div className="text-2xl font-bold">
                           {profileData.usage.templatesUsed}
                         </div>
@@ -314,7 +298,6 @@ const Profile: React.FC = () => {
                       </div>
 
                       <div className="bg-gray-700 rounded-lg p-4 text-center">
-                        {/* <BarChart3 className="w-8 h-8 text-orange-500 mx-auto mb-2" /> */}
                         <div className="text-2xl font-bold">
                           {profileData.usage.projectsCreated}
                         </div>
@@ -324,7 +307,6 @@ const Profile: React.FC = () => {
                       </div>
 
                       <div className="bg-gray-700 rounded-lg p-4 text-center">
-                        {/* <Shield className="w-8 h-8 text-orange-500 mx-auto mb-2" /> */}
                         <div className="text-2xl font-bold">
                           {profileData.usage.dataProcessed}
                         </div>
@@ -344,7 +326,6 @@ const Profile: React.FC = () => {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
                         <div className="flex items-center space-x-3">
-                          {/* <Bell className="w-5 h-5 text-gray-400" /> */}
                           <div>
                             <div className="font-medium">
                               Email Notifications
@@ -366,7 +347,6 @@ const Profile: React.FC = () => {
 
                       <div className="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
                         <div className="flex items-center space-x-3">
-                          {/* <Shield className="w-5 h-5 text-gray-400" /> */}
                           <div>
                             <div className="font-medium">
                               Two-Factor Authentication
@@ -378,50 +358,6 @@ const Profile: React.FC = () => {
                         </div>
                         <button className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors text-sm">
                           Enable
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Billing Tab */}
-                {activeTab === "billing" && (
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-semibold">
-                      Billing & Subscription
-                    </h3>
-
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center space-x-2 mb-2">
-                            {/* <Crown className="w-5 h-5" /> */}
-                            <span className="font-semibold">Pro Plan</span>
-                          </div>
-                          <p className="text-orange-100 text-sm">
-                            Full access to all features and unlimited usage
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold">$10</div>
-                          <div className="text-sm text-orange-100">
-                            per month
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-700 rounded-lg p-4">
-                      <h4 className="font-medium mb-3">Payment Method</h4>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-6 bg-blue-600 rounded flex items-center justify-center text-xs font-bold">
-                          VISA
-                        </div>
-                        <span className="text-gray-300">
-                          •••• •••• •••• 4242
-                        </span>
-                        <button className="text-orange-500 hover:text-orange-400 text-sm">
-                          Update
                         </button>
                       </div>
                     </div>
