@@ -1,5 +1,3 @@
-import React from "react";
-
 const TemplateIcon = () => (
   <svg
     width="24"
