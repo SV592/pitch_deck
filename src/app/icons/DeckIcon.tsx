@@ -1,4 +1,4 @@
-const ProjectIcon = () => (
+const DeckIcon = () => (
   <svg
     width="24"
     height="24"
@@ -23,4 +23,4 @@ const ProjectIcon = () => (
   </svg>
 );
 
-export default ProjectIcon;
+export default DeckIcon;
