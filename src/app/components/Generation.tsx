@@ -1,7 +1,12 @@
 "use client";
 import React from "react";
 
-const Generation = ({ isGenerating, generatePitchDeck }) => {
+type Props = {
+  isGenerating: boolean;
+  generatePitchDeck: () => void;
+};
+
+const Generation = ({ isGenerating, generatePitchDeck }: Props) => {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-12">

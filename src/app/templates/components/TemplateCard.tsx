@@ -1,6 +1,6 @@
 import React from "react";
 
-const TemplateCard = ({ template }: { template: any }) => (
+const TemplateCard = ({ template }: { template: { title: string, description: string, thumbnail: string, tags: string[] } }) => (
   <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-orange-500 transition-all duration-300 group">
     {/* Thumbnail */}
     <div className="h-48 relative" style={{ background: template.thumbnail }}>

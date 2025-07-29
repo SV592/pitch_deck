@@ -1,7 +1,23 @@
 "use client";
 import React from "react";
 
-const GeneratedOutline = ({ generatedOutline }) => {
+type Slide = {
+  id: string;
+  title: string;
+  content: {
+    subtitle?: string;
+    bullets?: string[];
+    description?: string;
+    suggestedImage?: string;
+  };
+};
+
+type GeneratedOutline = {
+  title: string;
+  slides: Slide[];
+};
+
+const GeneratedOutline = ({ generatedOutline }: { generatedOutline: GeneratedOutline }) => {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-8">
@@ -28,7 +44,7 @@ const GeneratedOutline = ({ generatedOutline }) => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {generatedOutline.slides.map((slide: any, index: number) => (
+          {generatedOutline.slides.map((slide: Slide, index: number) => (
             <div
               key={slide.id}
               className="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden hover:border-orange-500 transition-all duration-300 group"
@@ -102,10 +118,10 @@ const GeneratedOutline = ({ generatedOutline }) => {
         <div className="mt-8 text-center">
           <div className="bg-gray-700 rounded-lg p-6 mb-6">
             <h4 className="font-semibold text-white mb-2">
-              What's Next?
+              What&apos;s Next?
             </h4>
             <p className="text-gray-300 text-sm mb-4">
-              Your pitch deck outline is ready! Click "Create Deck" to
+              Your pitch deck outline is ready! Click &quot;Create Deck&quot; to
               generate the full presentation with AI-suggested content and
               images.
             </p>

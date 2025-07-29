@@ -1,11 +1,12 @@
 import React from "react";
+import { Deck, Version } from "../[deckId]/types";
 
 const VersionModal = ({
   deck,
   setShowVersionModal,
 }: {
-  deck: any;
-  setShowVersionModal: any;
+  deck: Deck;
+  setShowVersionModal: (id: number | null) => void;
 }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
     <div className="bg-gray-800 rounded-xl border border-gray-700 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
@@ -23,7 +24,7 @@ const VersionModal = ({
 
       <div className="p-6">
         <div className="space-y-4">
-          {deck.versions.map((version: any, index: number) => (
+          {deck.versions.map((version: Version, index: number) => (
             <div
               key={version.version}
               className="flex items-start space-x-4 p-4 bg-gray-700 rounded-lg"

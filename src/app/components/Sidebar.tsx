@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
   const navigationItems = [
     {
       label: "Home",
-      href: "/home",
+      href: "/",
       icon: <HomeIcon />,
     },
     {

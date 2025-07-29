@@ -7,7 +7,7 @@ import VersionModal from "./components/VersionModal";
 import NoDecks from "./components/NoDecks";
 
 const DecksPage: React.FC = () => {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, ] = useState<"grid" | "list">("grid");
   const [selectedDecks, setSelectedDecks] = useState<number[]>([]);
   const [showVersionModal, setShowVersionModal] = useState<number | null>(null);
 
@@ -78,13 +78,23 @@ const DecksPage: React.FC = () => {
         {viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {decks.map((deck) => (
-              <DeckCard key={deck.id} deck={deck} setShowVersionModal={setShowVersionModal} />
+              <DeckCard
+                key={deck.id}
+                deck={deck}
+                setShowVersionModal={setShowVersionModal}
+              />
             ))}
           </div>
         ) : (
           <div className="space-y-4">
             {decks.map((deck) => (
-              <DeckListItem key={deck.id} deck={deck} selectedDecks={selectedDecks} handleSelectDeck={handleSelectDeck} setShowVersionModal={setShowVersionModal} />
+              <DeckListItem
+                key={deck.id}
+                deck={deck}
+                selectedDecks={selectedDecks}
+                handleSelectDeck={handleSelectDeck}
+                setShowVersionModal={setShowVersionModal}
+              />
             ))}
           </div>
         )}
@@ -93,7 +103,10 @@ const DecksPage: React.FC = () => {
       </div>
 
       {showVersionModal && (
-        <VersionModal deck={decks.find((d) => d.id === showVersionModal)} setShowVersionModal={setShowVersionModal} />
+        <VersionModal
+          deck={decks.find((d) => d.id === showVersionModal)}
+          setShowVersionModal={setShowVersionModal}
+        />
       )}
     </div>
   );

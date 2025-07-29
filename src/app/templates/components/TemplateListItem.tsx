@@ -1,6 +1,6 @@
 import React from "react";
 
-const TemplateListItem = ({ template }: { template: any }) => (
+const TemplateListItem = ({ template }: { template: { title: string, description: string, tags: string[] } }) => (
   <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-orange-500 transition-all duration-300 group p-5">
     <div className="flex items-start justify-between mb-3">
       <h3 className="text-lg font-semibold text-white group-hover:text-orange-500 transition-colors">

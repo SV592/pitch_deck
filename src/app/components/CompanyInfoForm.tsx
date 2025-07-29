@@ -1,13 +1,30 @@
 "use client";
 import React from "react";
 
+type Props = {
+  formData: {
+    companyName: string;
+    industry: string;
+    stage: string;
+    fundingGoal: string;
+    problemStatement: string;
+    solution: string;
+    businessModel: string;
+    targetMarket: string;
+  };
+  handleInputChange: (name: string, value: string) => void;
+  industries: string[];
+  stages: { value: string; label: string }[];
+  setCurrentStep: (step: number) => void;
+};
+
 const CompanyInfoForm = ({
   formData,
   handleInputChange,
   industries,
   stages,
   setCurrentStep,
-}) => {
+}: Props) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-8">

@@ -1,5 +1,4 @@
 import React from "react";
-import MainIcon from "../../icons/MainIcon";
 
 const Hero = () => {
   return (
@@ -7,7 +6,6 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="text-center max-w-4xl mx-auto">
           <div className="flex items-center justify-center space-x-2 mb-6">
-            <MainIcon />
             <h1 className="text-4xl md:text-6xl font-bold">
               Pitch<span className="text-orange-500">Deck</span>
             </h1>
