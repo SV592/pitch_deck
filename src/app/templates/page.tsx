@@ -1,5 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import TemplateHeader from "./components/TemplateHeader";
+import CategoriesSidebar from "./components/CategoriesSidebar";
+import TemplateCard from "./components/TemplateCard";
+import TemplateListItem from "./components/TemplateListItem";
+import NoResults from "./components/NoResults";
 
 const TemplatesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,84 +140,19 @@ const TemplatesPage: React.FC = () => {
     }
   });
 
-  const TemplateCard = ({ template }: { template: any }) => (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-orange-500 transition-all duration-300 group">
-      {/* Thumbnail */}
-      <div className="h-48 relative" style={{ background: template.thumbnail }}>
-        <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
-      </div>
-
-      {/* Content */}
-      <div className="p-5">
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="text-lg font-semibold text-white group-hover:text-orange-500 transition-colors">
-            {template.title}
-          </h3>
-        </div>
-
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-          {template.description}
-        </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {template.tags.slice(0, 3).map((tag: string) => (
-            <span
-              key={tag}
-              className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-white">Templates</h1>
-            <p className="text-gray-400 mt-1">
-              Discover and use AI-powered templates to boost your productivity
-            </p>
-          </div>
-        </div>
-      </div>
+      <TemplateHeader />
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto p-6">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-              <h3 className="text-lg font-semibold mb-4">Categories</h3>
-              <div className="space-y-2">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
-                      selectedCategory === category.id
-                        ? "bg-orange-500 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-sm">{category.name}</span>
-                    </div>
-                    <span className="text-xs opacity-75">{category.count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <CategoriesSidebar
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
 
-          {/* Main Content */}
           <div className="flex-1">
-            {/* Templates Grid/List */}
             {viewMode === "grid" ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {sortedTemplates.map((template) => (
@@ -227,20 +167,7 @@ const TemplatesPage: React.FC = () => {
               </div>
             )}
 
-            {/* No Results */}
-            {sortedTemplates.length === 0 && (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                  {/* <Search className="w-12 h-12 text-gray-600" /> */}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-400 mb-2">
-                  No templates found
-                </h3>
-                <p className="text-gray-500">
-                  Try adjusting your search or filter criteria
-                </p>
-              </div>
-            )}
+            {sortedTemplates.length === 0 && <NoResults />}
           </div>
         </div>
       </div>
