@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && npm run build --workspace=api",
     "start": "next start",
     "lint": "next lint",
     "start:api": "npm run start:dev --workspace=api"
