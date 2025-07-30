@@ -6,13 +6,8 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 
-const geistSans = GeistSans({
-  variable: "--font-geist-sans",
-});
-
-const geistMono = GeistMono({
-  variable: "--font-geist-mono",
-});
+const geistSans = GeistSans.variable;
+const geistMono = GeistMono.variable;
 
 export default function RootLayout({
   children,
@@ -28,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} antialiased`}
+        className={`${geistSans} ${geistMono} antialiased`}
         suppressHydrationWarning
       >
         <div className="flex h-screen overflow-hidden">

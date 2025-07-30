@@ -1,5 +1,5 @@
 import React from 'react';
-import ShieldIcon from '@/app/icons/ShieldIcon';
+import ShieldIcon from '../../icons/ShieldIcon';
 
 const SecurityNotice: React.FC = () => {
   return (

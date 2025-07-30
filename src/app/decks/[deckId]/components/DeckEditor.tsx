@@ -16,7 +16,7 @@ interface DeckEditorProps {
 }
 
 const DeckEditor: React.FC<DeckEditorProps> = ({ deck }) => {
-  const [slides, setSlides] = useState<SlideType[]>(deck.slides);
+  const [slides, setSlides] = useState<SlideType[]>(deck.slides || []);
   const [selectedSlide, setSelectedSlide] = useState(0);
 
   const editor = useEditor({

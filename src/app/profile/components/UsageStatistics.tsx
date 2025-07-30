@@ -1,6 +1,10 @@
 import React from "react";
 
-const UsageStatistics = ({ usageData }) => {
+interface UsageStatisticsProps {
+  usageData: any;
+}
+
+const UsageStatistics: React.FC<UsageStatisticsProps> = ({ usageData }) => {
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold">Usage Statistics</h3>

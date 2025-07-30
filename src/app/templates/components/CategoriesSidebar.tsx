@@ -1,6 +1,18 @@
 import React from "react";
 
-const CategoriesSidebar = ({
+interface Category {
+  id: string;
+  name: string;
+  count: number;
+}
+
+interface CategoriesSidebarProps {
+  categories: Category[];
+  selectedCategory: string | null;
+  setSelectedCategory: (category: string | null) => void;
+}
+
+const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({
   categories,
   selectedCategory,
   setSelectedCategory,

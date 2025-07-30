@@ -37,7 +37,7 @@ export class DeckService {
     return savedDeck;
   }
 
-  async getDeckById(id: number): Promise<Deck> {
+  async getDeckById(id: number): Promise<Deck | null> {
     return this.deckRepository.findOne({ where: { id }, relations: ['slides'] });
   }
 }

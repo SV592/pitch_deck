@@ -1,6 +1,16 @@
 import React from "react";
 
-const PersonalInformation = ({
+interface PersonalInformationProps {
+  isEditing: boolean;
+  setIsEditing: (isEditing: boolean) => void;
+  editData: any;
+  setEditData: (data: any) => void;
+  handleSave: () => void;
+  handleCancel: () => void;
+  profileData: any;
+}
+
+const PersonalInformation: React.FC<PersonalInformationProps> = ({
   isEditing,
   setIsEditing,
   editData,

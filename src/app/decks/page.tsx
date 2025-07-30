@@ -102,12 +102,16 @@ const DecksPage: React.FC = () => {
         {decks.length === 0 && <NoDecks />}
       </div>
 
-      {showVersionModal && (
-        <VersionModal
-          deck={decks.find((d) => d.id === showVersionModal)}
-          setShowVersionModal={setShowVersionModal}
-        />
-      )}
+      {showVersionModal && (() => {
+        const deck = decks.find((d) => d.id === showVersionModal);
+        if (!deck) return null;
+        return (
+          <VersionModal
+            deck={deck}
+            setShowVersionModal={setShowVersionModal}
+          />
+        );
+      })()}
     </div>
   );
 };

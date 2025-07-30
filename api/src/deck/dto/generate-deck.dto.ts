@@ -2,10 +2,10 @@ import { IsString, IsOptional } from 'class-validator';
 
 export class GenerateDeckDto {
   @IsString()
-  companyName: string;
+  companyName!: string;
 
   @IsString()
-  industry: string;
+  industry!: string;
 
   @IsOptional()
   @IsString()
@@ -16,10 +16,10 @@ export class GenerateDeckDto {
   fundingGoal?: string;
 
   @IsString()
-  problemStatement: string;
+  problemStatement!: string;
 
   @IsString()
-  solution: string;
+  solution!: string;
 
   @IsOptional()
   @IsString()

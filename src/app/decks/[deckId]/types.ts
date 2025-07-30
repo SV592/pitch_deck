@@ -9,8 +9,14 @@ export interface Slide {
 export interface Deck {
   id: number;
   title: string;
-  slides: Slide[];
+  slides?: Slide[];
   versions: Version[];
+  thumbnail?: string;
+  slideCount?: number;
+  description?: string;
+  currentVersion?: string;
+  lastModified?: string;
+  collaborators?: any[];
 }
 
 export interface Version {

@@ -28,7 +28,13 @@ export class OpenAIService {
         response_format: { type: "json_object" },
       });
 
-      return JSON.parse(response.choices[0].message.content);
+      const content = response.choices[0].message.content;
+      if (!content) {
+        throw new InternalServerErrorException(
+          `OpenAI response content is empty. Cannot generate pitch deck.`
+        );
+      }
+      return JSON.parse(content);
     } catch (error) {
       if (error instanceof OpenAI.APIError) {
         this.logger.error(
@@ -47,10 +53,14 @@ export class OpenAIService {
           `Failed to process OpenAI response. Please contact support.`
         );
       } else {
-        this.logger.error(
-          `An unexpected error occurred: ${error.message}`,
-          error.stack
-        );
+        if (error instanceof Error) {
+          this.logger.error(
+            `An unexpected error occurred: ${error.message}`,
+            error.stack
+          );
+        } else {
+          this.logger.error(`An unexpected error occurred: ${error}`);
+        }
         throw new InternalServerErrorException(
           `An unexpected error occurred during pitch deck generation. Please try again.`
         );

@@ -9,7 +9,7 @@ import GeneratedOutline from "./components/GeneratedOutline";
 const HomePage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedOutline, setGeneratedOutline] = useState(null);
+  const [generatedOutline, setGeneratedOutline] = useState<any>(null);
 
   const [formData, setFormData] = useState({
     companyName: "",

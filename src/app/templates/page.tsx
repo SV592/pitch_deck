@@ -7,8 +7,10 @@ import TemplateListItem from "./components/TemplateListItem";
 import NoResults from "./components/NoResults";
 
 const TemplatesPage: React.FC = () => {
-  const [sortBy, ] = useState("name");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
+  const [sortBy, setSortBy] = useState("newest");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const categories = [
     { id: "all", name: "All Templates", count: 156 },

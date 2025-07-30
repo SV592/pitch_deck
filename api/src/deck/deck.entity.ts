@@ -5,18 +5,18 @@ import { User } from '../auth/user.entity';
 @Entity()
 export class Deck {
   @PrimaryGeneratedColumn() // Auto-incrementing ID
-  id: number;
+  id!: number;
 
   @Column()
-  title: string;
+  title!: string;
 
   @ManyToOne(() => User, user => user.decks)
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @Column()
-  userId: number;
+  userId!: number;
 
   @OneToMany(() => Slide, slide => slide.deck, { cascade: true }) // One deck can have many slides
-  slides: Slide[];
+  slides!: Slide[];
 }

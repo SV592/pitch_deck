@@ -3,21 +3,21 @@ import { Type } from 'class-transformer';
 
 class CreateSlideDto {
   @IsString()
-  title: string;
+  title!: string;
 
   @IsString()
-  content: string;
+  content!: string;
 
   @IsNumber()
-  order: number;
+  order!: number;
 }
 
 export class CreateDeckDto {
   @IsString()
-  title: string;
+  title!: string;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateSlideDto)
-  slides: CreateSlideDto[];
+  slides!: CreateSlideDto[];
 }

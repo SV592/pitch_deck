@@ -57,7 +57,7 @@ const DeckCard = ({
             <span>{deck.currentVersion}</span>
           </button>
           <div className="flex items-center space-x-1 text-sm text-gray-400">
-            <span>{new Date(deck.lastModified).toLocaleDateString()}</span>
+            <span>{deck.lastModified ? new Date(deck.lastModified).toLocaleDateString() : ''}</span>
           </div>
         </div>
       </div>

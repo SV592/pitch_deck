@@ -4,17 +4,17 @@ import { Deck } from './deck.entity';
 @Entity()
 export class Slide {
   @PrimaryGeneratedColumn() // Auto-incrementing ID
-  id: number;
+  id!: number;
 
   @Column()
-  title: string;
+  title!: string;
 
   @Column('text') // Use 'text' for potentially long content
-  content: string;
+  content!: string;
 
   @Column()
-  order: number;
+  order!: number;
 
   @ManyToOne(() => Deck, deck => deck.slides) // Many slides can belong to one deck
-  deck: Deck;
+  deck!: Deck;
 }

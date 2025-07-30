@@ -41,7 +41,7 @@ const DeckListItem = ({
                 <span>{deck.slideCount} slides</span>
               </div>
               <div className="flex items-center space-x-1">
-                <span>{new Date(deck.lastModified).toLocaleDateString()}</span>
+                <span>{deck.lastModified ? new Date(deck.lastModified).toLocaleDateString() : ''}</span>
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@ const DeckListItem = ({
                 <span>{deck.currentVersion}</span>
               </button>
 
-              {deck.collaborators.length > 0 && (
+              {deck.collaborators && deck.collaborators.length > 0 && (
                 <div className="flex items-center space-x-1">
                   <span className="text-sm text-gray-400">
                     {deck.collaborators.length} collaborators

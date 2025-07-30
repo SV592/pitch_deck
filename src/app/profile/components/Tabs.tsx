@@ -1,6 +1,17 @@
 import React from "react";
 
-const Tabs = ({ tabs, activeTab, setActiveTab }) => {
+interface Tab {
+  id: string;
+  label: string;
+}
+
+interface TabsProps {
+  tabs: Tab[];
+  activeTab: string;
+  setActiveTab: (id: string) => void;
+}
+
+const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, setActiveTab }) => {
   return (
     <div className="bg-[#1E2939] rounded-xl mb-6">
       <div className="flex border-b border-gray-700">

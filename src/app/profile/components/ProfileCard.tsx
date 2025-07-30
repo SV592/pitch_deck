@@ -2,7 +2,11 @@ import React from "react";
 import LocationIcon from "../../icons/LocationIcon";
 import DateIcon from "../../icons/DateIcon";
 
-const ProfileCard = ({ profileData }) => {
+interface ProfileCardProps {
+  profileData: any;
+}
+
+const ProfileCard: React.FC<ProfileCardProps> = ({ profileData }) => {
   return (
     <div className="lg:col-span-1">
       <div className="bg-[#1E2939] rounded-xl p-6 h-[446px]">
