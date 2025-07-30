@@ -1,10 +1,10 @@
 import React from 'react';
-import MailIcon from '@/app/icons/MailIcon.tsx';
-import LockIcon from '@/app/icons/LockIcon.tsx';
-import EyeIcon from '@/app/icons/EyeIcon.tsx';
-import EyeOffIcon from '@/app/icons/EyeOffIcon.tsx';
-import ArrowRightIcon from '@/app/icons/ArrowRightIcon.tsx';
-import LoaderIcon from '@/app/icons/LoaderIcon.tsx';
+import MailIcon from '@/app/icons/MailIcon';
+import LockIcon from '@/app/icons/LockIcon';
+import EyeIcon from '@/app/icons/EyeIcon';
+import EyeOffIcon from '@/app/icons/EyeOffIcon';
+import ArrowRightIcon from '@/app/icons/ArrowRightIcon';
+import LoaderIcon from '@/app/icons/LoaderIcon';
 
 interface AuthFormProps {
   isLogin: boolean;
