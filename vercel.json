@@ -6,6 +6,10 @@
   "buildCommand": "npm run build",
   "builds": [
     {
+      "src": "package.json",
+      "use": "@vercel/next"
+    },
+    {
       "src": "api/dist/main.js",
       "use": "@vercel/node"
     }
