@@ -29,6 +29,10 @@ const placeholderDeck: Deck = {
   versions: [],
 };
 
+export async function generateStaticParams() {
+  return [{ deckId: '1' }]; // Using a placeholder ID
+}
+
 const DeckEditorPage = () => {
   return (
     <div className="container bg- mx-auto p-4">
