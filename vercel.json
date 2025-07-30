@@ -5,10 +5,26 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
+    },
+    {
+      "src": "api/package.json",
+      "use": "@vercel/node",
+      "config": { "includeFiles": "dist/**" }
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/dist/main.js"
+      "dest": "/api"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
