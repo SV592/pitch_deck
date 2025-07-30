@@ -3,17 +3,11 @@
     "NODE_ENV": "production"
   },
   "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next",
-      "config": { "outputDirectory": "dist/frontend" }
-    },
-    {
-      "src": "api/package.json",
-      "use": "@vercel/node",
-      "config": { "includeFiles": ["api/**"] },
-      "buildCommand": "npm run build --workspace=api"
+      "use": "@vercel/next"
     }
   ],
   "routes": [
