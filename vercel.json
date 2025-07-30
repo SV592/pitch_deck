@@ -2,8 +2,7 @@
   "builds": [
     {
       "src": "src/package.json",
-      "use": "@vercel/next",
-      "config": { "outputDirectory": "dist/src" }
+      "use": "@vercel/next"
     },
     {
       "src": "api/main.ts",
@@ -18,7 +17,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "src/$1"
+      "dest": "src"
     }
   ]
 }
