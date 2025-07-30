@@ -1,0 +1,24 @@
+{
+  "builds": [
+    {
+      "src": "src/package.json",
+      "use": "@vercel/next",
+      "config": { "outputDirectory": "dist/src" }
+    },
+    {
+      "src": "api/main.ts",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["api/**"] }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/main.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/$1"
+    }
+  ]
+}
