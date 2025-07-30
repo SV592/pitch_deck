@@ -7,8 +7,8 @@
     "build": "next build && npm run build --workspace=api",
     "start": "next start",
     "lint": "next lint",
-    "start:api": "npm run start:dev --workspace=api",
-    },
+    "start:api": "npm run start:dev --workspace=api"
+  },
   "engines": {
     "node": ">=18.17.0"
   },
