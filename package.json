@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npm run build --workspace=api",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "start:api": "npm run start:dev --workspace=api"
+    "start:api": "npm run start:dev --workspace=api",
+    "postinstall": "npm run build --workspace=api"
+  },
+  "engines": {
+    "node": ">=18.17.0"
   },
   "workspaces": [
     "api"
@@ -22,16 +26,11 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "@next/font": "^14.0.4",
-    "geist": "^1.2.0"
-  },
-  "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "geist": "^1.2.0",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
+    "tailwindcss": "^3.3.0"
+  },
     "eslint": "^8",
     "eslint-config-next": "^14.0.4"
   }
