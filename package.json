@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "start:api": "npm run start:dev --workspace=api",
-    "postinstall": "npm install tailwindcss postcss autoprefixer"
-  },
+    },
   "engines": {
     "node": ">=18.17.0"
   },
