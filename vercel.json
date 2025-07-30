@@ -4,6 +4,12 @@
   },
   "installCommand": "npm install",
   "buildCommand": "npm run build",
+  "builds": [
+    {
+      "src": "api/dist/main.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
