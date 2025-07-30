@@ -1,8 +1,8 @@
 import React from 'react';
-import BrainIcon from '@/app/icons/BrainIcon';
-import ZapIcon from '@/app/icons/ZapIcon';
-import UsersIcon from '@/app/icons/UsersIcon';
-import TrendingUpIcon from '@/app/icons/TrendingUpIcon';
+import BrainIcon from '@/app/icons/BrainIcon.tsx';
+import ZapIcon from '@/app/icons/ZapIcon.tsx';
+import UsersIcon from '@/app/icons/UsersIcon.tsx';
+import TrendingUpIcon from '@/app/icons/TrendingUpIcon.tsx';
 
 const LeftPanelBranding: React.FC = () => {
   return (

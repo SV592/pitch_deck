@@ -1,6 +1,6 @@
 import React from 'react';
-import AlertCircleIcon from '@/app/icons/AlertCircleIcon';
-import CheckCircleIcon from '@/app/icons/CheckCircleIcon';
+import AlertCircleIcon from '@/app/icons/AlertCircleIcon.tsx';
+import CheckCircleIcon from '@/app/icons/CheckCircleIcon.tsx';
 
 interface AuthCardProps {
   isLogin: boolean;

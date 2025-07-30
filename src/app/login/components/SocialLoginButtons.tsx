@@ -1,7 +1,7 @@
 import React from 'react';
-import ChromeIcon from '@/app/icons/ChromeIcon';
-import GithubIcon from '@/app/icons/GithubIcon';
-import LinkedinIcon from '@/app/icons/LinkedinIcon';
+import ChromeIcon from '@/app/icons/ChromeIcon.tsx';
+import GithubIcon from '@/app/icons/GithubIcon.tsx';
+import LinkedinIcon from '@/app/icons/LinkedinIcon.tsx';
 
 interface SocialLoginButtonsProps {
   isLoading: boolean;
