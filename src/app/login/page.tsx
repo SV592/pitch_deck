@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import LeftPanelBranding from './components/LeftPanelBranding';
-import AuthCard from './components/AuthCard';
-import SocialLoginButtons from './components/SocialLoginButtons';
-import AuthForm from './components/AuthForm';
-import AuthToggleMode from './components/AuthToggleMode';
-import SecurityNotice from './components/SecurityNotice';
-import BrainIcon from '@/app/icons/BrainIcon';
+"use client";
+import React, { useState, useEffect } from "react";
+import LeftPanelBranding from "./components/LeftPanelBranding";
+import AuthCard from "./components/AuthCard";
+import SocialLoginButtons from "./components/SocialLoginButtons";
+import AuthForm from "./components/AuthForm";
+import AuthToggleMode from "./components/AuthToggleMode";
+import SecurityNotice from "./components/SecurityNotice";
+import BrainIcon from "@/app/icons/BrainIcon";
 
 // Auth0 configuration (these would normally be environment variables)
 const AUTH0_CONFIG = {
-  domain: 'your-domain.auth0.com', // Replace with your Auth0 domain
-  clientId: 'your-client-id', // Replace with your Auth0 client ID
-  redirectUri: typeof window !== 'undefined' ? window.location.origin + '/dashboard' : '',
-  audience: 'your-api-identifier' // Optional: for API access
+  domain: "your-domain.auth0.com", // Replace with your Auth0 domain
+  clientId: "your-client-id", // Replace with your Auth0 client ID
+  redirectUri:
+    typeof window !== "undefined" ? window.location.origin + "/dashboard" : "",
+  audience: "your-api-identifier", // Optional: for API access
 };
 
 const LoginPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    acceptTerms: false
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    acceptTerms: false,
   });
 
   // Initialize Auth0 (in a real app, you'd use the Auth0 React SDK)
@@ -38,31 +40,33 @@ const LoginPage: React.FC = () => {
   }, []);
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setError('');
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setError("");
   };
 
   const handleAuth0Login = async (connection?: string) => {
     setIsLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       // In a real app, you'd use Auth0's loginWithRedirect or loginWithPopup
       // await auth0Client.loginWithRedirect({
       //   connection: connection, // 'google-oauth2', 'github', 'linkedin', etc.
       //   redirectUri: AUTH0_CONFIG.redirectUri
       // });
-      
+
       // Simulate Auth0 login for demo
       setTimeout(() => {
-        setSuccess('Redirecting to Auth0...');
+        setSuccess("Redirecting to Auth0...");
         // In real app: window.location.href would change to Auth0 Universal Login
-        console.log('Auth0 login initiated with connection:', connection || 'email');
+        console.log(
+          "Auth0 login initiated with connection:",
+          connection || "email"
+        );
         setIsLoading(false);
       }, 1000);
-      
     } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+      setError(err.message || "Authentication failed");
       setIsLoading(false);
     }
   };
@@ -70,23 +74,23 @@ const LoginPage: React.FC = () => {
   const handleEmailPasswordAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     // Basic validation
     if (!formData.email || !formData.password) {
-      setError('Please fill in all required fields');
+      setError("Please fill in all required fields");
       setIsLoading(false);
       return;
     }
 
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
 
     if (!isLogin && !formData.acceptTerms) {
-      setError('Please accept the terms and conditions');
+      setError("Please accept the terms and conditions");
       setIsLoading(false);
       return;
     }
@@ -95,32 +99,33 @@ const LoginPage: React.FC = () => {
       // In a real app, you'd use Auth0's authentication methods
       // For login: await auth0Client.loginWithCredentials(formData.email, formData.password);
       // For signup: await auth0Client.signup(formData);
-      
+
       // Simulate authentication
       setTimeout(() => {
-        setSuccess(isLogin ? 'Login successful!' : 'Account created successfully!');
+        setSuccess(
+          isLogin ? "Login successful!" : "Account created successfully!"
+        );
         setIsLoading(false);
         // Redirect to dashboard
         // window.location.href = '/dashboard';
       }, 2000);
-      
     } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+      setError(err.message || "Authentication failed");
       setIsLoading(false);
     }
   };
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setFormData({
-      email: '',
-      password: '',
-      confirmPassword: '',
-      firstName: '',
-      lastName: '',
-      acceptTerms: false
+      email: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+      acceptTerms: false,
     });
   };
 
@@ -153,7 +158,9 @@ const LoginPage: React.FC = () => {
                 <div className="w-full border-t border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-gray-800 px-4 text-gray-400">Or continue with email</span>
+                <span className="bg-gray-800 px-4 text-gray-400">
+                  Or continue with email
+                </span>
               </div>
             </div>
 
