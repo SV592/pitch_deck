@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "postcss src/app/globals.css -o public/globals.css && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "start:api": "npm run start:dev --workspace=api"
