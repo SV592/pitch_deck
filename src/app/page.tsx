@@ -1,12 +1,16 @@
-"use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Hero from "./components/Hero";
 import ProgressSteps from "./components/ProgressSteps";
 import CompanyInfoForm from "./components/CompanyInfoForm";
 import Generation from "./components/Generation";
 import GeneratedOutline from "./components/GeneratedOutline";
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
 
 const HomePage: React.FC = () => {
+  const { user, isLoading } = useUser();
+  const router = useRouter();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedOutline, setGeneratedOutline] = useState<any>(null);
@@ -23,6 +27,12 @@ const HomePage: React.FC = () => {
     teamSize: "",
     stage: "idea",
   });
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/api/auth/login');
+    }
+  }, [user, isLoading, router]);
 
   const industries = [
     "Technology",
@@ -203,6 +213,10 @@ const HomePage: React.FC = () => {
     { number: 2, title: "Generate", description: "AI creates your outline" },
     { number: 3, title: "Review", description: "Review and customize" },
   ];
+
+  if (isLoading || !user) {
+    return <div>Loading...</div>; // Or a more sophisticated loading spinner
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">

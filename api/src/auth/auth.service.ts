@@ -10,17 +10,13 @@ export class AuthService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async register(email: string, passwordHash: string): Promise<User> {
-    const user = this.usersRepository.create({ email, passwordHash });
-    return this.usersRepository.save(user);
-  }
-
-  async validateUser(email: string, passwordHash: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    if (user && user.passwordHash === passwordHash) { // In a real app, use bcrypt for password comparison
-      return user;
+  async findOrCreateUser(email: string): Promise<User> {
+    let user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) {
+      user = this.usersRepository.create({ email });
+      await this.usersRepository.save(user);
     }
-    return null;
+    return user;
   }
 
   async findByEmail(email: string): Promise<User | null> {
