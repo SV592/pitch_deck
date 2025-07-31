@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
           <AuthCard isLogin={true} error={""} success={""}>
             <SocialLoginButtons
               isLoading={false}
-              handleAuth0Login={() => window.location.href = '/api/auth/login'}
+              handleAuth0Login={async () => { window.location.href = '/api/auth/login'; }}
             />
 
             {/* Divider */}
