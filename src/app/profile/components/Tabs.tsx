@@ -14,7 +14,7 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, setActiveTab }) => {
   return (
     <div className="bg-[#1E2939] rounded-xl mb-6">
-      <div className="flex border-b border-gray-700">
+      <div className="flex border-b border-gray-700 h-full">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -25,7 +25,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, setActiveTab }) => {
                 : "text-gray-400 hover:text-white"
             }`}
           >
-            <span>{tab.label}</span>
+            {tab.label}
           </button>
         ))}
       </div>

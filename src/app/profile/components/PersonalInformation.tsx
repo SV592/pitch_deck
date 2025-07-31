@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+
+import React from 'react';
 
 interface PersonalInformationProps {
   isEditing: boolean;
@@ -19,6 +21,14 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   handleCancel,
   profileData,
 }) => {
+  const renderInfoField = (value: string, placeholder: string) => {
+    return (
+      <p className="px-3 py-2 bg-gray-700 rounded-lg min-h-[42px]">
+        {value || <span className="text-gray-400">{placeholder}</span>}
+      </p>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -63,9 +73,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           ) : (
-            <p className="px-3 py-2 bg-gray-700 rounded-lg">
-              {profileData.name}
-            </p>
+            renderInfoField(profileData.name, 'Not provided')
           )}
         </div>
 
@@ -86,9 +94,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           ) : (
-            <p className="px-3 py-2 bg-gray-700 rounded-lg">
-              {profileData.email}
-            </p>
+            renderInfoField(profileData.email, 'Not provided')
           )}
         </div>
 
@@ -107,11 +113,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 })
               }
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              placeholder='Add phone number...'
             />
           ) : (
-            <p className="px-3 py-2 bg-gray-700 rounded-lg">
-              {profileData.phone}
-            </p>
+            renderInfoField(profileData.phone, 'Add phone number...')
           )}
         </div>
 
@@ -130,11 +135,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 })
               }
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              placeholder='Add location...'
             />
           ) : (
-            <p className="px-3 py-2 bg-gray-700 rounded-lg">
-              {profileData.location}
-            </p>
+            renderInfoField(profileData.location, 'Add location...')
           )}
         </div>
       </div>
@@ -149,9 +153,12 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
             rows={4}
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            placeholder='Tell us about yourself...'
           />
         ) : (
-          <p className="px-3 py-2 bg-gray-700 rounded-lg">{profileData.bio}</p>
+          <div className="px-3 py-2 bg-gray-700 rounded-lg min-h-[98px]">
+            {profileData.bio || <span className="text-gray-400">Tell us about yourself...</span>}
+          </div>
         )}
       </div>
     </div>

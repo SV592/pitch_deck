@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import React, { useEffect } from "react";
 import LeftPanelBranding from "./components/LeftPanelBranding";
 import AuthCard from "./components/AuthCard";
@@ -18,8 +19,8 @@ const LoginPage: React.FC = () => {
     }
   }, [user, isLoading, router]);
 
-  if (isLoading) {
-    return <div>Loading...</div>; // Or a more sophisticated loading spinner
+  if (isLoading || user) {
+    return null;
   }
 
   return (

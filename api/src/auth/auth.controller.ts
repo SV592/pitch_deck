@@ -11,10 +11,11 @@ export class AuthController {
   @Get('profile')
   @UseGuards(AuthGuard('auth0'))
   async getProfile(@Req() req: Request) {
-    // When using Auth0, the user object is populated by the validate method in Auth0Strategy
-    // and contains the payload from the JWT.
-    const email = (req.user as User).email; // Assuming email is in the JWT payload
-    const user = await this.authService.findOrCreateUser(email);
-    return { message: 'Profile retrieved successfully', user: { id: user.id, email: user.email } };
+    const auth0Id = (req.user as any).sub; // Auth0 user ID
+    const email = (req.user as User).email;
+    const name = (req.user as User).name; // Assuming name is also available
+
+    const user = await this.authService.findOrCreateUser(auth0Id, email, name);
+    return { message: 'Profile retrieved successfully', user: { auth0Id: user.auth0Id, email: user.email, name: user.name } };
   }
 }

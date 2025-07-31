@@ -216,8 +216,12 @@ const HomePage: React.FC = () => {
     { number: 3, title: "Review", description: "Review and customize" },
   ];
 
-  if (isLoading || !user) {
-    return <div>Loading...</div>; // Or a more sophisticated loading spinner
+  if (isLoading) {
+    return null;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
