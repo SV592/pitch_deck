@@ -14,7 +14,7 @@ const DeckCard = ({
       {/* Thumbnail */}
       <div
         className="h-48 relative cursor-pointer"
-        style={{ background: deck.thumbnail }}
+        style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <div className="flex space-x-3">
@@ -27,8 +27,7 @@ const DeckCard = ({
         {/* Slide Count */}
         <div className="absolute bottom-3 left-3">
           <div className="flex items-center space-x-1 bg-black bg-opacity-50 px-2 py-1 rounded-full text-xs text-white">
-            {/* <FileText className="w-3 h-3" /> */}
-            <span>{deck.slideCount} slides</span>
+            <span>{deck.slides?.length || 0} slides</span>
           </div>
         </div>
       </div>
@@ -45,7 +44,7 @@ const DeckCard = ({
         </div>
 
         <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-          {deck.description}
+          {/* No description available from backend yet */}
         </p>
 
         {/* Version Info */}
@@ -54,10 +53,10 @@ const DeckCard = ({
             onClick={() => setShowVersionModal(deck.id)}
             className="flex items-center space-x-1 text-sm text-orange-500 hover:text-orange-400 transition-colors"
           >
-            <span>{deck.currentVersion}</span>
+            <span>View Versions</span>
           </button>
           <div className="flex items-center space-x-1 text-sm text-gray-400">
-            <span>{deck.lastModified ? new Date(deck.lastModified).toLocaleDateString() : ''}</span>
+            <span>Last Modified: N/A</span>
           </div>
         </div>
       </div>

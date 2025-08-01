@@ -1,5 +1,5 @@
 import React from "react";
-import DeckEditor from "./components/DeckEditor";
+import DeckEditorWrapper from "./components/DeckEditorWrapper";
 import { Deck } from "./types";
 
 // Placeholder data for the deck
@@ -10,19 +10,22 @@ const placeholderDeck: Deck = {
     {
       id: "1",
       title: "Introduction",
-      content: "Welcome to our pitch!",
+      content:
+        "<p>Welcome to our pitch! This is where we introduce our revolutionary idea.</p>",
       order: 1,
     },
     {
       id: "2",
       title: "The Problem",
-      content: "The world has a problem...",
+      content:
+        "<p>The world has a problem that needs solving. Here we identify the pain points and challenges.</p>",
       order: 2,
     },
     {
       id: "3",
       title: "Our Solution",
-      content: "And we are the solution!",
+      content:
+        "<p>And we are the solution! Our innovative approach will transform the industry.</p>",
       order: 3,
     },
   ],
@@ -30,16 +33,11 @@ const placeholderDeck: Deck = {
 };
 
 export async function generateStaticParams() {
-  return [{ deckId: '1' }]; // Using a placeholder ID
+  return [{ deckId: "1" }]; // Using a placeholder ID
 }
 
 const DeckEditorPage = () => {
-  return (
-    <div className="container bg- mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">{placeholderDeck.title}</h1>
-      <DeckEditor deck={placeholderDeck} />
-    </div>
-  );
+  return <DeckEditorWrapper deck={placeholderDeck} />;
 };
 
 export default DeckEditorPage;

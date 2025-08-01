@@ -27,7 +27,7 @@ const DeckListItem = ({
         {/* Thumbnail */}
         <div
           className="w-16 h-16 rounded-lg flex-shrink-0"
-          style={{ background: deck.thumbnail }}
+          style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
         />
 
         {/* Content */}
@@ -38,16 +38,16 @@ const DeckListItem = ({
             </div>
             <div className="flex items-center space-x-4 text-sm text-gray-400">
               <div className="flex items-center space-x-1">
-                <span>{deck.slideCount} slides</span>
+                <span>{deck.slides?.length || 0} slides</span>
               </div>
               <div className="flex items-center space-x-1">
-                <span>{deck.lastModified ? new Date(deck.lastModified).toLocaleDateString() : ''}</span>
+                <span>Last Modified: N/A</span>
               </div>
             </div>
           </div>
 
           <p className="text-gray-400 text-sm mb-3 line-clamp-1">
-            {deck.description}
+            {/* No description available from backend yet */}
           </p>
 
           <div className="flex items-center justify-between">
@@ -56,16 +56,10 @@ const DeckListItem = ({
                 onClick={() => setShowVersionModal(deck.id)}
                 className="flex items-center space-x-1 text-sm text-orange-500 hover:text-orange-400 transition-colors"
               >
-                <span>{deck.currentVersion}</span>
+                <span>View Versions</span>
               </button>
 
-              {deck.collaborators && deck.collaborators.length > 0 && (
-                <div className="flex items-center space-x-1">
-                  <span className="text-sm text-gray-400">
-                    {deck.collaborators.length} collaborators
-                  </span>
-                </div>
-              )}
+              {/* No collaborators available from backend yet */}
             </div>
 
             <div className="flex items-center space-x-2">

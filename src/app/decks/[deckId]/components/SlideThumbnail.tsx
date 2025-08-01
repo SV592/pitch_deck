@@ -1,11 +1,10 @@
+"use client";
 
-'use client'
+import React, { useRef } from "react";
+import { useDrag, useDrop } from "react-dnd";
+import { Slide as SlideType } from "../types";
 
-import React, { useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
-import { Slide as SlideType } from '../types';
-
-const ItemType = 'SLIDE';
+const ItemType = "SLIDE";
 
 interface SlideThumbnailProps {
   slide: SlideType;
@@ -15,7 +14,13 @@ interface SlideThumbnailProps {
   moveSlide: (fromIndex: number, toIndex: number) => void;
 }
 
-const SlideThumbnail: React.FC<SlideThumbnailProps> = ({ slide, index, isSelected, onClick, moveSlide }) => {
+const SlideThumbnail: React.FC<SlideThumbnailProps> = ({
+  slide,
+  index,
+  isSelected,
+  onClick,
+  moveSlide,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop({
@@ -51,13 +56,38 @@ const SlideThumbnail: React.FC<SlideThumbnailProps> = ({ slide, index, isSelecte
       ref={ref}
       onClick={onClick}
       style={{ opacity: isDragging ? 0.5 : 1 }}
-      className={`cursor-pointer border-2 rounded-lg p-2 ${isSelected ? 'border-blue-500' : 'border-transparent'} hover:border-blue-300`}
+      className={`
+        cursor-pointer border-2 rounded-lg lg:rounded-xl 
+        p-2 sm:p-3 transition-all duration-200 hover:shadow-lg
+        ${
+          isSelected
+            ? "border-orange-500 shadow-lg"
+            : "border-gray-600 hover:border-orange-400"
+        }
+      `}
     >
-      <div className="bg-white h-24 w-40 flex flex-col justify-center items-center text-xs p-1 shadow-md">
-        <h4 className="font-bold truncate">{slide.title}</h4>
-        <p className="text-gray-600 truncate">{slide.content.replace(/<[^>]*>?/gm, '')}</p>
+      <div
+        className="h-16 sm:h-20 lg:h-24 w-full flex flex-col justify-center items-center text-xs p-2 sm:p-3 rounded-md lg:rounded-lg border"
+        style={{
+          backgroundColor: "#1F2937",
+          borderColor: "#3A4553",
+        }}
+      >
+        <h4 className="font-semibold truncate text-white text-center mb-1 text-xs sm:text-sm">
+          {slide.title}
+        </h4>
+        <p className="text-gray-400 truncate text-center text-xs leading-tight hidden sm:block">
+          {slide.content.replace(/<[^>]*>?/gm, "").substring(0, 30)}...
+        </p>
       </div>
-      <span className="text-xs text-gray-500 mt-1">{index + 1}</span>
+      <div className="flex justify-center mt-1 sm:mt-2">
+        <span
+          className="text-xs text-gray-400 px-2 py-1 rounded-full"
+          style={{ backgroundColor: "#1F2937" }}
+        >
+          {index + 1}
+        </span>
+      </div>
     </div>
   );
 };
