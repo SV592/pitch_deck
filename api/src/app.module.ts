@@ -1,30 +1,35 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { DeckModule } from './deck/deck.module';
-import { OpenAIModule } from './openai/openai.module';
-import { AuthModule } from './auth/auth.module';
-import { User } from './auth/user.entity';
-import { Deck } from './deck/deck.entity';
-import { Slide } from './deck/slide.entity';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+
+import { getDatabaseConfig } from "./config/database.config";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./auth/users.module";
+import { DeckModule } from "./deck/deck.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.POSTGRES_URL,
-      entities: [User, Deck, Slide],
-      synchronize: true, // WARNING: synchronize should be set to false in production
-      ssl: {
-        rejectUnauthorized: false, // Required for Vercel Postgres
-      },
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ".env",
     }),
-    DeckModule,
-    OpenAIModule,
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: getDatabaseConfig,
+    }),
+    PassportModule,
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>("JWT_SECRET"),
+        signOptions: { expiresIn: "24h" },
+      }),
+    }),
     AuthModule,
+    UsersModule,
+    DeckModule, // Add this
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

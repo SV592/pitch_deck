@@ -1,4 +1,5 @@
 import React from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import MailIcon from '../../icons/MailIcon';
 import LockIcon from '../../icons/LockIcon';
 import EyeIcon from '../../icons/EyeIcon';
@@ -14,8 +15,7 @@ interface AuthFormProps {
   isLoading: boolean;
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  handleAuth0Login: (connection?: string) => Promise<void>;
-}
+  }
 
 const AuthForm: React.FC<AuthFormProps> = ({
   isLogin,
@@ -25,7 +25,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
   isLoading,
   showPassword,
   setShowPassword,
-  handleAuth0Login,
 }) => {
   return (
     <form onSubmit={handleEmailPasswordAuth} className="space-y-4">
@@ -147,7 +146,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           </label>
           <button
             type="button"
-            onClick={() => handleAuth0Login('email')} // This would trigger forgot password flow
+            onClick={() => loginWithRedirect({ screen_hint: 'forgot_password' })}
             className="text-sm text-orange-500 hover:text-orange-400"
           >
             Forgot password?

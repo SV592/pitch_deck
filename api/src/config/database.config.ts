@@ -1,0 +1,27 @@
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { ConfigService } from "@nestjs/config";
+import { User } from "../auth/user.entity";
+import { Deck } from "../deck/deck.entity";
+import { Slide } from "../deck/slide.entity";
+
+export const getDatabaseConfig = (
+  configService: ConfigService
+): TypeOrmModuleOptions => {
+  console.log("DEBUG: Database configuration:", {
+    databaseUrl: configService.get<string>("DATABASE_URL")
+      ? "EXISTS"
+      : "MISSING",
+    type: "postgres",
+  });
+
+  return {
+    type: "postgres",
+    url: configService.get<string>("DATABASE_URL"),
+    entities: [User, Deck, Slide], // Make sure all entities are here
+    synchronize: configService.get<string>("NODE_ENV") === "development",
+    ssl: {
+      rejectUnauthorized: false,
+    },
+    logging: configService.get<string>("NODE_ENV") === "development",
+  };
+};

@@ -1,10 +1,12 @@
+import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from "next/link";
 import TemplateIcon from "../icons/TemplateIcon";
 import DeckIcon from "../icons/DeckIcon";
 import ProfileIcon from "../icons/ProfileIcon";
 import ExitIcon from "../icons/ExitIcon";
 import HomeIcon from "../icons/HomeIcon";
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
 interface SidebarProps {
   className?: string;
@@ -14,6 +16,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
   const { user } = useUser();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const navigationItems = [
     {
@@ -37,6 +40,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
       icon: <ProfileIcon />,
     },
   ];
+
+  const handleLogoutClick = () => {
+    setIsLoggingOut(true);
+    // Give a small delay to show the loading state before redirecting
+    window.location.href = '/api/auth/logout';
+  };
+
+  if (isLoggingOut) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-[9999]">
+        <div className="flex flex-col items-center text-white">
+          <LoadingSpinner />
+          <p className="mt-4 text-lg">Logging out...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -87,10 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
         }`}
       >
         <button
-          onClick={() => {
-            window.location.href = '/api/auth/logout';
-            onClose(); // Optionally close sidebar after logout
-          }}
+          onClick={handleLogoutClick}
           className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors w-full text-left group"
         >
           <ExitIcon />

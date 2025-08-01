@@ -1,20 +1,41 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Deck } from './deck.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { Deck } from "./deck.entity";
 
-@Entity()
+@Entity("slides")
 export class Slide {
-  @PrimaryGeneratedColumn() // Auto-incrementing ID
-  id!: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column()
-  title!: string;
+  title: string;
 
-  @Column('text') // Use 'text' for potentially long content
-  content!: string;
+  @Column("text")
+  content: string;
 
-  @Column()
-  order!: number;
+  @Column({ default: 0 })
+  order: number;
 
-  @ManyToOne(() => Deck, deck => deck.slides) // Many slides can belong to one deck
-  deck!: Deck;
+  @Column({ default: "basic" })
+  type: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Column("uuid")
+  deckId: string;
+
+  @ManyToOne(() => Deck, (deck) => deck.slides, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "deckId" })
+  deck: Deck;
 }

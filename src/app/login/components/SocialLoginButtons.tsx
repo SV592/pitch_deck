@@ -1,21 +1,20 @@
 import React from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import ChromeIcon from '../../icons/ChromeIcon';
 import GithubIcon from '../../icons/GithubIcon';
 import LinkedinIcon from '../../icons/LinkedinIcon';
 
 interface SocialLoginButtonsProps {
-  isLoading: boolean;
-  handleAuth0Login: (connection?: string) => Promise<void>;
+  // handleAuth0Login: (connection?: string) => Promise<void>; // Removed
 }
 
 const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
-  isLoading,
-  handleAuth0Login,
+  // handleAuth0Login, // Removed
 }) => {
   return (
     <div className="space-y-3 mb-6">
       <button
-        onClick={() => handleAuth0Login('google-oauth2')}
+        onClick={() => loginWithRedirect({ connection: 'google-oauth2' })}
         disabled={isLoading}
         className="w-full flex items-center justify-center space-x-3 py-3 px-4 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-700 disabled:opacity-50 border border-gray-600 rounded-lg transition-colors"
       >
@@ -25,7 +24,7 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
 
       <div className="grid grid-cols-2 gap-3">
         <button
-          onClick={() => handleAuth0Login('github')}
+          onClick={() => loginWithRedirect({ connection: 'google-oauth2' })}
           disabled={isLoading}
           className="flex items-center justify-center space-x-2 py-3 px-4 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-700 disabled:opacity-50 border border-gray-600 rounded-lg transition-colors"
         >
@@ -34,7 +33,7 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
         </button>
 
         <button
-          onClick={() => handleAuth0Login('linkedin')}
+          onClick={() => loginWithRedirect({ connection: 'google-oauth2' })}
           disabled={isLoading}
           className="flex items-center justify-center space-x-2 py-3 px-4 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-700 disabled:opacity-50 border border-gray-600 rounded-lg transition-colors"
         >

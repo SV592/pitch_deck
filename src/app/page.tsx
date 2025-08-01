@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
+import { useUser } from '@auth0/nextjs-auth0/client';
 import Hero from "./components/Hero";
 import ProgressSteps from "./components/ProgressSteps";
 import CompanyInfoForm from "./components/CompanyInfoForm";
 import Generation from "./components/Generation";
 import GeneratedOutline from "./components/GeneratedOutline";
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 
 const HomePage: React.FC = () => {
-  const { user, isLoading } = useUser();
+  const { user, isLoading: loadingAuth } = useUser();
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,10 +31,10 @@ const HomePage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/api/auth/login');
+    if (!loadingAuth && !user) {
+      router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [loadingAuth, user, router]);
 
   const industries = [
     "Technology",
@@ -65,163 +65,46 @@ const HomePage: React.FC = () => {
 
   const generatePitchDeck = async () => {
     setIsGenerating(true);
+    try {
+      const response = await fetch('/api/decks/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Simulate AI generation process
-    setTimeout(() => {
-      const mockOutline = {
-        title: `${formData.companyName} Pitch Deck`,
-        slides: [
-          {
-            id: 1,
-            title: "Company Overview",
-            type: "title",
-            content: {
-              subtitle: `Revolutionizing ${formData.industry}`,
-              tagline:
-                formData.solution.split(" ").slice(0, 10).join(" ") + "...",
-              suggestedImage: "Modern office or product hero shot",
-            },
-          },
-          {
-            id: 2,
-            title: "The Problem",
-            type: "problem",
-            content: {
-              headline: "Market Pain Points",
-              bullets: [
-                formData.problemStatement.split(".")[0],
-                "Current solutions are inadequate",
-                "Market demand is growing rapidly",
-                "Opportunity for disruption exists",
-              ],
-              suggestedImage: "Frustrated users or market gap visualization",
-            },
-          },
-          {
-            id: 3,
-            title: "Our Solution",
-            type: "solution",
-            content: {
-              headline: "Innovative Approach",
-              description: formData.solution,
-              keyFeatures: [
-                "Cutting-edge technology",
-                "User-friendly interface",
-                "Scalable architecture",
-                "Cost-effective solution",
-              ],
-              suggestedImage: "Product demo or solution diagram",
-            },
-          },
-          {
-            id: 4,
-            title: "Market Opportunity",
-            type: "market",
-            content: {
-              tam: "$50B Total Addressable Market",
-              sam: "$5B Serviceable Addressable Market",
-              som: "$500M Serviceable Obtainable Market",
-              growth: "15% annual growth rate",
-              suggestedImage: "Market size charts and graphs",
-            },
-          },
-          {
-            id: 5,
-            title: "Business Model",
-            type: "business",
-            content: {
-              model: formData.businessModel,
-              revenue: [
-                "Primary revenue stream",
-                "Secondary revenue opportunities",
-                "Recurring revenue potential",
-                "Scalable pricing strategy",
-              ],
-              suggestedImage: "Revenue flow diagram",
-            },
-          },
-          {
-            id: 6,
-            title: "Financial Projections",
-            type: "financials",
-            content: {
-              year1: "$100K ARR",
-              year3: "$1M ARR",
-              year5: "$10M ARR",
-              metrics: formData.financials,
-              suggestedImage: "Growth charts and financial projections",
-            },
-          },
-          {
-            id: 7,
-            title: "Team",
-            type: "team",
-            content: {
-              size: formData.teamSize,
-              expertise: [
-                "Industry veterans",
-                "Technical excellence",
-                "Previous startup experience",
-                "Diverse skill sets",
-              ],
-              suggestedImage: "Professional team photos",
-            },
-          },
-          {
-            id: 8,
-            title: "Funding Ask",
-            type: "funding",
-            content: {
-              amount: formData.fundingGoal,
-              use: [
-                "40% Product development",
-                "30% Marketing & sales",
-                "20% Team expansion",
-                "10% Operations",
-              ],
-              suggestedImage: "Fund allocation pie chart",
-            },
-          },
-          {
-            id: 9,
-            title: "Next Steps",
-            type: "cta",
-            content: {
-              timeline: "12-month roadmap",
-              milestones: [
-                "Product launch",
-                "Market expansion",
-                "Team growth",
-                "Series A preparation",
-              ],
-              suggestedImage: "Timeline or roadmap visualization",
-            },
-          },
-        ],
-      };
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/login');
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      setGeneratedOutline(mockOutline);
-      setIsGenerating(false);
+      const newDeck = await response.json();
+      setGeneratedOutline(newDeck);
       setCurrentStep(3);
-    }, 3000);
+      router.push(`/decks/${newDeck.id}`);
+    } catch (error) {
+      console.error('Error generating pitch deck:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const steps = [
-    {
-      number: 1,
-      title: "Company Info",
-      description: "Tell us about your company",
-    },
+    { number: 1, title: "Company Info", description: "Tell us about your company" },
     { number: 2, title: "Generate", description: "AI creates your outline" },
     { number: 3, title: "Review", description: "Review and customize" },
   ];
 
-  if (isLoading) {
-    return null;
+  if (loadingAuth) {
+    return <div>Loading...</div>;
   }
 
   if (!user) {
-    return null;
+    return null; // Will redirect to login via useEffect
   }
 
   return (

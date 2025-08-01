@@ -1,21 +1,45 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import type { Request } from 'express';
-import { User } from './user.entity';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Request,
+} from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import { JwtAuthGuard } from "./jwt-auth.guard";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('profile')
-  @UseGuards(AuthGuard('auth0'))
-  async getProfile(@Req() req: Request) {
-    const auth0Id = (req.user as any).sub; // Auth0 user ID
-    const email = (req.user as User).email;
-    const name = (req.user as User).name; // Assuming name is also available
+  @Post("register")
+  async register(
+    @Body()
+    body: {
+      email: string;
+      password: string;
+      firstName?: string;
+      lastName?: string;
+    }
+  ) {
+    return this.authService.register(
+      body.email,
+      body.password,
+      body.firstName,
+      body.lastName
+    );
+  }
 
-    const user = await this.authService.findOrCreateUser(auth0Id, email, name);
-    return { message: 'Profile retrieved successfully', user: { auth0Id: user.auth0Id, email: user.email, name: user.name } };
+  @Post("login")
+  async login(@Body() body: { email: string; password: string }) {
+    return this.authService.login(body.email, body.password);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("profile")
+  getProfile(@Request() req) {
+    console.log("Backend received request for profile. req.user:", req.user);
+    return req.user;
   }
 }

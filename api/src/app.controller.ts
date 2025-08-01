@@ -1,9 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('api') // Added 'api' prefix directly
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {
+    // console.log('DEBUG: AppController constructor called.'); // Removed console.log
+  }
 
   @Get()
   getHello(): string {

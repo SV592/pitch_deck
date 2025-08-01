@@ -3,8 +3,8 @@
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
-import { UserProvider } from '@auth0/nextjs-auth0/client';
 import AppContent from './components/AppContent';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 const geistSans = GeistSans.variable;
 const geistMono = GeistMono.variable;

@@ -6,6 +6,8 @@ import Header from './Header';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import LoadingSpinner from './LoadingSpinner';
 
+
+
 export default function AppWrapper({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 

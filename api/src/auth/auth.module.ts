@@ -1,13 +1,31 @@
-import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { Auth0Strategy } from './auth0.strategy';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { ConfigService } from "@nestjs/config";
+import { AuthService } from "./auth.service";
+import { AuthController } from "./auth.controller";
+import { JwtStrategy } from "./jwt.strategy";
+import { User } from "./user.entity";
+import { UsersModule } from "./users.module";
+
+import { AuthSerializer } from "./auth.serializer";
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
-  providers: [AuthService, Auth0Strategy],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    UsersModule, // This imports UsersService
+    PassportModule, // Corrected: Removed .session()
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>("JWT_SECRET"),
+        signOptions: { expiresIn: "24h" },
+      }),
+    }),
+  ],
   controllers: [AuthController],
-  exports: [AuthService, PassportModule], // Export AuthService and PassportModule if needed by other modules
+  providers: [AuthService, JwtStrategy, AuthSerializer],
+  exports: [AuthService],
 })
 export class AuthModule {}

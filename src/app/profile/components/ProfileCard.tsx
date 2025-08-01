@@ -50,7 +50,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profileData }) => {
           </div>
 
           <h2 className="text-xl font-semibold mb-1">{profileData.name}</h2>
-          <p className="text-gray-400 text-sm mb-4">{profileData.email}</p>
+          <p className="text-gray-400 text-sm mb-4 break-all overflow-wrap-anywhere min-w-0">{profileData.email}</p>
 
           <div className="space-y-3 text-sm">
             {profileData.location && (

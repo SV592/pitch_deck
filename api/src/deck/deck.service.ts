@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Deck } from './deck.entity';
-import { Slide } from './slide.entity';
-import { OpenAIService } from '../openai/openai.service';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Deck } from "./deck.entity";
+import { Slide } from "./slide.entity";
 
 @Injectable()
 export class DeckService {
@@ -11,33 +10,94 @@ export class DeckService {
     @InjectRepository(Deck)
     private deckRepository: Repository<Deck>,
     @InjectRepository(Slide)
-    private slideRepository: Repository<Slide>,
-    private openaiService: OpenAIService,
+    private slideRepository: Repository<Slide>
   ) {}
 
-  async generateAndSaveDeck(companyInfo: any): Promise<Deck> {
-    const generatedContent = await this.openaiService.generatePitchDeckOutline(companyInfo);
-    const title = generatedContent.title || 'New Pitch Deck';
-    const slidesData = generatedContent.slides.map((slide: any, index: number) => ({
-      title: slide.title,
-      content: slide.content,
-      order: index + 1,
-    }));
-
-    return this.createDeck(title, slidesData);
-  }
-
-  async createDeck(title: string, slidesData: { title: string; content: string; order: number }[]): Promise<Deck> {
-    const deck = this.deckRepository.create({ title });
+  async createDeck(
+    title: string,
+    userId: string,
+    slidesData: any[] = []
+  ): Promise<Deck> {
+    const deck = this.deckRepository.create({
+      title,
+      userId,
+    });
     const savedDeck = await this.deckRepository.save(deck);
 
-    const slides = slidesData.map(slideData => this.slideRepository.create({ ...slideData, deck: savedDeck }));
-    await this.slideRepository.save(slides);
+    if (slidesData.length > 0) {
+      for (const slideData of slidesData) {
+        const slide = this.slideRepository.create({
+          ...slideData,
+          deckId: savedDeck.id,
+        });
+        await this.slideRepository.save(slide);
+      }
+    }
 
-    return savedDeck;
+    return this.deckRepository.findOne({
+      where: { id: savedDeck.id },
+      relations: ["slides"],
+    });
   }
 
-  async getDeckById(id: number): Promise<Deck | null> {
-    return this.deckRepository.findOne({ where: { id }, relations: ['slides'] });
+  async getDeck(id: string): Promise<Deck> {
+    return this.deckRepository.findOne({
+      where: { id },
+      relations: ["slides"],
+    });
+  }
+
+  async getDecksByUser(userId: string): Promise<Deck[]> {
+    return this.deckRepository.find({
+      where: { userId },
+      relations: ["slides"],
+    });
+  }
+
+  async updateDeck(id: string, userId: string, updateData: any): Promise<Deck> {
+    const deck = await this.deckRepository.findOne({
+      where: { id, userId },
+      relations: ["slides"],
+    });
+
+    if (!deck) {
+      throw new Error("Deck not found");
+    }
+
+    if (updateData.title) {
+      deck.title = updateData.title;
+    }
+
+    if (updateData.slides) {
+      const updatedSlideIds = updateData.slides
+        .filter((slide) => slide.id)
+        .map((slide) => slide.id);
+
+      const slidesToRemove = deck.slides.filter(
+        (slide) => !updatedSlideIds.includes(slide.id)
+      );
+
+      for (const slide of slidesToRemove) {
+        await this.slideRepository.delete(slide.id);
+      }
+
+      for (const slideDto of updateData.slides) {
+        if (slideDto.id) {
+          const existingSlide = deck.slides.find((s) => s.id === slideDto.id);
+          if (existingSlide) {
+            await this.slideRepository.update(slideDto.id, slideDto);
+          }
+        } else {
+          const newSlide = this.slideRepository.create({
+            ...slideDto,
+            deckId: deck.id,
+          });
+          await this.slideRepository.save(newSlide);
+        }
+      }
+    }
+
+    await this.deckRepository.save(deck);
+    return this.getDeck(id);
   }
 }

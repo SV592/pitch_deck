@@ -1,22 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import LoadingSpinner from './LoadingSpinner';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function AppContent({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const { isLoading } = useUser();
+  const { isLoading } = useUser(); // Use useUser to get loading state
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
-      {isLoading && <LoadingSpinner />}
       <div className="flex h-screen overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
         <div

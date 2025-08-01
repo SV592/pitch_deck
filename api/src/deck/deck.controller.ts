@@ -1,29 +1,43 @@
-import { Controller, Post, Body, Get, Param, NotFoundException } from '@nestjs/common';
-import { DeckService } from './deck.service';
-import { CreateDeckDto } from './dto/create-deck.dto';
-import { GenerateDeckDto } from './dto/generate-deck.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from "@nestjs/common";
+import { DeckService } from "./deck.service";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
-@Controller('decks')
+@Controller("decks")
+@UseGuards(JwtAuthGuard)
 export class DeckController {
   constructor(private readonly deckService: DeckService) {}
 
-  @Post('generate')
-  async generate(@Body() generateDeckDto: GenerateDeckDto) {
-    return this.deckService.generateAndSaveDeck(generateDeckDto);
-  }
-
   @Post()
-  async create(@Body() createDeckDto: CreateDeckDto) {
-    const { title, slides } = createDeckDto;
-    return this.deckService.createDeck(title, slides);
+  create(@Body() createDeckDto: any, @Request() req) {
+    return this.deckService.createDeck(
+      createDeckDto.title,
+      req.user.id,
+      createDeckDto.slides || []
+    );
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const deck = await this.deckService.getDeckById(+id);
-    if (!deck) {
-      throw new NotFoundException(`Deck with ID ${id} not found`);
-    }
-    return deck;
+  @Get()
+  findAll(@Request() req) {
+    return this.deckService.getDecksByUser(req.user.id);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.deckService.getDeck(id);
+  }
+
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateDeckDto: any, @Request() req) {
+    return this.deckService.updateDeck(id, req.user.id, updateDeckDto);
   }
 }

@@ -1,39 +1,65 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "./users.service";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private usersService: UsersService,
+    private jwtService: JwtService
   ) {}
 
-  async findOrCreateUser(auth0Id: string, email: string, name?: string): Promise<User> {
-    let user = await this.usersRepository.findOne({ where: { auth0Id } });
-    if (!user) {
-      user = this.usersRepository.create({ auth0Id, email, name });
-      await this.usersRepository.save(user);
-    } else {
-      // Update user's email and name if they have changed
-      user.email = email;
-      user.name = name;
-      await this.usersRepository.save(user);
+  async register(
+    email: string,
+    password: string,
+    firstName?: string,
+    lastName?: string
+  ) {
+    const existingUser = await this.usersService.findByEmail(email);
+    if (existingUser) {
+      throw new ConflictException("User already exists");
     }
-    return user;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.usersService.create({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+    });
+
+    const payload = { email: user.email, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    };
   }
 
-  async findByAuth0Id(auth0Id: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { auth0Id } });
-  }
-
-  async updateUserProfile(auth0Id: string, profileData: Partial<User>): Promise<User | null> {
-    const user = await this.usersRepository.findOne({ where: { auth0Id } });
-    if (!user) {
-      return null;
+  async login(email: string, password: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException("Invalid credentials");
     }
-    Object.assign(user, profileData);
-    return this.usersRepository.save(user);
+
+    const payload = { email: user.email, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    };
   }
 }

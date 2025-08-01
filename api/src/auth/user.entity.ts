@@ -1,29 +1,45 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
-import { Deck } from '../deck/deck.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from "typeorm";
+import { Deck } from "../deck/deck.entity";
 
-@Entity()
+@Entity("users")
 export class User {
-  @PrimaryColumn()
-  auth0Id!: string;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ unique: true })
-  email!: string;
+  email: string;
 
   @Column({ nullable: true })
-  name?: string;
+  password: string; // nullable for Auth0 users
+
+  @Column({ nullable: true, unique: true })
+  auth0Id: string; // Auth0 user ID
 
   @Column({ nullable: true })
-  phone?: string;
+  firstName: string;
 
   @Column({ nullable: true })
-  location?: string;
+  lastName: string;
 
-  @Column({ nullable: true })
-  bio?: string;
+  @Column({ default: true })
+  isActive: boolean;
 
-  @Column({ default: false })
-  isVerified!: boolean;
+  @Column({ default: "local" })
+  provider: string; // 'local' or 'auth0'
 
-  @OneToMany(() => Deck, deck => deck.user)
-  decks!: Deck[];
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @OneToMany(() => Deck, (deck) => deck.user, { cascade: true })
+  decks: Deck[];
 }
