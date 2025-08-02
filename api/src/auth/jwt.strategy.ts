@@ -7,22 +7,37 @@ import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
+    const issuerBaseURL = configService.get<string>("AUTH0_ISSUER_BASE_URL");
+    const audience = configService.get<string>("AUTH0_AUDIENCE");
+    
+    console.log("JWT Strategy Configuration:", {
+      issuerBaseURL: issuerBaseURL || "NOT SET",
+      audience: audience || "NOT SET",
+      jwksUri: `${issuerBaseURL}.well-known/jwks.json`
+    });
+
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `${configService.get<string>("AUTH0_ISSUER_BASE_URL")}.well-known/jwks.json`,
+        jwksUri: `${issuerBaseURL}.well-known/jwks.json`,
       }),
 
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      audience: configService.get<string>("AUTH0_AUDIENCE"),
-      issuer: configService.get<string>("AUTH0_ISSUER_BASE_URL"),
+      audience: audience,
+      issuer: issuerBaseURL,
       algorithms: ["RS256"],
     });
   }
 
   validate(payload: any) {
+    console.log("JWT Payload received:", {
+      sub: payload.sub,
+      aud: payload.aud,
+      iss: payload.iss,
+      exp: payload.exp
+    });
     return payload;
   }
 }

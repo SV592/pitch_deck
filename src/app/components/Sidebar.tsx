@@ -5,8 +5,7 @@ import DeckIcon from "../icons/DeckIcon";
 import ProfileIcon from "../icons/ProfileIcon";
 import ExitIcon from "../icons/ExitIcon";
 import HomeIcon from "../icons/HomeIcon";
-import { useState } from 'react';
-import LoadingSpinner from './LoadingSpinner';
+
 
 interface SidebarProps {
   className?: string;
@@ -15,8 +14,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
-  const { user } = useUser();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { user } = useUser(); // Still use useUser for user data if needed
 
   const navigationItems = [
     {
@@ -41,37 +39,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
     },
   ];
 
-  const handleLogoutClick = () => {
-    setIsLoggingOut(true);
-    // Give a small delay to show the loading state before redirecting
-    window.location.href = '/api/auth/logout';
-  };
-
-  if (isLoggingOut) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-[9999]">
-        <div className="flex flex-col items-center text-white">
-          <LoadingSpinner />
-          <p className="mt-4 text-lg">Logging out...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       className={`
-        fixed inset-y-0 left-0
+        fixed inset-y-0
         bg-gray-900 border-r border-gray-700 text-white
-        h-screen flex flex-col transition-all duration-300 ease-in-out
-        ${isOpen ? "w-64" : "w-0 overflow-hidden"}
+        h-screen w-64 flex flex-col transition-all duration-300 ease-in-out transform
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
         ${className || ""}
       `}
       style={{ zIndex: 1000 }}
     >
       {/* Header */}
       <div
-        className={`p-4 border-b border-gray-700 ${
+        className={`p-4 border-b border-gray-700 flex justify-between items-center ${
           isOpen ? "block" : "hidden"
         }`}
       >
@@ -107,7 +88,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
         }`}
       >
         <button
-          onClick={handleLogoutClick}
+          onClick={() => {
+            window.location.href = '/api/auth/logout'; // Use the direct logout URL
+            onClose(); // Optionally close sidebar after logout
+          }}
           className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors w-full text-left group"
         >
           <ExitIcon />

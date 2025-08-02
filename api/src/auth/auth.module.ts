@@ -14,8 +14,8 @@ import { AuthSerializer } from "./auth.serializer";
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    UsersModule, // This imports UsersService
-    PassportModule, // Corrected: Removed .session()
+    UsersModule,
+    PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Deck } from "./deck.entity";
 import { Slide } from "./slide.entity";
+import { OpenAIService } from "../openai/openai.service";
 
 @Injectable()
 export class DeckService {
@@ -10,7 +11,8 @@ export class DeckService {
     @InjectRepository(Deck)
     private deckRepository: Repository<Deck>,
     @InjectRepository(Slide)
-    private slideRepository: Repository<Slide>
+    private slideRepository: Repository<Slide>,
+    private openAIService: OpenAIService,
   ) {}
 
   async createDeck(
@@ -38,6 +40,27 @@ export class DeckService {
       where: { id: savedDeck.id },
       relations: ["slides"],
     });
+  }
+
+  async generateDeck(companyInfo: any, userId: string): Promise<Deck> {
+    const generatedOutline = await this.openAIService.generatePitchDeckOutline(companyInfo);
+
+    const deckTitle = companyInfo.companyName ? `${companyInfo.companyName} Pitch Deck` : "Generated Pitch Deck";
+
+    const newDeck = await this.createDeck(deckTitle, userId);
+
+    if (generatedOutline && generatedOutline.slides && generatedOutline.slides.length > 0) {
+      for (const slideData of generatedOutline.slides) {
+        const slide = this.slideRepository.create({
+          title: slideData.title || "",
+          content: slideData.content || "",
+          deckId: newDeck.id,
+        });
+        await this.slideRepository.save(slide);
+      }
+    }
+
+    return this.getDeck(newDeck.id);
   }
 
   async getDeck(id: string): Promise<Deck> {

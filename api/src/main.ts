@@ -33,7 +33,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  await app.listen(3001);
-  console.log("Backend running on http://localhost:3001");
+  await app.listen(3001, '0.0.0.0');
+  console.log("Backend running on http://0.0.0.0:3001");
 }
 bootstrap();

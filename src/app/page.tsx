@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
+import { getAccessToken } from '@auth0/nextjs-auth0'; // Import getAccessToken
+
 import Hero from "./components/Hero";
 import ProgressSteps from "./components/ProgressSteps";
 import CompanyInfoForm from "./components/CompanyInfoForm";
 import Generation from "./components/Generation";
 import GeneratedOutline from "./components/GeneratedOutline";
-import { useRouter } from 'next/navigation';
 
 const HomePage: React.FC = () => {
   const { user, isLoading: loadingAuth } = useUser();
@@ -65,8 +67,9 @@ const HomePage: React.FC = () => {
 
   const generatePitchDeck = async () => {
     setIsGenerating(true);
+    console.log("Attempting to generate pitch deck with formData:", formData);
     try {
-      const response = await fetch('/api/decks/generate', {
+      const response = await fetch('/api/generate-deck', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,20 +77,23 @@ const HomePage: React.FC = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log("Response status:", response.status);
+      console.log("Response OK:", response.ok);
+
       if (!response.ok) {
         if (response.status === 401) {
           router.push('/login');
           return;
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
       }
 
       const newDeck = await response.json();
-      setGeneratedOutline(newDeck);
-      setCurrentStep(3);
+      console.log("Deck generated successfully:", newDeck);
       router.push(`/decks/${newDeck.id}`);
-    } catch (error) {
-      console.error('Error generating pitch deck:', error);
+    } catch (error: any) {
+      console.error('Error generating pitch deck:', error.message);
     } finally {
       setIsGenerating(false);
     }
