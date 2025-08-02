@@ -91,6 +91,7 @@ const HomePage: React.FC = () => {
 
       const newDeck = await response.json();
       console.log("Deck generated successfully:", newDeck);
+      console.log("Redirecting to deck ID:", newDeck.id);
       router.push(`/decks/${newDeck.id}`);
     } catch (error: any) {
       console.error('Error generating pitch deck:', error.message);
