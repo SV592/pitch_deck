@@ -6,7 +6,7 @@ export interface Slide {
 }
 
 export interface Deck {
-  id: number;
+  id: string;
   title: string;
   slides?: Slide[];
 }

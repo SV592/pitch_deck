@@ -18,7 +18,7 @@ export const getDatabaseConfig = (
     type: "postgres",
     url: configService.get<string>("DATABASE_URL"),
     entities: [User, Deck, Slide], // Make sure all entities are here
-    synchronize: configService.get<string>("NODE_ENV") === "development",
+    synchronize: true,
     ssl: {
       rejectUnauthorized: false,
     },

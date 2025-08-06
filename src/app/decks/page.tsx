@@ -1,68 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DecksHeader from "./components/DecksHeader";
 import DeckCard from "./components/DeckCard";
 import DeckListItem from "./components/DeckListItem";
 import VersionModal from "./components/VersionModal";
 import NoDecks from "./components/NoDecks";
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { Deck } from "./[deckId]/types"; // Assuming Deck type is defined here
 
 const DecksPage: React.FC = () => {
-  const [viewMode, ] = useState<"grid" | "list">("grid");
-  const [selectedDecks, setSelectedDecks] = useState<number[]>([]);
-  const [showVersionModal, setShowVersionModal] = useState<number | null>(null);
+  const { user, isLoading: loadingAuth } = useUser();
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [selectedDecks, setSelectedDecks] = useState<string[]>([]);
+  const [showVersionModal, setShowVersionModal] = useState<string | null>(null);
+  const [decks, setDecks] = useState<Deck[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const decks = [
-    {
-      id: 1,
-      title: "Product Launch Presentation",
-      description:
-        "Comprehensive deck for Q2 product launch including market analysis, features, and go-to-market strategy.",
-      slideCount: 24,
-      currentVersion: "v2.1",
-      versions: [
-        {
-          version: "v2.1",
-          date: "2024-01-20",
-          author: "You",
-          changes: "Updated market analysis slides",
-        },
-        {
-          version: "v2.0",
-          date: "2024-01-15",
-          author: "Sarah Chen",
-          changes: "Major restructure and new branding",
-        },
-        {
-          version: "v1.3",
-          date: "2024-01-10",
-          author: "You",
-          changes: "Added financial projections",
-        },
-        {
-          version: "v1.2",
-          date: "2024-01-08",
-          author: "Alex Johnson",
-          changes: "Updated competitive analysis",
-        },
-        {
-          version: "v1.1",
-          date: "2024-01-05",
-          author: "You",
-          changes: "Initial draft with basic structure",
-        },
-      ],
-      lastModified: "2024-01-20",
-      createdAt: "2024-01-05",
-      collaborators: ["Sarah Chen", "Alex Johnson"],
-      isPublic: false,
-      isFavorite: true,
-      tags: ["Product", "Launch", "Strategy"],
-      thumbnail: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      status: "active",
-    },
-  ];
+  useEffect(() => {
+    const fetchDecks = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
 
-  const handleSelectDeck = (deckId: number) => {
+      try {
+        const response = await fetch('/api/get-decks');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch decks: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setDecks(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDecks();
+  }, [user]);
+
+  const handleSelectDeck = (deckId: string) => {
     setSelectedDecks((prev) =>
       prev.includes(deckId)
         ? prev.filter((id) => id !== deckId)
@@ -70,36 +49,76 @@ const DecksPage: React.FC = () => {
     );
   };
 
+  const handleDeleteDeck = async (deckId: string) => {
+    if (!user) {
+      alert("You must be logged in to delete a deck.");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete this deck?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/decks/${deckId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete deck: ${response.statusText}`);
+      }
+
+      setDecks((prevDecks) => prevDecks.filter((deck) => deck.id !== deckId));
+      alert("Deck deleted successfully!");
+    } catch (err: any) {
+      console.error("Error deleting deck:", err);
+      setError(err.message);
+      alert(`Error deleting deck: ${err.message}`);
+    }
+  };
+
+  if (loadingAuth || isLoading) {
+    return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">Loading decks...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center text-red-500">Error: {error}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <DecksHeader />
 
       <div className="max-w-7xl mx-auto p-6">
-        {viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {decks.map((deck) => (
-              <DeckCard
-                key={deck.id}
-                deck={deck}
-                setShowVersionModal={setShowVersionModal}
-              />
-            ))}
-          </div>
+        {decks.length === 0 ? (
+          <NoDecks />
         ) : (
-          <div className="space-y-4">
-            {decks.map((deck) => (
-              <DeckListItem
-                key={deck.id}
-                deck={deck}
-                selectedDecks={selectedDecks}
-                handleSelectDeck={handleSelectDeck}
-                setShowVersionModal={setShowVersionModal}
-              />
-            ))}
-          </div>
+          viewMode === "grid" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {decks.map((deck) => (
+                <DeckCard
+                  key={deck.id}
+                  deck={deck}
+                  setShowVersionModal={setShowVersionModal}
+                  handleDelete={handleDeleteDeck}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {decks.map((deck) => (
+                <DeckListItem
+                  key={deck.id}
+                  deck={deck}
+                  selectedDecks={selectedDecks}
+                  handleSelectDeck={handleSelectDeck}
+                  setShowVersionModal={setShowVersionModal}
+                  handleDelete={handleDeleteDeck}
+                />
+              ))}
+            </div>
+          )
         )}
-
-        {decks.length === 0 && <NoDecks />}
       </div>
 
       {showVersionModal && (() => {

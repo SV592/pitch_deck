@@ -11,22 +11,15 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-    
-    if (!token) {
-      return false;
-    }
+    console.log("JwtAuthGuard: Incoming Authorization header:", request.headers.authorization);
 
-    // If it's a JWE token, decrypt it first
-    if (token.startsWith('eyJhbGciOiJkaXIiLCJl')) {
+    // Check if it's a JWE token and attempt decryption
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer eyJhbGciOiJkaXIiLCJl')) { // Check for Bearer and JWE prefix
+      const token = authHeader.split(' ')[1];
       try {
-        console.log("Attempting to decrypt JWE token in guard...");
+        console.log("JwtAuthGuard: Attempting to decrypt JWE token...");
         const auth0Secret = this.configService.get<string>("AUTH0_SECRET");
-        console.log("AUTH0_SECRET available:", !!auth0Secret);
-        if (auth0Secret) {
-          console.log("AUTH0_SECRET length:", auth0Secret.length);
-          console.log("AUTH0_SECRET (first 10 chars):", auth0Secret.substring(0, 10) + "...");
-        }
         
         let secret;
         let decrypted = false;
@@ -34,46 +27,41 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
         // Try hex format
         try {
           secret = Buffer.from(auth0Secret, 'hex');
-          console.log("Using hex secret, length:", secret.length);
           const { plaintext } = await jose.compactDecrypt(token, secret);
           const decryptedToken = new TextDecoder().decode(plaintext);
-          console.log("Successfully decrypted JWE token with hex secret");
+          console.log("JwtAuthGuard: Successfully decrypted JWE token with hex secret. Decrypted token (first 20 chars):", decryptedToken.substring(0, 20) + "...");
           request.headers.authorization = `Bearer ${decryptedToken}`;
           decrypted = true;
         } catch (error1: any) {
-          console.log("Hex secret failed:", error1.message);
+          console.log("JwtAuthGuard: Hex secret decryption failed:", error1.message);
         }
         
         // Try UTF-8 format
         if (!decrypted) {
           try {
             secret = new TextEncoder().encode(auth0Secret);
-            console.log("Using UTF-8 secret, length:", secret.length);
             const { plaintext } = await jose.compactDecrypt(token, secret);
             const decryptedToken = new TextDecoder().decode(plaintext);
-            console.log("Successfully decrypted JWE token with UTF-8 secret");
+            console.log("JwtAuthGuard: Successfully decrypted JWE token with UTF-8 secret. Decrypted token (first 20 chars):", decryptedToken.substring(0, 20) + "...");
             request.headers.authorization = `Bearer ${decryptedToken}`;
             decrypted = true;
           } catch (error2: any) {
-            console.log("UTF-8 secret failed:", error2.message);
+            console.log("JwtAuthGuard: UTF-8 secret decryption failed:", error2.message);
           }
         }
         
         if (!decrypted) {
-          console.log("All decryption methods failed");
+          console.log("JwtAuthGuard: All decryption methods failed, returning false.");
           return false;
         }
-      } catch (error) {
-        console.log("Failed to decrypt JWE token:", error.message);
+      } catch (error: any) {
+        console.log("JwtAuthGuard: Failed to decrypt JWE token:", error.message);
         return false;
       }
     }
 
-    return super.canActivate(context) as Promise<boolean>;
-  }
-
-  private extractTokenFromHeader(request: any): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const canActivateResult = await super.canActivate(context) as boolean;
+    console.log("JwtAuthGuard: super.canActivate result:", canActivateResult);
+    return canActivateResult;
   }
 }

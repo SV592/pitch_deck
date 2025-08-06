@@ -40,4 +40,7 @@ export class Deck {
 
   @OneToMany(() => Slide, (slide) => slide.deck, { cascade: true })
   slides: Slide[];
+
+  @Column({ type: 'jsonb', nullable: true })
+  theme: any;
 }

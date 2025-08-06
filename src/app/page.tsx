@@ -9,7 +9,6 @@ import Hero from "./components/Hero";
 import ProgressSteps from "./components/ProgressSteps";
 import CompanyInfoForm from "./components/CompanyInfoForm";
 import Generation from "./components/Generation";
-import GeneratedOutline from "./components/GeneratedOutline";
 
 const HomePage: React.FC = () => {
   const { user, isLoading: loadingAuth } = useUser();
@@ -17,7 +16,6 @@ const HomePage: React.FC = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedOutline, setGeneratedOutline] = useState<any>(null);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -103,7 +101,6 @@ const HomePage: React.FC = () => {
   const steps = [
     { number: 1, title: "Company Info", description: "Tell us about your company" },
     { number: 2, title: "Generate", description: "AI creates your outline" },
-    { number: 3, title: "Review", description: "Review and customize" },
   ];
 
   if (loadingAuth) {
@@ -138,9 +135,7 @@ const HomePage: React.FC = () => {
           />
         )}
 
-        {currentStep === 3 && generatedOutline && (
-          <GeneratedOutline generatedOutline={generatedOutline} />
-        )}
+        
       </div>
     </div>
   );

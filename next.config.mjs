@@ -16,11 +16,6 @@ const nextConfig = {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
-      // 2. All other /api routes: Proxy these to the NestJS backend
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:3001/:path*',
-      },
     ];
   },
 };

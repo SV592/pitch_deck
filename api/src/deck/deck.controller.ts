@@ -36,11 +36,15 @@ export class DeckController {
 
   @Post("generate")
   async generate(@Body() companyInfo: any, @Request() req) {
+    console.log("DeckController: Received generate request.");
+    console.log("DeckController: Company Info:", companyInfo);
     console.log("Generating deck with user:", req.user);
     const user = await this.usersService.findOrCreateByAuth0Id(req.user.sub, {
       email: req.user.email || `user-${req.user.sub}@auth0.com`, // Fallback email if not available
     });
-    return this.deckService.generateDeck(companyInfo, user.id); // Use the UUID from the User entity
+    const generatedDeck = await this.deckService.generateDeck(companyInfo, user.id); // Use the UUID from the User entity
+    console.log("DeckController: Deck generation complete.");
+    return generatedDeck;
   }
 
   @Get()
@@ -62,5 +66,14 @@ export class DeckController {
       email: req.user.email || `user-${req.user.sub}@auth0.com`, // Fallback email if not available
     });
     return this.deckService.updateDeck(id, user.id, updateDeckDto); // Use the UUID from the User entity
+  }
+
+  @Delete(":id")
+  async remove(@Param("id") id: string, @Request() req) {
+    const user = await this.usersService.findOrCreateByAuth0Id(req.user.sub, {
+      email: req.user.email || `user-${req.user.sub}@auth0.com`, // Fallback email if not available
+    });
+    await this.deckService.deleteDeck(id, user.id);
+    return { message: "Deck deleted successfully" };
   }
 }

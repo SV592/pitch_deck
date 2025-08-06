@@ -4,7 +4,6 @@ import { DeckService } from "./deck.service";
 import { DeckController } from "./deck.controller";
 import { Deck } from "./deck.entity";
 import { Slide } from "./slide.entity";
-import { OpenAIService } from "../openai/openai.service"; // Import OpenAIService
 import { OpenAIModule } from "../openai/openai.module"; // Import OpenAIModule
 import { UsersModule } from "../auth/users.module"; // Import UsersModule
 

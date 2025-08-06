@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Deck } from "./deck.entity";
@@ -7,6 +7,8 @@ import { OpenAIService } from "../openai/openai.service";
 
 @Injectable()
 export class DeckService {
+  private readonly logger = new Logger(DeckService.name);
+  
   constructor(
     @InjectRepository(Deck)
     private deckRepository: Repository<Deck>,
@@ -18,11 +20,13 @@ export class DeckService {
   async createDeck(
     title: string,
     userId: string,
-    slidesData: any[] = []
+    slidesData: any[] = [],
+    theme: any = null,
   ): Promise<Deck> {
     const deck = this.deckRepository.create({
       title,
       userId,
+      theme,
     });
     const savedDeck = await this.deckRepository.save(deck);
 
@@ -43,13 +47,17 @@ export class DeckService {
   }
 
   async generateDeck(companyInfo: any, userId: string): Promise<Deck> {
+    this.logger.log("DeckService: Generating deck outline with OpenAI...");
     const generatedOutline = await this.openAIService.generatePitchDeckOutline(companyInfo);
+    this.logger.log("DeckService: OpenAI outline generated.");
 
     const deckTitle = companyInfo.companyName ? `${companyInfo.companyName} Pitch Deck` : "Generated Pitch Deck";
 
-    const newDeck = await this.createDeck(deckTitle, userId);
+    const newDeck = await this.createDeck(deckTitle, userId, [], generatedOutline.theme);
+    this.logger.log(`DeckService: Created new deck with ID: ${newDeck.id}`);
 
     if (generatedOutline && generatedOutline.slides && generatedOutline.slides.length > 0) {
+      this.logger.log(`DeckService: Adding ${generatedOutline.slides.length} slides to deck.`);
       for (const slideData of generatedOutline.slides) {
         const slide = this.slideRepository.create({
           title: slideData.title || "",
@@ -58,6 +66,7 @@ export class DeckService {
         });
         await this.slideRepository.save(slide);
       }
+      this.logger.log("DeckService: Slides added.");
     }
 
     return this.getDeck(newDeck.id);
@@ -122,5 +131,12 @@ export class DeckService {
 
     await this.deckRepository.save(deck);
     return this.getDeck(id);
+  }
+
+  async deleteDeck(id: string, userId: string): Promise<void> {
+    const result = await this.deckRepository.delete({ id, userId });
+    if (result.affected === 0) {
+      throw new Error("Deck not found or user not authorized.");
+    }
   }
 }

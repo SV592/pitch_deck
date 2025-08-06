@@ -1,27 +1,28 @@
 import React from "react";
 import Link from "next/link";
 import { Deck } from "../[deckId]/types";
+import CloseIcon from "../../icons/CloseIcon";
 
 const DeckCard = ({
   deck,
   setShowVersionModal,
+  handleDelete,
 }: {
   deck: Deck;
-  setShowVersionModal: (id: number | null) => void;
+  setShowVersionModal: (id: string | null) => void;
+  handleDelete: (id: string) => void;
 }) => (
   <Link href={`/decks/${deck.id}`}>
     <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-orange-500 transition-all duration-300 group">
       {/* Thumbnail */}
       <div
         className="h-48 relative cursor-pointer"
-        style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="flex space-x-3">
-            <button className="p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors"></button>
-            <button className="p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors"></button>
-            <button className="p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors"></button>
-          </div>
+          <div className="flex space-x-3"></div>
         </div>
 
         {/* Slide Count */}
@@ -38,9 +39,16 @@ const DeckCard = ({
           <h3 className="text-lg font-semibold text-white group-hover:text-orange-500 transition-colors line-clamp-2">
             {deck.title}
           </h3>
-          <div className="relative">
-            <button className="p-1 hover:bg-gray-700 rounded transition-colors"></button>
-          </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleDelete(deck.id);
+            }}
+            className="p-1 hover:bg-gray-700 rounded transition-colors"
+          >
+            <CloseIcon className="w-5 h-5 text-gray-400 group-hover:text-white" />
+          </button>
         </div>
 
         <p className="text-gray-400 text-sm mb-4 line-clamp-2">
@@ -50,7 +58,7 @@ const DeckCard = ({
         {/* Version Info */}
         <div className="flex items-center justify-between mb-4">
           <button
-            onClick={() => setShowVersionModal(deck.id)}
+            onClick={() => setShowVersionModal(deck.id as string)}
             className="flex items-center space-x-1 text-sm text-orange-500 hover:text-orange-400 transition-colors"
           >
             <span>View Versions</span>

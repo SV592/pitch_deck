@@ -1,17 +1,20 @@
 import React from "react";
 import Link from "next/link";
 import { Deck } from "../[deckId]/types";
+import CloseIcon from "../../icons/CloseIcon";
 
 const DeckListItem = ({
   deck,
   selectedDecks,
   handleSelectDeck,
   setShowVersionModal,
+  handleDelete,
 }: {
   deck: Deck;
-  selectedDecks: number[];
-  handleSelectDeck: (id: number) => void;
-  setShowVersionModal: (id: number | null) => void;
+  selectedDecks: string[];
+  handleSelectDeck: (id: string) => void;
+  setShowVersionModal: (id: string | null) => void;
+  handleDelete: (id: string) => void;
 }) => (
   <Link href={`/decks/${deck.id}`}>
     <div className="bg-gray-800 rounded-xl border border-gray-700 p-5 hover:border-orange-500 transition-all duration-300">
@@ -43,6 +46,16 @@ const DeckListItem = ({
               <div className="flex items-center space-x-1">
                 <span>Last Modified: N/A</span>
               </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDelete(deck.id);
+                }}
+                className="p-1 hover:bg-gray-700 rounded transition-colors"
+              >
+                <CloseIcon className="w-5 h-5 text-gray-400 hover:text-white" />
+              </button>
             </div>
           </div>
 
@@ -53,7 +66,7 @@ const DeckListItem = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => setShowVersionModal(deck.id)}
+                onClick={() => setShowVersionModal(deck.id as string)}
                 className="flex items-center space-x-1 text-sm text-orange-500 hover:text-orange-400 transition-colors"
               >
                 <span>View Versions</span>
@@ -62,12 +75,7 @@ const DeckListItem = ({
               {/* No collaborators available from backend yet */}
             </div>
 
-            <div className="flex items-center space-x-2">
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"></button>
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"></button>
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"></button>
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"></button>
-            </div>
+            <div className="flex items-center space-x-2"></div>
           </div>
         </div>
       </div>

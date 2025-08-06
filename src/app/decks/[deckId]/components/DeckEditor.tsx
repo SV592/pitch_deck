@@ -190,6 +190,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
                 isSelected={index === selectedSlide}
                 onClick={() => handleSlideSelect(index)}
                 moveSlide={moveSlide}
+                theme={deck.theme}
               />
             ))}
           </div>
@@ -218,6 +219,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
                 slide={slides[selectedSlide]}
                 editor={editor}
                 onTitleChange={handleTitleChange}
+                theme={deck.theme}
               />
             )}
           </div>
