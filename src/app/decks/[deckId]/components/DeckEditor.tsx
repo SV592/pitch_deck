@@ -7,26 +7,58 @@ import { Deck, Slide as SlideType } from "../types";
 import Slide from "./Slide";
 import SlideThumbnail from "./SlideThumbnail";
 import Toolbar from "./Toolbar";
-import { useEditor } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Bold from '@tiptap/extension-bold';
+import Italic from '@tiptap/extension-italic';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+import ListItem from '@tiptap/extension-list-item';
 
-interface DeckEditorProps {
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import Color from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
+import FontFamily from '@tiptap/extension-font-family';
+
+interface DeckEditorProps extends EditorProviderProps {
   deck: Deck;
   selectedSlide: number;
   onSlideChange: (slideIndex: number) => void;
+  onSave: (updatedDeck: Deck) => void;
 }
 
 const DeckEditor: React.FC<DeckEditorProps> = ({
   deck,
   selectedSlide,
   onSlideChange,
+  onSave,
 }) => {
   console.log("Deck data in DeckEditor:", deck);
   const [slides, setSlides] = useState<SlideType[]>(deck.slides || []);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [showSpeakerNotes, setShowSpeakerNotes] = useState(true); // New state for speaker notes visibility
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Bold,
+      Italic,
+      Underline,
+      BulletList.configure({
+        HTMLAttributes: {
+          class: 'list-disc',
+        },
+      }),
+      OrderedList,
+      ListItem,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      TextStyle,
+      Color,
+      FontFamily,
+    ],
     content: slides[selectedSlide]?.content || "",
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
@@ -38,22 +70,24 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
     },
   });
 
-  // Load saved slides on mount
-  useEffect(() => {
-    const savedSlides = localStorage.getItem("deck_slides");
-    if (savedSlides) {
-      try {
-        setSlides(JSON.parse(savedSlides));
-      } catch (error) {
-        console.error("Error loading saved slides:", error);
+  const speakerNotesEditor = useEditor({
+    extensions: [
+      StarterKit,
+    ],
+    content: slides[selectedSlide]?.speaker_notes || "",
+    immediatelyRender: false,
+    onUpdate: ({ editor }) => {
+      const newSlides = [...slides];
+      if (newSlides[selectedSlide]) {
+        newSlides[selectedSlide].speaker_notes = editor.getHTML();
+        setSlides(newSlides);
       }
-    }
-  }, []);
+    },
+  });
 
-  // Save slides to localStorage
   useEffect(() => {
-    localStorage.setItem("deck_slides", JSON.stringify(slides));
-  }, [slides]);
+    setSlides(deck.slides || []);
+  }, [deck]);
 
   // Update editor content when slide changes
   useEffect(() => {
@@ -63,7 +97,13 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
         editor.commands.setContent(slideContent);
       }
     }
-  }, [selectedSlide, editor]); // Removed slides dependency to prevent loop
+    if (speakerNotesEditor && !speakerNotesEditor.isDestroyed && slides[selectedSlide]) {
+      const speakerNotesContent = slides[selectedSlide].speaker_notes || "";
+      if (speakerNotesEditor.getHTML() !== speakerNotesContent) {
+        speakerNotesEditor.commands.setContent(speakerNotesContent);
+      }
+    }
+  }, [selectedSlide, editor, speakerNotesEditor]); // Removed slides dependency to prevent loop
 
   const handleSlideSelect = useCallback(
     (slideIndex: number) => {
@@ -127,6 +167,11 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
     });
   }, []);
 
+  const handleSave = () => {
+    const updatedDeck = { ...deck, slides };
+    onSave(updatedDeck);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex flex-col lg:flex-row h-[calc(100vh-12rem)]">
@@ -170,7 +215,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
             max-h-60 lg:max-h-none
           `}
           style={{
-            backgroundColor: "#111827",
+            backgroundColor: "#1F2937",
             borderColor: "#3A4553",
           }}
         >
@@ -191,7 +236,6 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
                 isSelected={index === selectedSlide}
                 onClick={() => handleSlideSelect(index)}
                 moveSlide={moveSlide}
-                theme={deck.theme}
               />
             ))}
           </div>
@@ -220,13 +264,30 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
                 slide={slides[selectedSlide]}
                 editor={editor}
                 onTitleChange={handleTitleChange}
-                theme={deck.theme}
               />
             )}
           </div>
 
           {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-end">
+          <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
+            <button
+              onClick={addSlide}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
+            >
+              + New Slide
+            </button>
+            <button
+              onClick={handleSave}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
+            >
+              Save
+            </button>
+            <button
+              onClick={deleteSlide}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
+            >
+              Delete
+            </button>
             <button
               onClick={regenerateContent}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg lg:rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto flex items-center justify-center space-x-2"
@@ -247,7 +308,44 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
               <span>Regenerate Content</span>
             </button>
           </div>
+
+          {/* Speaker Notes Toggle */}
+          <button
+            onClick={() => setShowSpeakerNotes(!showSpeakerNotes)}
+            className="bg-gray-700 hover:bg-gray-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg lg:rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto flex items-center justify-center space-x-2 mt-4 sm:mt-0"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2m7 0V5a2 2 0 012-2h2a2 2 0 012 2v6m-4 0h.01"
+              />
+            </svg>
+            <span>{showSpeakerNotes ? "Hide" : "Show"} Speaker Notes</span>
+          </button>
         </div>
+
+        {/* Speaker Notes Section */}
+        {showSpeakerNotes && slides.length > 0 && slides[selectedSlide] && (
+          <div
+            className="w-full lg:w-1/4 xl:w-1/5 p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 border-t lg:border-t-0 lg:border-l"
+            style={{
+              backgroundColor: "#1F2937",
+              borderColor: "#3A4553",
+            }}
+          >
+            <h3 className="text-base sm:text-lg font-semibold text-white">Speaker Notes:</h3>
+            <div className="text-gray-300 text-sm overflow-y-auto h-full">
+              <EditorContent editor={speakerNotesEditor} className="prose-invert max-w-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-full text-white text-lg" />
+            </div>
+          </div>
+        )}
       </div>
     </DndProvider>
   );

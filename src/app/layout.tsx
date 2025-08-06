@@ -20,7 +20,7 @@ export default function RootLayout({
         className={`${geistSans} ${geistMono} antialiased`}
         suppressHydrationWarning
       >
-        <UserProvider>
+        <UserProvider scope="openid profile email offline_access">
           <AppContent>{children}</AppContent>
         </UserProvider>
       </body>

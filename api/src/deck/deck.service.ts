@@ -50,6 +50,7 @@ export class DeckService {
     this.logger.log("DeckService: Generating deck outline with OpenAI...");
     const generatedOutline = await this.openAIService.generatePitchDeckOutline(companyInfo);
     this.logger.log("DeckService: OpenAI outline generated.");
+    this.logger.log("OpenAI Generated Theme:", generatedOutline.theme);
 
     const deckTitle = companyInfo.companyName ? `${companyInfo.companyName} Pitch Deck` : "Generated Pitch Deck";
 
@@ -60,8 +61,7 @@ export class DeckService {
       this.logger.log(`DeckService: Adding ${generatedOutline.slides.length} slides to deck.`);
       for (const slideData of generatedOutline.slides) {
         const slide = this.slideRepository.create({
-          title: slideData.slide_title || "",
-          headline: slideData.headline || "",
+          title: slideData.headline || "",
           hook: slideData.hook || "",
           key_points: slideData.key_points || [],
           speaker_notes: slideData.speaker_notes || "",

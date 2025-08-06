@@ -54,6 +54,28 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
     setSelectedSlide((prev) => Math.min(totalSlides - 1, prev + 1));
   };
 
+  const handleSave = async (updatedDeck: Deck) => {
+    try {
+      const response = await fetch(`/api/decks/${deck.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedDeck),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save deck');
+      }
+
+      // Optionally, you can show a success message to the user
+      console.log('Deck saved successfully');
+    } catch (error) {
+      console.error('Error saving deck:', error);
+      // Optionally, you can show an error message to the user
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#111827]">
       {/* Header */}
@@ -159,6 +181,7 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
         deck={deck}
         selectedSlide={selectedSlide}
         onSlideChange={setSelectedSlide}
+        onSave={handleSave}
       />
     </div>
   );

@@ -8,6 +8,8 @@ import { getDatabaseConfig } from "./config/database.config";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./auth/users.module";
 import { DeckModule } from "./deck/deck.module";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
 @Module({
   imports: [
@@ -31,5 +33,9 @@ import { DeckModule } from "./deck/deck.module";
     UsersModule,
     DeckModule, // Add this
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
+
+

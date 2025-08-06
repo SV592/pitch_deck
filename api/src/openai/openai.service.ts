@@ -14,14 +14,14 @@ export class OpenAIService {
   constructor() {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
-      timeout: 60 * 1000, // 60 seconds timeout
+      timeout: 120 * 1000, // 120 seconds timeout (2 minutes)
     });
   }
 
   async generatePitchDeckOutline(companyInfo: any): Promise<any> {
     const prompt = `
       {
-        "role": "You are an expert pitch deck consultant with a deep understanding of venture capital and strategic storytelling. Your task is to generate a comprehensive and visually compelling pitch deck based on the provided company information and visual guidelines. You will act as a creative partner, selecting the typography, color palette, and other visual elements that best represent the company's brand, industry, and stage. Your output must be a single, valid JSON object.",
+        "role": "You are an expert pitch deck consultant with a deep understanding of venture capital and strategic storytelling. Your task is to generate a comprehensive pitch deck based on the provided company information. Your output must be a single, valid JSON object.",
         "companyInfo": {
           "companyName": "${companyInfo.companyName}",
           "industry": "${companyInfo.industry}",
@@ -31,49 +31,25 @@ export class OpenAIService {
           "solution": "${companyInfo.solution}",
           "businessModel": "${companyInfo.businessModel}",
           "targetMarket": "${companyInfo.targetMarket}",
-          "teamInfo": "${companyInfo.teamInfo || ''}",
-          "tractionInfo": "${companyInfo.tractionInfo || ''}",
-          "useOfFunds": "${companyInfo.useOfFunds || ''}"
-        },
-        "visualInstructions": {
-          "tone": "Modern, professional, and minimalist. The tone should be confident and trustworthy.",
-          "layout": "Each slide needs a strong visual focal point with generous white space. Content should be organized into concise, impactful bullet points.",
-          "imagery": "Suggest high-quality, professional stock photos, clean charts, graphs, and modern icons. The imagery should be relevant to the industry and convey a sense of innovation and progress."
         },
         "outputFormat": {
           "jsonStructure": {
-            "theme": {
-              "colorPalette": {
-                "primary": "string (hex code)",
-                "secondary": "string (hex code)",
-                "accent": "string (hex code)",
-                "background": "string (hex code)",
-                "text": "string (hex code)"
-              },
-              "typography": {
-                "fontFamily": "string (e.g., 'Montserrat')",
-                "titleSize": "string (e.g., '48pt')",
-                "bodySize": "string (e.g., '24pt')"
-              },
-              "justification": "A brief explanation (string) of why the chosen color palette and typography were selected for the specific industry and tone."
-            },
             "slides": [
               {
                 "slide_number": "number (1-12)",
-                "slide_title": "string (e.g., 'The Problem')",
-                "headline": "string (An impactful one-line summary of the slide's core message)",
+                "headline": "string (An impactful one-line summary of the slide's core message, which will also serve as the main title for the slide. This should be bold.)",
                 "hook": "string (An engaging, attention-grabbing opening sentence or question for this slide, designed to immediately capture the audience's interest.)",
                 "key_points": [
-                  "string (First key bullet point)",
+                  "string (First key bullet point. This should be a list of strings, each representing a bullet point.)",
                   "string (Second key bullet point)",
                   "string (Third key bullet point)"
                 ],
                 "speaker_notes": "string (The detailed, persuasive script for the presenter to deliver this slide. This should be a full paragraph explaining the slide's key points, providing supporting data, and anticipating investor questions. It should be a comprehensive, yet conversational script.)",
-                "visual_suggestion": "string (A detailed prompt for an AI image generation model, consistent with the imagery and theme guidelines. For data slides, specify the type of chart and the data it should visualize.)"
+                "visual_suggestion": "string (A detailed prompt for an AI image generation model. For data slides, specify the type of chart and the data it should visualize.)"
               }
             ]
           },
-          "guidelines": "The output must be a single, valid JSON object. Do not include any additional text, explanations, or formatting outside of the specified JSON structure. The 'slides' array must contain 10-12 slide objects, each with the specified components."
+          "guidelines": "The output must be a single, valid JSON object. Do not include any additional text, explanations, or formatting outside of the specified JSON structure. The 'slides' array must contain 10-12 slide objects, each with the specified components. The 'key_points' field must be an array of strings."
         }
       }
     `;

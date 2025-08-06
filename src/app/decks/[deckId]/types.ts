@@ -1,14 +1,13 @@
 export interface Slide {
   id: string;
   slide_number?: number;
-  slide_title: string;
   headline?: string;
+  
   hook?: string;
   key_points?: string[];
   speaker_notes?: string;
   visual_suggestion?: string;
-  // Keeping original fields for compatibility if needed, or remove if fully replaced
-  title: string; // Maps to slide_title
+  title: string; // This will now be populated by 'headline' from OpenAI
   content: string; // Maps to speaker_notes
   order: number;
 }

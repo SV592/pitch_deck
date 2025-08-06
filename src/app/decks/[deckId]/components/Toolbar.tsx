@@ -71,26 +71,69 @@ const Toolbar: React.FC<ToolbarProps> = ({
         >
           <s>S</s>
         </button>
-      </div>
-
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
         <button
-          onClick={onAddSlide}
-          className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl text-sm"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
+            editor.isActive("underline")
+              ? "bg-orange-500 text-white shadow-lg"
+              : "text-gray-300 hover:bg-gray-600"
+          }`}
+          style={{
+            backgroundColor: editor.isActive("underline") ? "#f97316" : "#1F2937",
+          }}
         >
-          + New Slide
+          <u>U</u>
         </button>
-        <button
-          onClick={onSaveSlide}
-          className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
+        <select
+          onChange={(e) => editor.chain().focus().setTextAlign(e.target.value).run()}
+          value={editor.active_? editor.active_.textAlign : 'left'}
+          className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
         >
-          Save
-        </button>
-        <button
-          onClick={onDeleteSlide}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
+          <option value="left">Left</option>
+          <option value="center">Center</option>
+          <option value="right">Right</option>
+        </select>
+        <input
+          type="color"
+          onInput={(event) => editor.chain().focus().setColor((event.target as HTMLInputElement).value).run()}
+          value={editor.getAttributes('textStyle').color}
+          className="w-8 h-8 p-1 bg-[#1F2937] rounded-lg"
+        />
+        <select
+          onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
+          value={editor.getAttributes('textStyle').fontFamily}
+          className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
         >
-          Delete
+          <option value="">Default</option>
+          <option value="Arial">Arial</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Verdana">Verdana</option>
+        </select>
+        <select
+          onChange={(e) => editor.chain().focus().setHeading({ level: parseInt(e.target.value) }).run()}
+          value={editor.getAttributes('heading').level}
+          className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
+        >
+          <option value="1">H1</option>
+          <option value="2">H2</option>
+          <option value="3">H3</option>
+          <option value="4">H4</option>
+          <option value="5">H5</option>
+          <option value="6">H6</option>
+        </select>
+        <button
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
+            editor.isActive("bulletList")
+              ? "bg-orange-500 text-white shadow-lg"
+              : "text-gray-300 hover:bg-gray-600"
+          }`}
+          style={{
+            backgroundColor: editor.isActive("bulletList") ? "#f97316" : "#1F2937",
+          }}
+        >
+          Bullets
         </button>
       </div>
     </div>
