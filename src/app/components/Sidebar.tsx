@@ -52,16 +52,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
     >
       {/* Header */}
       <div
-        className={`p-4 border-b border-gray-700 flex justify-between items-center ${
-          isOpen ? "block" : "hidden"
-        }`}
+        className="p-4 border-b border-gray-700 flex justify-between items-center"
       >
         <h1 className="text-3xl font-semibold pl-3">Options</h1>
       </div>
 
       {/* Navigation */}
       <nav
-        className={`flex-1 p-4 ${isOpen ? "block" : "hidden"}`}
+        className="flex-1 p-4"
         aria-label="Main navigation"
       >
         <ul className="space-y-2">
