@@ -17,6 +17,18 @@ export class Slide {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  headline: string;
+
+  @Column({ nullable: true })
+  hook: string;
+
+  @Column("jsonb", { nullable: true })
+  key_points: string[];
+
+  @Column("text", { nullable: true })
+  speaker_notes: string;
+
   @Column("text")
   content: string;
 

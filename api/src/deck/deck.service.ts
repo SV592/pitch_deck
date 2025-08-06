@@ -60,8 +60,12 @@ export class DeckService {
       this.logger.log(`DeckService: Adding ${generatedOutline.slides.length} slides to deck.`);
       for (const slideData of generatedOutline.slides) {
         const slide = this.slideRepository.create({
-          title: slideData.title || "",
-          content: slideData.content || "",
+          title: slideData.slide_title || "",
+          headline: slideData.headline || "",
+          hook: slideData.hook || "",
+          key_points: slideData.key_points || [],
+          speaker_notes: slideData.speaker_notes || "",
+          content: slideData.speaker_notes || "", // Using speaker_notes as the main content
           deckId: newDeck.id,
         });
         await this.slideRepository.save(slide);

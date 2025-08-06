@@ -21,6 +21,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
   selectedSlide,
   onSlideChange,
 }) => {
+  console.log("Deck data in DeckEditor:", deck);
   const [slides, setSlides] = useState<SlideType[]>(deck.slides || []);
   const [showSidebar, setShowSidebar] = useState(false);
 

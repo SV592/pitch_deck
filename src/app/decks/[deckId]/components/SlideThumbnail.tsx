@@ -75,7 +75,7 @@ const SlideThumbnail: React.FC<SlideThumbnailProps> = ({
         style={slideStyle}
       >
         <h4 className="font-semibold truncate text-center mb-1 text-xs sm:text-sm">
-          {slide.title}
+          {slide.slide_title}
         </h4>
         <p className="text-gray-400 truncate text-center text-xs leading-tight hidden sm:block">
           {slide.content.replace(/<[^>]*>?/gm, "").substring(0, 30)}...
