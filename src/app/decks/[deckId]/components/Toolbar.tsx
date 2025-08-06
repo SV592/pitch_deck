@@ -79,49 +79,118 @@ const Toolbar: React.FC<ToolbarProps> = ({
               : "text-gray-300 hover:bg-gray-600"
           }`}
           style={{
-            backgroundColor: editor.isActive("underline") ? "#f97316" : "#1F2937",
+            backgroundColor: editor.isActive("underline")
+              ? "#f97316"
+              : "#1F2937",
           }}
         >
           <u>U</u>
         </button>
-        <select
-          onChange={(e) => editor.chain().focus().setTextAlign(e.target.value).run()}
-          value={editor.active_? editor.active_.textAlign : 'left'}
-          className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
-        >
-          <option value="left">Left</option>
-          <option value="center">Center</option>
-          <option value="right">Right</option>
-        </select>
+        <div className="relative">
+          <select
+            onChange={(e) =>
+              editor.chain().focus().setTextAlign(e.target.value).run()
+            }
+            value={
+              editor.isActive("textAlign", { align: "left" })
+                ? "left"
+                : editor.isActive("textAlign", { align: "center" })
+                  ? "center"
+                  : editor.isActive("textAlign", { align: "right" })
+                    ? "right"
+                    : "left"
+            }
+            className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none pr-12 border border-gray-600"
+          >
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+            <svg
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
         <input
           type="color"
-          onInput={(event) => editor.chain().focus().setColor((event.target as HTMLInputElement).value).run()}
-          value={editor.getAttributes('textStyle').color}
+          onInput={(event) =>
+            editor
+              .chain()
+              .focus()
+              .setColor((event.target as HTMLInputElement).value)
+              .run()
+          }
+          value={
+            editor.isActive("textStyle")
+              ? editor.getAttributes("textStyle").color
+              : "#000000"
+          }
           className="w-8 h-8 p-1 bg-[#1F2937] rounded-lg"
         />
-        <select
-          onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
-          value={editor.getAttributes('textStyle').fontFamily}
-          className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
-        >
-          <option value="">Default</option>
-          <option value="Arial">Arial</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Verdana">Verdana</option>
-        </select>
-        <select
-          onChange={(e) => editor.chain().focus().setHeading({ level: parseInt(e.target.value) }).run()}
-          value={editor.getAttributes('heading').level}
-          className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm"
-        >
-          <option value="1">H1</option>
-          <option value="2">H2</option>
-          <option value="3">H3</option>
-          <option value="4">H4</option>
-          <option value="5">H5</option>
-          <option value="6">H6</option>
-        </select>
+        <div className="relative">
+          <select
+            onChange={(e) =>
+              editor.chain().focus().setFontFamily(e.target.value).run()
+            }
+            value={
+              editor.isActive("textStyle")
+                ? editor.getAttributes("textStyle").fontFamily
+                : ""
+            }
+            className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none pr-12 border border-gray-600"
+          >
+            <option value="">Default</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+            <svg
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
+        <div className="relative">
+          <select
+            onChange={(e) =>
+              editor.chain().focus().setFontSize(e.target.value).run()
+            }
+            value={
+              editor.isActive("textStyle")
+                ? editor.getAttributes("textStyle").fontSize
+                : ""
+            }
+            className="bg-[#1F2937] text-white pl-3 sm:pr-8 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none border border-gray-600"
+          >
+            <option value="12px">12px</option>
+            <option value="14px">14px</option>
+            <option value="16px">16px</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="32px">32px</option>
+            <option value="48px">48px</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+            <svg
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
@@ -130,7 +199,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
               : "text-gray-300 hover:bg-gray-600"
           }`}
           style={{
-            backgroundColor: editor.isActive("bulletList") ? "#f97316" : "#1F2937",
+            backgroundColor: editor.isActive("bulletList")
+              ? "#f97316"
+              : "#1F2937",
           }}
         >
           Bullets

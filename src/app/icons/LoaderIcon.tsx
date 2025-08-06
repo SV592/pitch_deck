@@ -15,9 +15,7 @@ const LoaderIcon: React.FC<LoaderIconProps> = ({ className }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    {/* Placeholder for lni-spinner SVG path */}
-    <path d="M12 2v4m0 14v-4m9-9h-4M3 12H7m14 0h-4M3 12h4m14 0h-4m-9 9v-4m0-14v4" />
-  </svg>
+    </svg>
 );
 
 export default LoaderIcon;

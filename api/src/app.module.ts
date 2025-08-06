@@ -31,7 +31,7 @@ import { AppService } from "./app.service";
     }),
     AuthModule,
     UsersModule,
-    DeckModule, // Add this
+    DeckModule,
   ],
   controllers: [AppController],
   providers: [AppService],

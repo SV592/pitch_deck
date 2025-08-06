@@ -5,10 +5,11 @@ import { DeckController } from "./deck.controller";
 import { Deck } from "./deck.entity";
 import { Slide } from "./slide.entity";
 import { OpenAIModule } from "../openai/openai.module"; // Import OpenAIModule
-import { UsersModule } from "../auth/users.module"; // Import UsersModule
+import { OpenAIModule } from "../openai/openai.module";
+import { UsersModule } from "../auth/users.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Deck, Slide]), OpenAIModule, UsersModule], // Add UsersModule to imports
+  imports: [TypeOrmModule.forFeature([Deck, Slide]), OpenAIModule, UsersModule],
   controllers: [DeckController],
   providers: [DeckService],
   exports: [DeckService],

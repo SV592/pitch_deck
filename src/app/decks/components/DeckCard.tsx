@@ -52,7 +52,6 @@ const DeckCard = ({
         </div>
 
         <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-          {/* No description available from backend yet */}
         </p>
 
         {/* Version Info */}

@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export const GET = withApiAuthRequired(async function profile(req: NextRequest) {
   try {
     const { accessToken } = await getAccessToken(req);
-    console.log("Next.js API Route: Sending Access Token:", accessToken);
 
     const response = await fetch(`${process.env.BACKEND_URL}/auth/profile`, {
       headers: {
@@ -19,7 +18,6 @@ export const GET = withApiAuthRequired(async function profile(req: NextRequest) 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error('Error fetching profile from backend:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });

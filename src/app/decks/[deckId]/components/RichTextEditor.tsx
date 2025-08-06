@@ -3,6 +3,11 @@
 import React from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { Color } from "@tiptap/extension-color";
+import TextStyle from "@tiptap/extension-text-style";
+import TextAlign from "@tiptap/extension-text-align";
+import FontFamily from "@tiptap/extension-font-family";
+import FontSize from "@tiptap/extension-font-size";
 
 interface RichTextEditorProps {
   value: string;
@@ -11,7 +16,16 @@ interface RichTextEditorProps {
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      TextStyle.configure(),
+      StarterKit,
+      Color,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      FontFamily,
+      FontSize,
+    ],
     content: value,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());

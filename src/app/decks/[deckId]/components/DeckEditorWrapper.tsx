@@ -69,9 +69,7 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
       }
 
       // Optionally, you can show a success message to the user
-      console.log('Deck saved successfully');
     } catch (error) {
-      console.error('Error saving deck:', error);
       // Optionally, you can show an error message to the user
     }
   };

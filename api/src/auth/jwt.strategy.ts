@@ -10,11 +10,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const issuerBaseURL = configService.get<string>("AUTH0_ISSUER_BASE_URL");
     const audience = configService.get<string>("AUTH0_AUDIENCE");
     
-    console.log("JWT Strategy Configuration:", {
-      issuerBaseURL: issuerBaseURL || "NOT SET",
-      audience: audience || "NOT SET",
-      jwksUri: `${issuerBaseURL}.well-known/jwks.json`
-    });
+    
 
     super({
       secretOrKeyProvider: passportJwtSecret({
@@ -32,12 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: any) {
-    console.log("JWT Payload received:", {
-      sub: payload.sub,
-      aud: payload.aud,
-      iss: payload.iss,
-      exp: payload.exp
-    });
+    
     return payload;
   }
 }

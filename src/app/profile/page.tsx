@@ -44,16 +44,16 @@ const Profile: React.FC = () => {
         email: user.email || '',
         picture: user.picture || '',
         // Add other basic fields if available directly from user object
-        phone: '', // Will be fetched from backend
-        location: '', // Will be fetched from backend
+        phone: '',
+        location: '',
         joinDate: user.updated_at
           ? new Date(user.updated_at).toLocaleDateString('en-US', {
               month: 'long',
               year: 'numeric',
             })
           : '',
-        bio: '', // Will be fetched from backend
-        plan: 'Pro Plan', // Default or fetched from backend
+        bio: '',
+        plan: 'Pro Plan',
         usage: {
           chatMessages: 0,
           templatesUsed: 0,
@@ -66,7 +66,6 @@ const Profile: React.FC = () => {
 
       // Now fetch additional data from backend
       const fetchAdditionalProfileData = async () => {
-        console.log("Attempting to fetch additional profile data from backend...");
         try {
           const response = await fetch('/api/profile');
           if (!response.ok) {
@@ -84,7 +83,6 @@ const Profile: React.FC = () => {
             phone: data.phone || '',
             location: data.location || '',
             bio: data.bio || '',
-            // Add other fields from backend response here
           }));
           setEditData((prev) => ({
             ...prev,
@@ -93,7 +91,6 @@ const Profile: React.FC = () => {
             bio: data.bio || '',
           }));
         } catch (error: any) {
-          console.error('Failed to fetch additional profile data:', error);
         }
       };
       fetchAdditionalProfileData();
@@ -118,10 +115,8 @@ const Profile: React.FC = () => {
         setProfileData(updatedUser);
         setIsEditing(false);
       } else {
-        console.error('Failed to update profile:', response.statusText);
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
     }
   };
 

@@ -6,7 +6,7 @@ import DeckListItem from "./components/DeckListItem";
 import VersionModal from "./components/VersionModal";
 import NoDecks from "./components/NoDecks";
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { Deck } from "./[deckId]/types"; // Assuming Deck type is defined here
+import { Deck } from "./[deckId]/types";
 
 const DecksPage: React.FC = () => {
   const { user, isLoading: loadingAuth } = useUser();
@@ -71,7 +71,6 @@ const DecksPage: React.FC = () => {
       setDecks((prevDecks) => prevDecks.filter((deck) => deck.id !== deckId));
       alert("Deck deleted successfully!");
     } catch (err: any) {
-      console.error("Error deleting deck:", err);
       setError(err.message);
       alert(`Error deleting deck: ${err.message}`);
     }

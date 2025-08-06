@@ -5,7 +5,6 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 @Controller('api') // Added 'api' prefix directly
 export class AppController {
   constructor(private readonly appService: AppService) {
-    // console.log('DEBUG: AppController constructor called.'); // Removed console.log
   }
 
   @Get()
@@ -16,7 +15,6 @@ export class AppController {
   @Get('test-auth')
   @UseGuards(JwtAuthGuard)
   testAuth(@Request() req) {
-    console.log("Test auth endpoint called with user:", req.user);
     return { 
       message: 'Authentication successful', 
       user: req.user,

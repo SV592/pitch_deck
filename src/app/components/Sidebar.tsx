@@ -14,7 +14,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
-  const { user } = useUser(); // Still use useUser for user data if needed
+  const { user } = useUser();
 
   const navigationItems = [
     {

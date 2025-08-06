@@ -7,12 +7,7 @@ import { Slide } from "../deck/slide.entity";
 export const getDatabaseConfig = (
   configService: ConfigService
 ): TypeOrmModuleOptions => {
-  console.log("DEBUG: Database configuration:", {
-    databaseUrl: configService.get<string>("DATABASE_URL")
-      ? "EXISTS"
-      : "MISSING",
-    type: "postgres",
-  });
+  
 
   return {
     type: "postgres",

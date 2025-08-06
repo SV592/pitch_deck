@@ -179,7 +179,7 @@ const CompanyInfoForm = ({
             className="flex items-center space-x-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
           >
             <span>Generate Pitch Deck</span>
-            {/* <Sparkles className="w-5 h-5" /> */}
+            
           </button>
         </div>
       </div>

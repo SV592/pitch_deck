@@ -25,7 +25,6 @@ export const GET = withApiAuthRequired(async function getDecks(req: NextRequest)
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error('Error in /api/get-decks route:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });

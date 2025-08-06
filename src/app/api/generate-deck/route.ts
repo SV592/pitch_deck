@@ -13,11 +13,9 @@ export const POST = withApiAuthRequired(async function generateDeck(req: NextReq
       throw new Error("No access token found.");
     }
     
-    // Try to get a fresh token by making a request to Auth0
+    // Attempt to get a fresh token by making a request to Auth0
     let finalToken = accessToken;
     try {
-      console.log("Attempting to get fresh token...");
-      console.log("session?.refreshToken:", session?.refreshToken);
       const refreshResponse = await fetch(`${process.env.AUTH0_ISSUER_BASE_URL}/oauth/token`, {
         method: 'POST',
         headers: {
@@ -36,12 +34,9 @@ export const POST = withApiAuthRequired(async function generateDeck(req: NextReq
         if (refreshData.access_token) {
           finalToken = refreshData.access_token;
         }
-      } else {
-        // Log the status and response text for debugging 400 errors
-        console.error("Failed to get fresh token:", refreshResponse.status, await refreshResponse.text());
       }
     } catch (refreshError: any) {
-      console.error("Error refreshing token:", refreshError.message);
+      // Error during token refresh, proceed with original token
     }
     
     const body = await req.json();
@@ -72,12 +67,6 @@ export const POST = withApiAuthRequired(async function generateDeck(req: NextReq
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error('Error in /api/generate-deck route:', error);
-    console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      cause: error.cause
-    });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });

@@ -27,11 +27,6 @@ const ProgressSteps = ({
                     : "bg-gray-700 text-gray-400"
                 }`}
               >
-                {/* {currentStep > step.number ? (
-                //   <CheckCircle className="w-6 h-6" />
-                ) : (
-                  step.number
-                )} */}
               </div>
               <div className="mt-2 text-center">
                 <div className="font-medium text-white">{step.title}</div>

@@ -5,11 +5,9 @@ import GithubIcon from '../../icons/GithubIcon';
 import LinkedinIcon from '../../icons/LinkedinIcon';
 
 interface SocialLoginButtonsProps {
-  // handleAuth0Login: (connection?: string) => Promise<void>; // Removed
 }
 
 const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
-  // handleAuth0Login, // Removed
 }) => {
   return (
     <div className="space-y-3 mb-6">

@@ -19,6 +19,7 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
+import { FontSize } from '@tiptap/extension-font-size';
 import FontFamily from '@tiptap/extension-font-family';
 
 interface DeckEditorProps extends EditorProviderProps {
@@ -37,7 +38,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
   console.log("Deck data in DeckEditor:", deck);
   const [slides, setSlides] = useState<SlideType[]>(deck.slides || []);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [showSpeakerNotes, setShowSpeakerNotes] = useState(true); // New state for speaker notes visibility
+  const [showSpeakerNotes, setShowSpeakerNotes] = useState(true);
 
   const editor = useEditor({
     extensions: [
@@ -45,19 +46,20 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
       Bold,
       Italic,
       Underline,
-      BulletList.configure({
+      BulletList,
+      OrderedList,
+      ListItem.configure({
         HTMLAttributes: {
-          class: 'list-disc',
+          class: 'list-item',
         },
       }),
-      OrderedList,
-      ListItem,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
       TextStyle,
       Color,
       FontFamily,
+      FontSize,
     ],
     content: slides[selectedSlide]?.content || "",
     immediatelyRender: false,
@@ -94,7 +96,11 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
     if (editor && !editor.isDestroyed && slides[selectedSlide]) {
       const slideContent = slides[selectedSlide].content || "";
       if (editor.getHTML() !== slideContent) {
-        editor.commands.setContent(slideContent);
+        editor.commands.setContent(slideContent, false);
+        // If the content is not a list, ensure bulletList is not active
+        if (!slideContent.includes('<ul>') && editor.isActive('bulletList')) {
+          editor.commands.toggleBulletList();
+        }
       }
     }
     if (speakerNotesEditor && !speakerNotesEditor.isDestroyed && slides[selectedSlide]) {
@@ -103,7 +109,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
         speakerNotesEditor.commands.setContent(speakerNotesContent);
       }
     }
-  }, [selectedSlide, editor, speakerNotesEditor]); // Removed slides dependency to prevent loop
+  }, [selectedSlide, editor, speakerNotesEditor]);
 
   const handleSlideSelect = useCallback(
     (slideIndex: number) => {
@@ -152,7 +158,7 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
       const newSlides = [...prevSlides];
       if (newSlides[selectedSlide]) {
         newSlides[selectedSlide].content =
-          "<p>This is some AI-generated content!</p>";
+          "<p>This is placeholder content.</p>";
       }
       return newSlides;
     });

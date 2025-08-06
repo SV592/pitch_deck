@@ -31,7 +31,6 @@ const DeckEditorPage = async ({ params }: DeckEditorPageProps) => {
 
     deck = await response.json();
   } catch (error) {
-    console.error("Error fetching deck:", error);
     // Handle error, e.g., redirect to an error page or show a message
   }
 

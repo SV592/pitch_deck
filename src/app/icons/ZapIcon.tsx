@@ -11,9 +11,7 @@ const ZapIcon: React.FC<ZapIconProps> = ({ className }) => (
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    {/* Placeholder for lni-bolt SVG path */}
-    <path d="M11 15H6l7-14v8h5l-7 14z" />
-  </svg>
+    </svg>
 );
 
 export default ZapIcon;

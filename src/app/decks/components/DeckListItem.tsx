@@ -60,7 +60,6 @@ const DeckListItem = ({
           </div>
 
           <p className="text-gray-400 text-sm mb-3 line-clamp-1">
-            {/* No description available from backend yet */}
           </p>
 
           <div className="flex items-center justify-between">
@@ -72,7 +71,6 @@ const DeckListItem = ({
                 <span>View Versions</span>
               </button>
 
-              {/* No collaborators available from backend yet */}
             </div>
 
             <div className="flex items-center space-x-2"></div>

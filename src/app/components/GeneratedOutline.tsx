@@ -27,17 +27,15 @@ const GeneratedOutline = ({ generatedOutline }: { generatedOutline: GeneratedOut
               {generatedOutline.title}
             </h3>
             <p className="text-gray-400">
-              Your AI-generated pitch deck outline is ready! Review and
+              Your pitch deck outline is ready! Review and
               customize before creating your deck.
             </p>
           </div>
           <div className="flex space-x-3">
             <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-              {/* <RefreshCw className="w-4 h-4" /> */}
               <span>Regenerate</span>
             </button>
             <button className="flex items-center space-x-2 px-6 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors font-semibold">
-              {/* <Rocket className="w-4 h-4" /> */}
               <span>Create Deck</span>
             </button>
           </div>
@@ -67,10 +65,8 @@ const GeneratedOutline = ({ generatedOutline }: { generatedOutline: GeneratedOut
                 <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="flex space-x-2">
                     <button className="p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-                      {/* <Eye className="w-4 h-4 text-white" /> */}
                     </button>
                     <button className="p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-                      {/* <FileText className="w-4 h-4 text-white" /> */}
                     </button>
                   </div>
                 </div>
@@ -105,7 +101,6 @@ const GeneratedOutline = ({ generatedOutline }: { generatedOutline: GeneratedOut
                 )}
 
                 <div className="flex items-center space-x-2 text-xs text-gray-400 border-t border-gray-600 pt-3">
-                  {/* <Image className="w-3 h-3" /> */}
                   <span className="line-clamp-1">
                     {slide.content.suggestedImage}
                   </span>
@@ -127,24 +122,19 @@ const GeneratedOutline = ({ generatedOutline }: { generatedOutline: GeneratedOut
             </p>
             <div className="flex items-center justify-center space-x-6 text-sm text-gray-400">
               <div className="flex items-center space-x-2">
-                {/* <CheckCircle className="w-4 h-4 text-green-500" /> */}
                 <span>AI-generated content</span>
               </div>
               <div className="flex items-center space-x-2">
-                {/* <CheckCircle className="w-4 h-4 text-green-500" /> */}
                 <span>Professional templates</span>
               </div>
               <div className="flex items-center space-x-2">
-                {/* <CheckCircle className="w-4 h-4 text-green-500" /> */}
                 <span>Suggested images</span>
               </div>
             </div>
           </div>
 
           <button className="flex items-center space-x-2 px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors font-semibold mx-auto text-lg">
-            {/* <Rocket className="w-6 h-6" /> */}
             <span>Create Full Deck</span>
-            {/* <ArrowRight className="w-5 h-5" /> */}
           </button>
         </div>
       </div>

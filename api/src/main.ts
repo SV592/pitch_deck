@@ -1,7 +1,6 @@
-// main.ts
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import session from "express-session"; // Changed this line
+import session from "express-session";
 import passport from "passport";
 
 async function bootstrap() {
@@ -34,6 +33,5 @@ async function bootstrap() {
   app.use(passport.session());
 
   await app.listen(3001, '0.0.0.0');
-  console.log("Backend running on http://0.0.0.0:3001");
 }
 bootstrap();
