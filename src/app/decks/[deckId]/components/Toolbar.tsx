@@ -92,19 +92,22 @@ const Toolbar: React.FC<ToolbarProps> = ({
               editor.chain().focus().setTextAlign(e.target.value).run()
             }
             value={
-              editor.isActive("textAlign", { align: "left" })
+              editor.isActive({ textAlign: "left" })
                 ? "left"
-                : editor.isActive("textAlign", { align: "center" })
+                : editor.isActive({ textAlign: "center" })
                   ? "center"
-                  : editor.isActive("textAlign", { align: "right" })
+                  : editor.isActive({ textAlign: "right" })
                     ? "right"
-                    : "left"
+                    : editor.isActive({ textAlign: "justify" })
+                      ? "justify"
+                      : "left"
             }
-            className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none pr-12 border border-gray-600"
+            className="bg-[#1F2937] text-white pl-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none pr-12 border border-gray-600"
           >
             <option value="left">Left</option>
             <option value="center">Center</option>
             <option value="right">Right</option>
+            <option value="justify">Justify</option>
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
             <svg
@@ -162,24 +165,59 @@ const Toolbar: React.FC<ToolbarProps> = ({
         </div>
         <div className="relative">
           <select
+            onChange={(e) => {
+              const level = parseInt(e.target.value, 10) as 1 | 2 | 3 | 4;
+              editor.chain().focus().toggleHeading({ level }).run();
+            }}
+            value={
+              editor.isActive("heading", { level: 1 })
+                ? "1"
+                : editor.isActive("heading", { level: 2 })
+                  ? "2"
+                  : editor.isActive("heading", { level: 3 })
+                    ? "3"
+                    : editor.isActive("heading", { level: 4 })
+                      ? "4"
+                      : ""
+            }
+            className="bg-[#1F2937] text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none pr-12 border border-gray-600"
+          >
+            <option value="">Normal</option>
+            <option value="1">Heading 1</option>
+            <option value="2">Heading 2</option>
+            <option value="3">Heading 3</option>
+            <option value="4">Heading 4</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+            <svg
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
+        <div className="relative">
+          <select
             onChange={(e) =>
-              editor.chain().focus().setFontSize(e.target.value).run()
+              editor.chain().focus().setFontSize(`${e.target.value}px`).run()
             }
             value={
-              editor.isActive("textStyle")
-                ? editor.getAttributes("textStyle").fontSize
-                : ""
+              editor.getAttributes("textStyle").fontSize?.replace("px", "") ||
+              ""
             }
             className="bg-[#1F2937] text-white pl-3 sm:pr-8 py-2 rounded-lg font-medium transition-all duration-200 text-sm appearance-none border border-gray-600"
           >
-            <option value="12px">12px</option>
-            <option value="14px">14px</option>
-            <option value="16px">16px</option>
-            <option value="18px">18px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="32px">32px</option>
-            <option value="48px">48px</option>
+            <option value="">Size</option>
+            <option value="12">12px</option>
+            <option value="14">14px</option>
+            <option value="16">16px</option>
+            <option value="18">18px</option>
+            <option value="20">20px</option>
+            <option value="24">24px</option>
+            <option value="32">32px</option>
+            <option value="48">48px</option>
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
             <svg
