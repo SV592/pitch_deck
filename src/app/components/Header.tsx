@@ -1,22 +1,21 @@
 import Link from "next/link";
 import MenuIcon from "../icons/MenuIcon";
-import CloseIcon from "../icons/CloseIcon";
 import MainIcon from "../icons/MainIcon";
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 interface HeaderProps {
   toggleSidebar: () => void;
   isSidebarOpen: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, isSidebarOpen }) => {
+const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const { user } = useUser();
 
   return (
     <header className="bg-gray-800 text-white p-4 flex items-center justify-between">
       <div className="flex items-center">
         <button onClick={toggleSidebar} className="mr-4">
-          {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
+          <MenuIcon />
         </button>
         <Link href="/" className="flex items-center space-x-3">
           <MainIcon />
