@@ -22,6 +22,9 @@ export class Deck {
   @Column({ nullable: true })
   description: string;
 
+  @Column({ type: "jsonb", nullable: true })
+  theme: any;
+
   @Column({ default: true })
   isActive: boolean;
 

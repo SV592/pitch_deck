@@ -46,10 +46,10 @@ const Slide: React.FC<SlideProps> = ({ slide, editor, onTitleChange }) => {
         className="font-bold mb-4 sm:mb-6 bg-transparent border-b-2 focus:border-primary outline-none placeholder-gray-400 transition-colors duration-200 text-white text-3xl"
         placeholder="Enter slide title..."
       />
-      <div className="flex-grow">
+      <div className="flex-grow overflow-y-auto">
         <EditorContent
           editor={editor}
-          className="prose-invert max-w-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-full text-white text-lg"
+          className="prose-invert max-w-none [&_.ProseMirror]:outline-none text-white text-lg"
         />
       </div>
     </div>

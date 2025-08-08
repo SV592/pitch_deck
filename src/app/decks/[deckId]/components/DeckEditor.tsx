@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useCallback } from "react";
@@ -10,6 +11,7 @@ import EditorPanel from "./EditorPanel";
 import SpeakerNotes from "./SpeakerNotes";
 import DeckEditorActions from "./DeckEditorActions";
 import MobileSidebarToggle from "./MobileSidebarToggle";
+import PromptModal from "./PromptModal";
 
 interface DeckEditorProps extends UseDeckEditorProps {}
 
@@ -21,13 +23,26 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
     handleTitleChange,
     addSlide,
     deleteSlide,
-    regenerateContent,
+    aiEnhanceContent,
     moveSlide,
     handleSave,
   } = useDeckEditor(props);
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [showSpeakerNotes, setShowSpeakerNotes] = useState(true);
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [currentPrompt, setCurrentPrompt] = useState('');
+
+  const handlePromptSubmit = useCallback((prompt: string, action: 'generate' | 'enhance') => {
+    if (action === 'generate') {
+      aiEnhanceContent(prompt); // Use aiEnhanceContent for direct generation for now
+    } else if (action === 'enhance') {
+      // Placeholder for actual AI prompt enhancement logic
+      // For now, just update the prompt in the modal for user to see
+      setCurrentPrompt(`Enhanced: ${prompt}`);
+    }
+    setIsPromptModalOpen(false);
+  }, [aiEnhanceContent]);
 
   const handleSlideSelect = useCallback(
     (slideIndex: number) => {
@@ -141,9 +156,10 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
             onSave={handleSave}
             onDeleteSlide={deleteSlide}
             isDeleteDisabled={slides.length <= 1}
-            onRegenerateContent={regenerateContent}
+            onAIenhanceContent={aiEnhanceContent}
             onToggleSpeakerNotes={() => setShowSpeakerNotes(!showSpeakerNotes)}
             showSpeakerNotes={showSpeakerNotes}
+            onOpenPromptModal={() => setIsPromptModalOpen(true)}
           />
         </div>
 
@@ -153,6 +169,13 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
             onClose={() => setShowSpeakerNotes(false)}
           />
         )}
+
+        <PromptModal
+          isOpen={isPromptModalOpen}
+          onClose={() => setIsPromptModalOpen(false)}
+          onSubmit={handlePromptSubmit}
+          initialPrompt={currentPrompt}
+        />
       </div>
     </DndProvider>
   );

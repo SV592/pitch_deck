@@ -5,7 +5,7 @@ interface DeckEditorActionsProps {
   onSave: () => void;
   onDeleteSlide: () => void;
   isDeleteDisabled: boolean;
-  onRegenerateContent: () => void;
+  onOpenPromptModal: () => void;
   onToggleSpeakerNotes: () => void;
   showSpeakerNotes: boolean;
 }
@@ -14,16 +14,16 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
   onSave,
   onDeleteSlide,
   isDeleteDisabled,
-  onRegenerateContent,
+  onOpenPromptModal,
   onToggleSpeakerNotes,
   showSpeakerNotes,
 }) => {
   return (
     <div className="flex-shrink-0 p-4 lg:p-6 border-t border-gray-700 bg-gray-900">
-      <div className="flex flex-wrap gap-3 justify-center lg:justify-end items-center">
+      <div className="flex flex-wrap gap-4 justify-center lg:justify-end items-center">
         <button
           onClick={onSave}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm lg:text-base shadow-lg hover:shadow-xl flex items-center space-x-2"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <svg
             className="w-4 h-4"
@@ -43,7 +43,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
         <button
           onClick={onDeleteSlide}
           disabled={isDeleteDisabled}
-          className="bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm lg:text-base shadow-lg hover:shadow-xl flex items-center space-x-2"
+          className="bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <svg
             className="w-4 h-4"
@@ -61,8 +61,8 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
           <span>Delete</span>
         </button>
         <button
-          onClick={onRegenerateContent}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm lg:text-base"
+          onClick={onOpenPromptModal}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm"
         >
           <svg
             className="w-4 h-4"
@@ -82,7 +82,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
         </button>
         <button
           onClick={onToggleSpeakerNotes}
-          className="bg-gray-700 hover:bg-gray-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm lg:text-base"
+          className="bg-gray-700 hover:bg-gray-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm"
         >
           <svg
             className="w-4 h-4"

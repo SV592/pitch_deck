@@ -60,21 +60,6 @@ const DeckListItem = ({
               </button>
             </div>
           </div>
-
-          <p className="text-gray-400 text-sm mb-3 line-clamp-1"></p>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setShowVersionModal(deck.id as string)}
-                className="flex items-center space-x-1 text-sm text-orange-500 hover:text-orange-400 transition-colors"
-              >
-                <span>View Versions</span>
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-2"></div>
-          </div>
         </div>
       </div>
     </div>

@@ -35,6 +35,8 @@ export interface Theme {
 export interface Deck {
   id: string;
   title: string;
+  description: string;
   slides?: Slide[];
   theme?: Theme;
+  updatedAt: string;
 }

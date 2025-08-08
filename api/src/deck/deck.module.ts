@@ -5,7 +5,6 @@ import { DeckController } from "./deck.controller";
 import { Deck } from "./deck.entity";
 import { Slide } from "./slide.entity";
 import { OpenAIModule } from "../openai/openai.module"; // Import OpenAIModule
-import { OpenAIModule } from "../openai/openai.module";
 import { UsersModule } from "../auth/users.module";
 
 @Module({
