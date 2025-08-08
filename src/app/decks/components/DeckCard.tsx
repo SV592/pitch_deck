@@ -21,26 +21,13 @@ const DeckCard = ({
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const generateRandomGradient = () => {
-    const colors = [
-      "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
-      "#B3B3FF", "#D9B3FF", "#FFB3E6", "#FFB3B3", "#FFD1B3",
-      "#FFE6B3", "#FFFFB3", "#D1FFB3", "#B3FFE6", "#B3D1FF",
-    ];
-    const color1 = colors[Math.floor(Math.random() * colors.length)];
-    const color2 = colors[Math.floor(Math.random() * colors.length)];
-    return `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
-  };
-
-  
-
   return (
     <Link href={`/decks/${deck.id}`}>
       <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-orange-500 transition-all duration-300 group">
         {/* Thumbnail */}
         <div 
           className="h-48 relative cursor-pointer p-4 flex flex-col justify-center items-center text-center"
-          style={{ background: generateRandomGradient() }}
+          style={{ backgroundColor: "#f97316" }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
           <div className="relative z-10">

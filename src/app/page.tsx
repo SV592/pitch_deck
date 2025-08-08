@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { useRouter } from 'next/navigation';
-import { getAccessToken } from '@auth0/nextjs-auth0'; // Import getAccessToken
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useRouter } from "next/navigation";
 
 import Hero from "./components/Hero";
 import ProgressSteps from "./components/ProgressSteps";
@@ -32,7 +31,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     if (!loadingAuth && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [loadingAuth, user, router]);
 
@@ -67,10 +66,10 @@ const HomePage: React.FC = () => {
     setIsGenerating(true);
     console.log("Attempting to generate pitch deck with formData:", formData);
     try {
-      const response = await fetch('/api/generate-deck', {
-        method: 'POST',
+      const response = await fetch("/api/generate-deck", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -80,11 +79,13 @@ const HomePage: React.FC = () => {
 
       if (!response.ok) {
         if (response.status === 401) {
-          router.push('/login');
+          router.push("/login");
           return;
         }
         const errorData = await response.json();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorData.message || "Unknown error"}`
+        );
       }
 
       const newDeck = await response.json();
@@ -92,14 +93,18 @@ const HomePage: React.FC = () => {
       console.log("Redirecting to deck ID:", newDeck.id);
       router.push(`/decks/${newDeck.id}`);
     } catch (error: any) {
-      console.error('Error generating pitch deck:', error.message);
+      console.error("Error generating pitch deck:", error.message);
     } finally {
       setIsGenerating(false);
     }
   };
 
   const steps = [
-    { number: 1, title: "Company Info", description: "Tell us about your company" },
+    {
+      number: 1,
+      title: "Company Info",
+      description: "Tell us about your company",
+    },
     { number: 2, title: "Generate", description: "AI creates your outline" },
   ];
 
@@ -134,8 +139,6 @@ const HomePage: React.FC = () => {
             generatePitchDeck={generatePitchDeck}
           />
         )}
-
-        
       </div>
     </div>
   );

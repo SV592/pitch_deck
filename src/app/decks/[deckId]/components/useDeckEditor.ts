@@ -15,6 +15,8 @@ import Color from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import { Deck, Slide as SlideType } from "../types";
 
+
+
 export interface UseDeckEditorProps {
   deck: Deck;
   selectedSlide: number;

@@ -33,16 +33,16 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState('');
 
-  const handlePromptSubmit = useCallback((prompt: string, action: 'generate' | 'enhance') => {
-    if (action === 'generate') {
-      aiEnhanceContent(prompt); // Use aiEnhanceContent for direct generation for now
-    } else if (action === 'enhance') {
-      // Placeholder for actual AI prompt enhancement logic
-      // For now, just update the prompt in the modal for user to see
-      setCurrentPrompt(`Enhanced: ${prompt}`);
-    }
+  const handleDownload = async () => {
+    const { generatePptx } = await import("./pptx-generator");
+    const updatedDeck = { ...props.deck, slides };
+    generatePptx(updatedDeck);
+  };
+
+  const handlePromptSubmit = async (prompt: string) => {
+    await aiEnhanceContent(prompt);
     setIsPromptModalOpen(false);
-  }, [aiEnhanceContent]);
+  };
 
   const handleSlideSelect = useCallback(
     (slideIndex: number) => {
@@ -148,11 +148,10 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
             slides={slides}
             selectedSlide={props.selectedSlide}
             onTitleChange={handleTitleChange}
-            onAddSlide={addSlide}
             onDeleteSlide={deleteSlide}
           />
           <DeckEditorActions
-            onSave={handleSave}
+            onDownload={handleDownload}
             onAddSlide={addSlide}
             onDeleteSlide={deleteSlide}
             isDeleteDisabled={slides.length <= 1}

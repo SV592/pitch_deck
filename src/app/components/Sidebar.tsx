@@ -27,11 +27,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
       icon: <DeckIcon />,
     },
     {
-      label: "Templates",
-      href: "/templates",
-      icon: <TemplateIcon />,
-    },
-    {
       label: "Profile",
       href: "/profile",
       icon: <ProfileIcon />,

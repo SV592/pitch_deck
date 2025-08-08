@@ -21,33 +21,60 @@ const PromptModal: React.FC<PromptModalProps> = ({
   const [showTemplates, setShowTemplates] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Quick prompt templates
+  // Pitch deck slide generation templates
   const promptTemplates = [
     {
-      category: "Business",
+      category: "Opening & Vision",
       prompts: [
-        "Create a business strategy overview with key objectives and metrics",
-        "Design a competitive analysis comparing our solution to competitors",
-        "Outline a product roadmap with timeline and milestones",
-        "Present quarterly financial results and growth projections",
+        "Create a compelling title slide with company name, tagline, and founder information",
+        "Design a problem statement slide that clearly defines the pain point we're solving",
+        "Present our solution overview with key features and unique value proposition",
+        "Craft a vision statement slide showing our long-term impact and mission",
       ],
     },
     {
-      category: "Education",
+      category: "Market & Opportunity",
       prompts: [
-        "Explain the key concepts with clear examples and diagrams",
-        "Create a step-by-step tutorial for beginners",
-        "Design an interactive learning activity with engagement points",
-        "Summarize the main takeaways and action items",
+        "Show market size analysis with TAM, SAM, and SOM breakdown",
+        "Present target customer segments with personas and pain points",
+        "Display market validation through research, surveys, and early feedback",
+        "Demonstrate market timing and why now is the right moment",
       ],
     },
     {
-      category: "Marketing",
+      category: "Product & Traction",
       prompts: [
-        "Showcase customer testimonials and success stories",
-        "Present market research insights and trends",
-        "Design a product launch campaign timeline",
-        "Create a brand positioning and value proposition slide",
+        "Showcase product demo with key features and user interface",
+        "Present current traction metrics: users, revenue, growth rates",
+        "Display customer testimonials and case studies with measurable results",
+        "Show product roadmap with upcoming features and development timeline",
+      ],
+    },
+    {
+      category: "Business Model & Competition",
+      prompts: [
+        "Outline revenue model with pricing strategy and unit economics",
+        "Present competitive landscape analysis with positioning matrix",
+        "Show go-to-market strategy with customer acquisition channels",
+        "Display business model canvas with key partnerships and resources",
+      ],
+    },
+    {
+      category: "Team & Financials",
+      prompts: [
+        "Introduce founding team with relevant experience and expertise",
+        "Present financial projections with 3-5 year revenue forecasts",
+        "Show funding requirements with use of funds breakdown",
+        "Display key advisors, investors, and strategic partnerships",
+      ],
+    },
+    {
+      category: "Investment & Next Steps",
+      prompts: [
+        "Present investment opportunity with valuation and equity offering",
+        "Show milestones and what success looks like in next 12-24 months",
+        "Display exit strategy and potential acquisition/IPO scenarios",
+        "Create compelling closing slide with clear call-to-action for investors",
       ],
     },
   ];
