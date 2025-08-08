@@ -75,7 +75,7 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#111827]">
+    <div className="flex flex-col h-screen bg-[#111827]">
       {/* Header */}
       <div className="bg-[#111827] border-b border-gray-700 px-6 py-6">
         <div className="container mx-auto">
@@ -180,6 +180,7 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
         selectedSlide={selectedSlide}
         onSlideChange={setSelectedSlide}
         onSave={handleSave}
+        className="flex-grow"
       />
     </div>
   );

@@ -30,7 +30,9 @@ const DeckListItem = ({
         {/* Thumbnail */}
         <div
           className="w-16 h-16 rounded-lg flex-shrink-0"
-          style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
+          style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          }}
         />
 
         {/* Content */}
@@ -59,8 +61,7 @@ const DeckListItem = ({
             </div>
           </div>
 
-          <p className="text-gray-400 text-sm mb-3 line-clamp-1">
-          </p>
+          <p className="text-gray-400 text-sm mb-3 line-clamp-1"></p>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -70,7 +71,6 @@ const DeckListItem = ({
               >
                 <span>View Versions</span>
               </button>
-
             </div>
 
             <div className="flex items-center space-x-2"></div>
