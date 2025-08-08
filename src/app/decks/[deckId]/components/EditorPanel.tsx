@@ -10,7 +10,6 @@ interface EditorPanelProps {
   slides: SlideType[];
   selectedSlide: number;
   onTitleChange: (newTitle: string) => void;
-  onAddSlide: () => void;
   onDeleteSlide: () => void;
 }
 
@@ -19,7 +18,6 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
   slides,
   selectedSlide,
   onTitleChange,
-  onAddSlide,
   onDeleteSlide,
 }) => {
   return (
@@ -31,7 +29,6 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
         <div className="max-w-full overflow-x-auto no-scrollbar">
           <Toolbar
             editor={editor}
-            onAddSlide={onAddSlide}
             onDeleteSlide={onDeleteSlide}
           />
         </div>

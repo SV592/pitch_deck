@@ -5,14 +5,12 @@ import { Editor } from "@tiptap/react";
 
 interface ToolbarProps {
   editor: Editor | null;
-  onAddSlide: () => void;
   onDeleteSlide: () => void;
   onSaveSlide: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
   editor,
-  onAddSlide,
   onDeleteSlide,
   onSaveSlide,
 }) => {
@@ -150,12 +148,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         >
           Bullets
         </button>
-        <button
-          onClick={onAddSlide}
-          className="px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm bg-green-500 hover:bg-green-600 text-white shadow-lg"
-        >
-          Add Slide
-        </button>
+        
       </div>
     </div>
   );

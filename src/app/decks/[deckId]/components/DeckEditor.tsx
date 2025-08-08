@@ -136,7 +136,6 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
             selectedSlide={props.selectedSlide}
             onSlideSelect={handleSlideSelect}
             moveSlide={moveSlide}
-            onAddSlide={addSlide}
           />
         </div>
 
@@ -154,12 +153,12 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
           />
           <DeckEditorActions
             onSave={handleSave}
+            onAddSlide={addSlide}
             onDeleteSlide={deleteSlide}
             isDeleteDisabled={slides.length <= 1}
-            onAIenhanceContent={aiEnhanceContent}
+            onOpenPromptModal={() => setIsPromptModalOpen(true)}
             onToggleSpeakerNotes={() => setShowSpeakerNotes(!showSpeakerNotes)}
             showSpeakerNotes={showSpeakerNotes}
-            onOpenPromptModal={() => setIsPromptModalOpen(true)}
           />
         </div>
 

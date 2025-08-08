@@ -8,7 +8,6 @@ interface SlideListProps {
   selectedSlide: number;
   onSlideSelect: (index: number) => void;
   moveSlide: (fromIndex: number, toIndex: number) => void;
-  onAddSlide: () => void;
 }
 
 const SlideList: React.FC<SlideListProps> = ({
@@ -16,7 +15,6 @@ const SlideList: React.FC<SlideListProps> = ({
   selectedSlide,
   onSlideSelect,
   moveSlide,
-  onAddSlide,
 }) => {
   return (
     <div className="flex flex-col w-full lg:w-80 xl:w-96 border-b lg:border-b-0 lg:border-r border-gray-700 bg-gray-800">
@@ -65,27 +63,7 @@ const SlideList: React.FC<SlideListProps> = ({
           <div className="h-6"></div>
         </div>
       </div>
-      <div className="flex-shrink-0 p-4 lg:p-6 bg-gray-800">
-        <button
-          onClick={onAddSlide}
-          className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          <span>Add New Slide</span>
-        </button>
-      </div>
+      
     </div>
   );
 };
