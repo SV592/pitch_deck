@@ -21,4 +21,9 @@ export class AppController {
       timestamp: new Date().toISOString()
     };
   }
+
+  @Get('test-route')
+  testRoute(): string {
+    return 'Test route is working!';
+  }
 }

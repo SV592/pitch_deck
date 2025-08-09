@@ -23,7 +23,7 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
     handleTitleChange,
     addSlide,
     deleteSlide,
-    aiEnhanceContent,
+    regenerateSlideContent,
     moveSlide,
     handleSave,
   } = useDeckEditor(props);
@@ -40,7 +40,7 @@ const DeckEditor: React.FC<DeckEditorProps> = (props) => {
   };
 
   const handlePromptSubmit = async (prompt: string) => {
-    await aiEnhanceContent(prompt);
+    await regenerateSlideContent(prompt);
     setIsPromptModalOpen(false);
   };
 

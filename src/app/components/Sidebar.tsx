@@ -1,6 +1,5 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
-import TemplateIcon from "../icons/TemplateIcon";
 import DeckIcon from "../icons/DeckIcon";
 import ProfileIcon from "../icons/ProfileIcon";
 import ExitIcon from "../icons/ExitIcon";

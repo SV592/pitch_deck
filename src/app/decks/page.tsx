@@ -3,9 +3,8 @@ import React, { useState, useEffect } from "react";
 import DecksHeader from "./components/DecksHeader";
 import DeckCard from "./components/DeckCard";
 import DeckListItem from "./components/DeckListItem";
-import VersionModal from "./components/VersionModal";
 import NoDecks from "./components/NoDecks";
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { Deck } from "./[deckId]/types";
 
 const DecksPage: React.FC = () => {
@@ -25,7 +24,7 @@ const DecksPage: React.FC = () => {
       }
 
       try {
-        const response = await fetch('/api/get-decks');
+        const response = await fetch("/api/get-decks");
         if (!response.ok) {
           throw new Error(`Failed to fetch decks: ${response.statusText}`);
         }
@@ -61,7 +60,7 @@ const DecksPage: React.FC = () => {
 
     try {
       const response = await fetch(`/api/decks/${deckId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (!response.ok) {
@@ -77,11 +76,19 @@ const DecksPage: React.FC = () => {
   };
 
   if (loadingAuth || isLoading) {
-    return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">Loading decks...</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        Loading decks...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center text-red-500">Error: {error}</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center text-red-500">
+        Error: {error}
+      </div>
+    );
   }
 
   return (
@@ -91,45 +98,32 @@ const DecksPage: React.FC = () => {
       <div className="max-w-7xl mx-auto p-6">
         {decks.length === 0 ? (
           <NoDecks />
+        ) : viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {decks.map((deck) => (
+              <DeckCard
+                key={deck.id}
+                deck={deck}
+                setShowVersionModal={setShowVersionModal}
+                handleDelete={handleDeleteDeck}
+              />
+            ))}
+          </div>
         ) : (
-          viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {decks.map((deck) => (
-                <DeckCard
-                  key={deck.id}
-                  deck={deck}
-                  setShowVersionModal={setShowVersionModal}
-                  handleDelete={handleDeleteDeck}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {decks.map((deck) => (
-                <DeckListItem
-                  key={deck.id}
-                  deck={deck}
-                  selectedDecks={selectedDecks}
-                  handleSelectDeck={handleSelectDeck}
-                  setShowVersionModal={setShowVersionModal}
-                  handleDelete={handleDeleteDeck}
-                />
-              ))}
-            </div>
-          )
+          <div className="space-y-4">
+            {decks.map((deck) => (
+              <DeckListItem
+                key={deck.id}
+                deck={deck}
+                selectedDecks={selectedDecks}
+                handleSelectDeck={handleSelectDeck}
+                setShowVersionModal={setShowVersionModal}
+                handleDelete={handleDeleteDeck}
+              />
+            ))}
+          </div>
         )}
       </div>
-
-      {showVersionModal && (() => {
-        const deck = decks.find((d) => d.id === showVersionModal);
-        if (!deck) return null;
-        return (
-          <VersionModal
-            deck={deck}
-            setShowVersionModal={setShowVersionModal}
-          />
-        );
-      })()}
     </div>
   );
 };

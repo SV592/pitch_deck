@@ -11,8 +11,7 @@ import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import TextAlign from "@tiptap/extension-text-align";
-import Color from "@tiptap/extension-color";
-import TextStyle from "@tiptap/extension-text-style";
+
 import { Deck, Slide as SlideType } from "../types";
 
 
@@ -49,8 +48,7 @@ export const useDeckEditor = ({
         types: ["heading", "paragraph"],
         alignments: ["left", "center", "right", "justify"],
       }),
-      TextStyle,
-      Color,
+      
     ],
     content: slides[selectedSlide]?.content || "",
     immediatelyRender: false,
@@ -85,9 +83,6 @@ export const useDeckEditor = ({
       const slideContent = slides[selectedSlide].content || "";
       if (editor.getHTML() !== slideContent) {
         editor.commands.setContent(slideContent, false);
-        if (!slideContent.includes("<ul>") && editor.isActive("bulletList")) {
-          editor.commands.toggleBulletList();
-        }
       }
     }
     if (
@@ -140,16 +135,41 @@ export const useDeckEditor = ({
     }
   }, [slides.length, selectedSlide, onSlideChange]);
 
-  const aiEnhanceContent = useCallback((prompt: string) => {
-    setSlides((prevSlides) => {
-      const newSlides = [...prevSlides];
-      if (newSlides[selectedSlide]) {
-        // For now, just update with the prompt. Later, this will involve an AI call.
-        newSlides[selectedSlide].content = `<p>AI Enhanced content based on: ${prompt}</p>`;
+  
+
+  const regenerateSlideContent = useCallback(async (prompt: string) => {
+    if (!slides[selectedSlide]) return;
+
+    try {
+      const response = await fetch(`/decks/${deck.id}/slides/regenerate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          slideId: slides[selectedSlide].id,
+          prompt: prompt,
+          deckDescription: deck.description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to regenerate slide: ${response.statusText}`);
       }
-      return newSlides;
-    });
-  }, [selectedSlide]);
+
+      const data = await response.json();
+      setSlides((prevSlides) => {
+        const newSlides = [...prevSlides];
+        if (newSlides[selectedSlide]) {
+          newSlides[selectedSlide].content = data.content; 
+        }
+        return newSlides;
+      });
+    } catch (error) {
+      console.error("Error regenerating slide:", error);
+      // Optionally, show an error message to the user
+    }
+  }, [deck.id, selectedSlide, slides]);
 
   const moveSlide = useCallback((fromIndex: number, toIndex: number) => {
     setSlides((prevSlides) => {
@@ -172,7 +192,7 @@ export const useDeckEditor = ({
     handleTitleChange,
     addSlide,
     deleteSlide,
-    aiEnhanceContent,
+    regenerateSlideContent,
     moveSlide,
     handleSave,
   };

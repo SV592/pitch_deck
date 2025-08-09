@@ -50,7 +50,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profileData }) => {
           </div>
 
           <h2 className="text-xl font-semibold mb-1">{profileData.name}</h2>
-          <p className="text-gray-400 text-sm mb-4 break-all overflow-wrap-anywhere min-w-0">{profileData.email}</p>
+          <p className="text-gray-400 text-sm mb-4 break-all overflow-wrap-anywhere min-w-0">
+            {profileData.email}
+          </p>
 
           <div className="space-y-3 text-sm">
             {profileData.location && (
@@ -70,17 +72,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profileData }) => {
 
         <div className="mt-6 pt-4 border-t border-gray-700">
           <div className="grid grid-cols-2 gap-4 text-center">
-            <div>
+            <div className="">
               <div className="text-2xl font-bold text-orange-500">
                 {profileData.usage.decksCreated}
               </div>
               <div className="text-xs text-gray-400">Decks</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-orange-500">
-                {profileData.usage.templatesUsed}
-              </div>
-              <div className="text-xs text-gray-400">Templates</div>
             </div>
           </div>
         </div>

@@ -101,6 +101,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
           <span className="hidden sm:inline">Regenerate Content</span>
           <span className="sm:hidden">Regenerate</span>
         </button>
+        
         <button
           onClick={onToggleSpeakerNotes}
           className="bg-gray-700 hover:bg-gray-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm"

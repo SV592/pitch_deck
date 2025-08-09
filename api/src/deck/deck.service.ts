@@ -143,4 +143,30 @@ export class DeckService {
       throw new Error("Deck not found or user not authorized.");
     }
   }
+
+  async regenerateSlideContent(
+    deckId: string,
+    slideId: string,
+    prompt: string,
+    currentContent: string,
+  ): Promise<string> {
+    const slide = await this.slideRepository.findOne({
+      where: { id: slideId, deck: { id: deckId } },
+    });
+
+    if (!slide) {
+      throw new Error("Slide not found in the specified deck.");
+    }
+
+    this.logger.log(`Regenerating content for slide ${slideId} with prompt: ${prompt}`);
+    const generatedContent = await this.openAIService.generateSlideContent(
+      prompt,
+      currentContent,
+    );
+
+    slide.content = generatedContent;
+    await this.slideRepository.save(slide);
+
+    return generatedContent;
+  }
 }

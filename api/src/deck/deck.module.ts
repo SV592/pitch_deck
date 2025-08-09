@@ -6,11 +6,13 @@ import { Deck } from "./deck.entity";
 import { Slide } from "./slide.entity";
 import { OpenAIModule } from "../openai/openai.module"; // Import OpenAIModule
 import { UsersModule } from "../auth/users.module";
+import { SlideController } from "./slide.controller";
+import { SlideService } from "./slide.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Deck, Slide]), OpenAIModule, UsersModule],
-  controllers: [DeckController],
-  providers: [DeckService],
+  controllers: [DeckController, SlideController],
+  providers: [DeckService, SlideService],
   exports: [DeckService],
 })
 export class DeckModule {}

@@ -76,4 +76,16 @@ export class DeckController {
     await this.deckService.deleteDeck(id, user.id);
     return { message: "Deck deleted successfully" };
   }
+
+  @Post("regenerate-slide")
+  async regenerateSlide(@Body() body: { deckId: string; slideId: string; prompt: string; currentContent: string }) {
+    const { deckId, slideId, prompt, currentContent } = body;
+    const generatedContent = await this.deckService.regenerateSlideContent(
+      deckId,
+      slideId,
+      prompt,
+      currentContent,
+    );
+    return { generatedContent };
+  }
 }

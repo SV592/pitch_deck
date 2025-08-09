@@ -107,4 +107,55 @@ export class OpenAIService {
       }
     }
   }
+
+  async generateSlideContent(prompt: string, currentContent: string): Promise<string> {
+    const slideGenerationPrompt = `
+      You are an AI assistant specialized in generating and refining pitch deck slide content.
+      Given the following prompt and the current content of a slide, generate new, improved content for this slide.
+      The output should be in HTML format, suitable for a rich text editor. Focus on clarity, conciseness, and impact.
+      If the prompt asks for a specific format (e.g., bullet points, a paragraph), adhere to that.
+
+      User Prompt: "${prompt}"
+      Current Slide Content: "${currentContent}"
+
+      Generate the new slide content in HTML format:
+    `;
+
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: slideGenerationPrompt }],
+      });
+
+      const generatedContent = response.choices[0].message.content;
+      if (!generatedContent) {
+        throw new InternalServerErrorException(
+          `OpenAI response content is empty for slide generation.`
+        );
+      }
+      return generatedContent;
+    } catch (error) {
+      if (error instanceof OpenAI.APIError) {
+        this.logger.error(
+          `OpenAI API Error during slide generation: ${error.status} - ${error.message}`,
+          error.stack
+        );
+        throw new BadGatewayException(
+          `Failed to generate slide content due to an external API error. Please try again later.`
+        );
+      } else {
+        if (error instanceof Error) {
+          this.logger.error(
+            `An unexpected error occurred during slide generation: ${error.message}`,
+            error.stack
+          );
+        } else {
+          this.logger.error(`An unexpected error occurred during slide generation: ${error}`);
+        }
+        throw new InternalServerErrorException(
+          `An unexpected error occurred during slide content generation. Please try again.`
+        );
+      }
+    }
+  }
 }

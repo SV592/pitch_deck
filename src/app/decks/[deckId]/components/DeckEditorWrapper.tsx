@@ -57,18 +57,16 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
   const handleSave = async (updatedDeck: Deck) => {
     try {
       const response = await fetch(`/api/decks/${deck.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedDeck),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save deck');
+        throw new Error("Failed to save deck");
       }
-
-      // Optionally, you can show a success message to the user
     } catch (error) {
       // Optionally, you can show an error message to the user
     }
@@ -78,7 +76,7 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
     <div className="flex flex-col h-screen bg-[#111827]">
       {/* Header */}
       <div className="bg-[#111827] border-b border-gray-700 px-6 py-6">
-        <div className="container mx-auto">
+        <div className="container mx-auto ">
           {/* Navigation and Title Row */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">

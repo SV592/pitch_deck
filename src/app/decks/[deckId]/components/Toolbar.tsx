@@ -117,22 +117,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
             </svg>
           </div>
         </div>
-        <input
-          type="color"
-          onInput={(event) =>
-            editor
-              .chain()
-              .focus()
-              .setColor((event.target as HTMLInputElement).value)
-              .run()
-          }
-          value={
-            editor.isActive("textStyle")
-              ? editor.getAttributes("textStyle").color
-              : "#000000"
-          }
-          className="w-7 h-7 p-0.5 bg-[#1F2937] rounded-lg"
-        />
+        
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`px-4 sm:px-5 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
