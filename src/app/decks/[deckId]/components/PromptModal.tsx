@@ -1,23 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
+import RichTextEditor from "./RichTextEditor";
 
 interface PromptModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (prompt: string, action: "generate" | "enhance") => void;
+  onGenerateContent: (prompt: string) => Promise<void>;
   initialPrompt?: string;
   isLoading?: boolean;
+  isGeneratingContent?: boolean;
   slideTitle?: string;
+  originalContent?: string;
+  generatedContent?: string;
+  onAcceptGeneratedContent?: (content: string) => void;
+  onDiscardGeneratedContent?: () => void;
 }
 
 const PromptModal: React.FC<PromptModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
+  onGenerateContent,
   initialPrompt = "",
   isLoading = false,
+  isGeneratingContent = false,
   slideTitle = "Current Slide",
+  originalContent,
+  generatedContent,
+  onAcceptGeneratedContent,
+  onDiscardGeneratedContent,
 }) => {
   const [prompt, setPrompt] = useState(initialPrompt);
+  const [showContentReview, setShowContentReview] = useState(false);
+  const [editableGeneratedContent, setEditableGeneratedContent] = useState<
+    string | null
+  >(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
@@ -40,13 +55,24 @@ const PromptModal: React.FC<PromptModalProps> = ({
     setPrompt(initialPrompt);
   }, [initialPrompt]);
 
+  // Show content review when generatedContent is available
+  useEffect(() => {
+    if (generatedContent) {
+      setEditableGeneratedContent(generatedContent); // Copy generated content to editable state
+      setShowContentReview(true);
+    } else {
+      setEditableGeneratedContent(null); // Clear editable state if no generated content
+      setShowContentReview(false);
+    }
+  }, [generatedContent]);
+
   if (!isOpen) return null;
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    // Made async
     if (!prompt.trim()) return;
-    onSubmit(prompt.trim(), "generate");
-    setPrompt("");
-    onClose();
+    await onGenerateContent(prompt.trim()); // Call new prop
+    setPrompt(""); // Clear prompt after submission
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -111,7 +137,7 @@ const PromptModal: React.FC<PromptModalProps> = ({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {/* Prompt Input */}
+          {/* Always render Prompt Input and Tips */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium text-gray-300">
@@ -171,44 +197,110 @@ const PromptModal: React.FC<PromptModalProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Content Review Section - always rendered but conditionally visible */}
+          {showContentReview && (
+            <div>
+              <h3 className="text-lg font-bold text-white mb-2">
+                Review Generated Content
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-md font-semibold text-gray-300 mb-1">
+                    Original
+                  </h4>
+                  <RichTextEditor
+                    value={originalContent || ""}
+                    onChange={() => {}}
+                    readOnly={true}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-md font-semibold text-gray-300 mb-1">
+                    Generated
+                  </h4>
+                  <RichTextEditor
+                    value={editableGeneratedContent || ""}
+                    onChange={setEditableGeneratedContent}
+                    readOnly={false}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
         <div className="flex justify-between items-center p-6 border-t border-gray-700 bg-gray-800">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={isLoading}
-          >
-            Cancel
-          </button>
+          {showContentReview ? (
+            <>
+              <button
+                onClick={onDiscardGeneratedContent}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isGeneratingContent}
+              >
+                Close
+              </button>
+              <button
+                onClick={async () => {
+                  if (editableGeneratedContent) {
+                    try {
+                      const blob = new Blob([editableGeneratedContent], { type: 'text/html' });
+                      const data = [new ClipboardItem({ 'text/html': blob })];
+                      await navigator.clipboard.write(data);
+                      // You can add a toast notification here to inform the user
+                    } catch (err) {
+                      console.error('Failed to copy: ', err);
+                      navigator.clipboard.writeText(editableGeneratedContent);
+                    }
+                  }
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Copy Content
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isGeneratingContent} // Use isGeneratingContent here
+              >
+                Cancel
+              </button>
 
-          <div className="flex space-x-3">
-            <button
-              onClick={handleGenerate}
-              disabled={isPromptEmpty || isLoading}
-              className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-            >
-              {isLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleGenerate}
+                  disabled={isPromptEmpty || isGeneratingContent} // Use isGeneratingContent here
+                  className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-              )}
-              <span>Generate Content</span>
-            </button>
-          </div>
+                  {isGeneratingContent ? ( // Use isGeneratingContent here
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  )}
+                  <span>
+                    {isGeneratingContent ? "Generating..." : "Generate Content"}
+                  </span>{" "}
+                  {/* Update text */}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

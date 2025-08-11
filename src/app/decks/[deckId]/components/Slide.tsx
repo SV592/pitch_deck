@@ -19,11 +19,15 @@ const Slide: React.FC<SlideProps> = ({ slide, editor, onTitleChange }) => {
 
   useEffect(() => {
     if (editor && !editor.isDestroyed) {
-      const headlineContent = slide.headline ? `<h1><strong>${slide.headline}</strong></h1>` : '';
-      const hookContent = slide.hook ? `<p><strong>${slide.hook}</strong></p>` : '';
-      const keyPointsContent = (slide.key_points && slide.key_points.length > 0) ? `<ul>${slide.key_points.map(point => `<li>${point}</li>`).join('')}</ul>` : '';
+      let editorContent = slide.content;
 
-      const editorContent = `${headlineContent}${hookContent}${keyPointsContent}`.trim();
+      if (!editorContent) {
+        const headlineContent = slide.headline ? `<h1><strong>${slide.headline}</strong></h1>` : '';
+        const hookContent = slide.hook ? `<p><strong>${slide.hook}</strong></p>` : '';
+        const keyPointsContent = (slide.key_points && slide.key_points.length > 0) ? `<ul>${slide.key_points.map(point => `<li>${point}</li>`).join('')}</ul>` : '';
+        editorContent = `${headlineContent}${hookContent}${keyPointsContent}`.trim();
+      }
+
       if (editor.getHTML() !== editorContent) {
         editor.commands.setContent(editorContent || '<p></p>', false);
       }

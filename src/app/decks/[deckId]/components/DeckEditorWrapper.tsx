@@ -1,18 +1,71 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import DeckEditor from "../components/DeckEditor";
+import DeckEditor from "./DeckEditor";
 import { Deck } from "../types";
+import { useDeckEditor } from "./useDeckEditor"; // Import useDeckEditor
 
 interface DeckEditorWrapperProps {
   deck: Deck;
+  accessToken: string;
 }
 
-const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
+const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken }) => {
   const router = useRouter();
   const [selectedSlide, setSelectedSlide] = useState(0);
-  const totalSlides = deck.slides.length;
+
+  // Consume useDeckEditor hook
+  const {
+    slides,
+    editor,
+    speakerNotesEditor,
+    handleTitleChange,
+    addSlide,
+    deleteSlide,
+    regenerateSlideContent,
+    moveSlide,
+    handleSave, // This is the handleSave from useDeckEditor
+    isGeneratingContent,
+    generatedContent,
+    originalContent,
+    onAcceptGeneratedContent,
+    onDiscardGeneratedContent,
+  } = useDeckEditor({
+    deck,
+    selectedSlide,
+    onSlideChange: setSelectedSlide,
+    onSave: async (updatedDeck: Deck) => { // Define the actual save logic here
+      try {
+        const response = await fetch(`/api/decks/${deck.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(updatedDeck),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save deck");
+        }
+        console.log("Deck saved successfully!");
+      } catch (error) {
+        console.error("Error saving deck:", error);
+        // Optionally, you can show an error message to the user
+      }
+    },
+    accessToken,
+    onClosePromptModal: () => setIsPromptModalOpen(false), // Assuming setIsPromptModalOpen is defined
+  });
+
+  const totalSlides = slides.length; // Use slides from useDeckEditor
+
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSpeakerNotes, setShowSpeakerNotes] = useState(true);
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [currentPrompt, setCurrentPrompt] = useState('');
+
 
   // Keyboard navigation
   useEffect(() => {
@@ -54,23 +107,8 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
     setSelectedSlide((prev) => Math.min(totalSlides - 1, prev + 1));
   };
 
-  const handleSave = async (updatedDeck: Deck) => {
-    try {
-      const response = await fetch(`/api/decks/${deck.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedDeck),
-      });
+  
 
-      if (!response.ok) {
-        throw new Error("Failed to save deck");
-      }
-    } catch (error) {
-      // Optionally, you can show an error message to the user
-    }
-  };
 
   return (
     <div className="flex flex-col h-screen bg-[#111827]">
@@ -177,8 +215,22 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck }) => {
         deck={deck}
         selectedSlide={selectedSlide}
         onSlideChange={setSelectedSlide}
+        // Pass all necessary props from useDeckEditor
+        slides={slides}
+        editor={editor}
+        speakerNotesEditor={speakerNotesEditor}
+        handleTitleChange={handleTitleChange}
+        addSlide={addSlide}
+        deleteSlide={deleteSlide}
         onSave={handleSave}
-        className="flex-grow"
+        regenerateSlideContent={regenerateSlideContent}
+        moveSlide={moveSlide}
+        isGeneratingContent={isGeneratingContent}
+        generatedContent={generatedContent}
+        originalContent={originalContent}
+        onAcceptGeneratedContent={onAcceptGeneratedContent}
+        onDiscardGeneratedContent={onDiscardGeneratedContent}
+        accessToken={accessToken}
       />
     </div>
   );

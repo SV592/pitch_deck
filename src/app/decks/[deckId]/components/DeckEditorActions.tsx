@@ -3,22 +3,30 @@ import React from "react";
 
 interface DeckEditorActionsProps {
   onDownload: () => void;
+  onSave: () => void;
   onAddSlide: () => void;
   onDeleteSlide: () => void;
   isDeleteDisabled: boolean;
   onOpenPromptModal: () => void;
   onToggleSpeakerNotes: () => void;
   showSpeakerNotes: boolean;
+  onToggleSlideList: () => void;
+  showSlideList: boolean;
+  isGeneratingContent: boolean;
 }
 
 const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
   onDownload,
+  onSave,
   onAddSlide,
   onDeleteSlide,
   isDeleteDisabled,
   onOpenPromptModal,
   onToggleSpeakerNotes,
   showSpeakerNotes,
+  onToggleSlideList,
+  showSlideList,
+  isGeneratingContent,
 }) => {
   return (
     <div className="flex-shrink-0 p-4 lg:p-6 border-t border-gray-700 bg-gray-900">
@@ -82,6 +90,27 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
           <span>Download</span>
         </button>
         <button
+          onClick={onSave}
+          className="bg-purple-500 hover:bg-purple-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-3m-1-4l-3 3m0 0l-3-3m3 3V4"
+            />
+          </svg>
+          <span>Save</span>
+        </button>
+        
+        
+        <button
           onClick={onOpenPromptModal}
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm"
         >
@@ -123,6 +152,28 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
             {showSpeakerNotes ? "Hide" : "Show"} Notes
           </span>
           <span className="sm:hidden">Notes</span>
+        </button>
+        <button
+          onClick={onToggleSlideList}
+          className="bg-gray-700 hover:bg-gray-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+          <span className="hidden sm:inline">
+            {showSlideList ? "Hide" : "Show"} Slides
+          </span>
+          <span className="sm:hidden">Slides</span>
         </button>
       </div>
     </div>

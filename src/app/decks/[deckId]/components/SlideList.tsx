@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Slide as SlideType } from "../types";
 import SlideThumbnail from "./SlideThumbnail";
@@ -37,7 +36,7 @@ const SlideList: React.FC<SlideListProps> = ({
         </div>
         <div className="flex items-center space-x-2">
           <span className="text-xs text-gray-300 bg-gray-700 px-3 py-1 rounded-full font-medium">
-            {slides.length} slides
+            {slides?.length || 0} slides
           </span>
         </div>
       </div>
@@ -49,21 +48,21 @@ const SlideList: React.FC<SlideListProps> = ({
         }}
       >
         <div className="p-3 lg:p-4 space-y-3">
-          {slides.map((slide, index) => (
-            <div key={slide.id} className="relative">
-              <SlideThumbnail
-                slide={slide}
-                index={index}
-                isSelected={index === selectedSlide}
-                onClick={() => onSlideSelect(index)}
-                moveSlide={moveSlide}
-              />
-            </div>
-          ))}
+          {slides &&
+            slides.map((slide, index) => (
+              <div key={slide.id} className="relative">
+                <SlideThumbnail
+                  slide={slide}
+                  index={index}
+                  isSelected={index === selectedSlide}
+                  onClick={() => onSlideSelect(index)}
+                  moveSlide={moveSlide}
+                />
+              </div>
+            ))}
           <div className="h-6"></div>
         </div>
       </div>
-      
     </div>
   );
 };

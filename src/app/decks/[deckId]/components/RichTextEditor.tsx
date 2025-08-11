@@ -3,37 +3,34 @@
 import React from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Color } from "@tiptap/extension-color";
-import TextStyle from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import { FontFamily } from "@tiptap/extension-font-family";
+import { FontSize } from "@tiptap/extension-font-size";
+import { TextStyle } from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
-import FontFamily from "@tiptap/extension-font-family";
-import FontSize from "@tiptap/extension-font-size";
-import BulletList from "@tiptap/extension-bullet-list";
-import OrderedList from "@tiptap/extension-ordered-list";
-import ListItem from "@tiptap/extension-list-item";
 
 interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
+  readOnly?: boolean;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, readOnly }) => {
   const editor = useEditor({
+    editable: !readOnly,
+    immediatelyRender: false, // Added this line
     extensions: [
-      TextStyle.configure(),
+      TextStyle,
       StarterKit.configure({
         bulletList: { keepMarks: true, keepAttributes: false },
         orderedList: { keepMarks: true, keepAttributes: false },
       }),
-      Color,
+      Color.configure(),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
       FontFamily,
       FontSize,
-      BulletList,
-      OrderedList,
-      ListItem,
     ],
     content: value,
     onUpdate: ({ editor }) => {

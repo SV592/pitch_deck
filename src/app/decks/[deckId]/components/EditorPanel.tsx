@@ -20,6 +20,9 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
   onTitleChange,
   onDeleteSlide,
 }) => {
+  console.log("EditorPanel: slides prop", slides);
+  console.log("EditorPanel: selectedSlide prop", selectedSlide);
+  console.log("EditorPanel: slides[selectedSlide]", slides?.[selectedSlide]);
   return (
     <div
       className="flex-1 flex flex-col bg-gray-900 overflow-hidden"
@@ -46,7 +49,7 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
           }}
         >
           <div className="w-full h-full overflow-y-auto custom-scrollbar">
-            {slides.length > 0 && slides[selectedSlide] && (
+            {slides?.[selectedSlide] && (
               <Slide
                 slide={slides[selectedSlide]}
                 editor={editor}
