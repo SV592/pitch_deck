@@ -2,13 +2,20 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import session from "express-session";
 import passport from "passport";
+import { NextFunction, Request, Response } from "express";
 
 /**
  * Main entry point of the NestJS application.
  * This function bootstraps the application, configures middleware, and starts the server.
  */
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn'],
+  });
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    next();
+  });
 
   // Enable CORS (Cross-Origin Resource Sharing) for frontend communication.
   // Configures allowed origin and credentials handling.

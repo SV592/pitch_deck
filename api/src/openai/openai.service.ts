@@ -108,31 +108,30 @@ export class OpenAIService {
     }
   }
 
-  async generateSlideContent(prompt: string, currentContent: string): Promise<string> {
-    const slideGenerationPrompt = `
-      You are an AI assistant specialized in generating and refining pitch deck slide content.
-      Given the following prompt and the current content of a slide, generate new, improved content for this slide.
-      The output should be in HTML format, suitable for a rich text editor. Focus on clarity, conciseness, and impact.
-      If the prompt asks for a specific format (e.g., bullet points, a paragraph), adhere to that.
-
-      User Prompt: "${prompt}"
-      Current Slide Content: "${currentContent}"
-
-      Generate the new slide content in HTML format:
-    `;
-
+  async generateSlideContent(fullPrompt: string): Promise<string> {
     try {
       const response = await this.openai.chat.completions.create({
         model: "gpt-4o",
-        messages: [{ role: "user", content: slideGenerationPrompt }],
+        messages: [{ role: "user", content: fullPrompt }],
       });
 
-      const generatedContent = response.choices[0].message.content;
+      let generatedContent = response.choices[0].message.content;
+      this.logger.log(
+        `Raw generatedContent from OpenAI: ${generatedContent ? generatedContent.substring(0, 500) + "..." : "empty"}`
+      );
       if (!generatedContent) {
         throw new InternalServerErrorException(
           `OpenAI response content is empty for slide generation.`
         );
       }
+
+      // Post-process: Remove leading/trailing "html" or markdown code block syntax
+      generatedContent = generatedContent.trim(); // Trim whitespace first
+      generatedContent = generatedContent
+        .replace(/^```html\s*/i, "")
+        .replace(/\s*```$/i, ""); // Case-insensitive
+      generatedContent = generatedContent.replace(/^html\s*/i, ""); // Case-insensitive
+
       return generatedContent;
     } catch (error) {
       if (error instanceof OpenAI.APIError) {
@@ -150,7 +149,9 @@ export class OpenAIService {
             error.stack
           );
         } else {
-          this.logger.error(`An unexpected error occurred during slide generation: ${error}`);
+          this.logger.error(
+            `An unexpected error occurred during slide generation: ${error}`
+          );
         }
         throw new InternalServerErrorException(
           `An unexpected error occurred during slide content generation. Please try again.`

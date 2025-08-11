@@ -20,9 +20,6 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
   onTitleChange,
   onDeleteSlide,
 }) => {
-  console.log("EditorPanel: slides prop", slides);
-  console.log("EditorPanel: selectedSlide prop", selectedSlide);
-  console.log("EditorPanel: slides[selectedSlide]", slides?.[selectedSlide]);
   return (
     <div
       className="flex-1 flex flex-col bg-gray-900 overflow-hidden"

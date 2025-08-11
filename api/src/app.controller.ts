@@ -26,4 +26,9 @@ export class AppController {
   testRoute(): string {
     return 'Test route is working!';
   }
+
+  @Get('simple-test')
+  simpleTest(): string {
+    return 'Simple test route is working!';
+  }
 }

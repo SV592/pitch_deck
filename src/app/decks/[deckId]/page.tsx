@@ -11,8 +11,10 @@ const DeckEditorPage = async ({ params }: DeckEditorPageProps) => {
   const { deckId } = params;
 
   let deck: Deck | null = null;
+  let accessToken: string | null = null;
   try {
-    const { accessToken } = await getAccessToken();
+    const tokenResult = await getAccessToken();
+    accessToken = tokenResult.accessToken || null;
     if (!accessToken) {
       throw new Error("No access token found.");
     }
@@ -26,19 +28,22 @@ const DeckEditorPage = async ({ params }: DeckEditorPageProps) => {
     });
 
     if (!response.ok) {
+      console.error(`Failed to fetch deck: ${response.status} ${response.statusText}`);
       throw new Error(`Failed to fetch deck: ${response.statusText}`);
     }
 
     deck = await response.json();
-  } catch (error) {
+    console.log("Fetched deck:", deck);
+  } catch (error: any) {
+    console.error("Error loading deck:", error);
     // Handle error, e.g., redirect to an error page or show a message
   }
 
   if (!deck) {
-    return <div>Error: Deck not found or could not be loaded.</div>;
+    return <div>Error: Deck not found or could not be loaded. Check console for details.</div>;
   }
 
-  return <DeckEditorWrapper deck={deck} />;
+  return <DeckEditorWrapper deck={deck} accessToken={accessToken} />;
 };
 
 export default DeckEditorPage;

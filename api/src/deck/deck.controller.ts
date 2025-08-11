@@ -10,6 +10,7 @@ import {
   Request,
 } from "@nestjs/common";
 import { DeckService } from "./deck.service";
+import { SlideService } from "./slide.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { UsersService } from "../auth/users.service";
 
@@ -18,12 +19,12 @@ import { UsersService } from "../auth/users.service";
 export class DeckController {
   constructor(
     private readonly deckService: DeckService,
+    private readonly slideService: SlideService,
     private readonly usersService: UsersService
   ) {}
 
   @Post()
   async create(@Body() createDeckDto: any, @Request() req) {
-    console.log("Creating deck with user:", req.user);
     const user = await this.usersService.findOrCreateByAuth0Id(req.user.sub, {
       email: req.user.email || `user-${req.user.sub}@auth0.com`, // Fallback email if not available
     });
@@ -36,14 +37,10 @@ export class DeckController {
 
   @Post("generate")
   async generate(@Body() companyInfo: any, @Request() req) {
-    console.log("DeckController: Received generate request.");
-    console.log("DeckController: Company Info:", companyInfo);
-    console.log("Generating deck with user:", req.user);
     const user = await this.usersService.findOrCreateByAuth0Id(req.user.sub, {
       email: req.user.email || `user-${req.user.sub}@auth0.com`, // Fallback email if not available
     });
     const generatedDeck = await this.deckService.generateDeck(companyInfo, user.id); // Use the UUID from the User entity
-    console.log("DeckController: Deck generation complete.");
     return generatedDeck;
   }
 
@@ -77,15 +74,17 @@ export class DeckController {
     return { message: "Deck deleted successfully" };
   }
 
-  @Post("regenerate-slide")
-  async regenerateSlide(@Body() body: { deckId: string; slideId: string; prompt: string; currentContent: string }) {
-    const { deckId, slideId, prompt, currentContent } = body;
-    const generatedContent = await this.deckService.regenerateSlideContent(
-      deckId,
-      slideId,
-      prompt,
-      currentContent,
-    );
-    return { generatedContent };
+  @Post("slides/regenerate")
+  async regenerateSlide(
+    @Body("deckId") deckId: string,
+    @Body("slideId") slideId: string,
+    @Body("prompt") prompt: string,
+    @Body("deckDescription") deckDescription: string,
+  ) {
+    return this.slideService.regenerateSlide(deckId, slideId, prompt, deckDescription);
   }
 }
+
+  
+
+  

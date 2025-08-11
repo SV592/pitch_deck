@@ -12,7 +12,7 @@ const SpeakerNotes: React.FC<SpeakerNotesProps> = ({
   onClose,
 }) => {
   return (
-    <div className="w-full lg:w-80 xl:w-96 flex flex-col border-t lg:border-t-0 lg:border-l border-gray-700 bg-gray-800 overflow-hidden flex-shrink-0">
+    <div className="flex flex-col">
       <div className="flex-shrink-0 flex items-center justify-between p-4 lg:p-6 border-b border-gray-700">
         <div className="flex items-center space-x-3">
           <svg

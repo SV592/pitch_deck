@@ -11,7 +11,7 @@ import { SlideService } from "./slide.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Deck, Slide]), OpenAIModule, UsersModule],
-  controllers: [DeckController, SlideController],
+  controllers: [SlideController, DeckController],
   providers: [DeckService, SlideService],
   exports: [DeckService],
 })

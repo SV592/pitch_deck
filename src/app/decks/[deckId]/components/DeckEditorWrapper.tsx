@@ -14,6 +14,8 @@ interface DeckEditorWrapperProps {
 const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken }) => {
   const router = useRouter();
   const [selectedSlide, setSelectedSlide] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState<boolean | null>(null); // null: no save attempt, true: success, false: error
 
   // Consume useDeckEditor hook
   const {
@@ -36,6 +38,8 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
     selectedSlide,
     onSlideChange: setSelectedSlide,
     onSave: async (updatedDeck: Deck) => { // Define the actual save logic here
+      setIsSaving(true);
+      setSaveSuccess(null); // Reset status on new save attempt
       try {
         const response = await fetch(`/api/decks/${deck.id}`, {
           method: "PATCH",
@@ -50,9 +54,14 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
           throw new Error("Failed to save deck");
         }
         console.log("Deck saved successfully!");
+        setSaveSuccess(true);
       } catch (error) {
         console.error("Error saving deck:", error);
-        // Optionally, you can show an error message to the user
+        setSaveSuccess(false);
+      } finally {
+        setIsSaving(false);
+        // Reset save success/error message after a few seconds
+        setTimeout(() => setSaveSuccess(null), 3000);
       }
     },
     accessToken,
@@ -231,6 +240,8 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
         onAcceptGeneratedContent={onAcceptGeneratedContent}
         onDiscardGeneratedContent={onDiscardGeneratedContent}
         accessToken={accessToken}
+        isSaving={isSaving}
+        saveSuccess={saveSuccess}
       />
     </div>
   );

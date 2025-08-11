@@ -47,18 +47,13 @@ export class DeckService {
   }
 
   async generateDeck(companyInfo: any, userId: string): Promise<Deck> {
-    this.logger.log("DeckService: Generating deck outline with OpenAI...");
     const generatedOutline = await this.openAIService.generatePitchDeckOutline(companyInfo);
-    this.logger.log("DeckService: OpenAI outline generated.");
-    this.logger.log("OpenAI Generated Theme:", generatedOutline.theme);
 
     const deckTitle = companyInfo.companyName ? `${companyInfo.companyName} Pitch Deck` : "Generated Pitch Deck";
 
     const newDeck = await this.createDeck(deckTitle, userId, [], generatedOutline.theme);
-    this.logger.log(`DeckService: Created new deck with ID: ${newDeck.id}`);
 
     if (generatedOutline && generatedOutline.slides && generatedOutline.slides.length > 0) {
-      this.logger.log(`DeckService: Adding ${generatedOutline.slides.length} slides to deck.`);
       for (const slideData of generatedOutline.slides) {
         const slide = this.slideRepository.create({
           title: slideData.headline || "",
@@ -70,7 +65,6 @@ export class DeckService {
         });
         await this.slideRepository.save(slide);
       }
-      this.logger.log("DeckService: Slides added.");
     }
 
     return this.getDeck(newDeck.id);
@@ -90,6 +84,29 @@ export class DeckService {
     });
   }
 
+  private extractSlideContentParts(htmlContent: string) {
+    let headline = '';
+    let hook = '';
+    let keyPoints: string[] = [];
+
+    if (htmlContent) {
+      const headlineMatch = htmlContent.match(/<h1>(.*?)<\/h1>/);
+      if (headlineMatch && headlineMatch[1]) {
+        headline = headlineMatch[1];
+      }
+
+      const hookMatch = htmlContent.match(/<p><strong>(.*?)<\/strong><\/p>/);
+      if (hookMatch && hookMatch[1]) {
+        hook = hookMatch[1];
+      }
+
+      const keyPointsMatches = [...htmlContent.matchAll(/<li>(.*?)<\/li>/g)];
+      keyPoints = keyPointsMatches.map(match => match[1]);
+    }
+
+    return { headline, hook, keyPoints };
+  }
+
   async updateDeck(id: string, userId: string, updateData: any): Promise<Deck> {
     const deck = await this.deckRepository.findOne({
       where: { id, userId },
@@ -105,35 +122,48 @@ export class DeckService {
     }
 
     if (updateData.slides) {
-      const updatedSlideIds = updateData.slides
-        .filter((slide) => slide.id)
-        .map((slide) => slide.id);
-
-      const slidesToRemove = deck.slides.filter(
-        (slide) => !updatedSlideIds.includes(slide.id)
-      );
-
-      for (const slide of slidesToRemove) {
-        await this.slideRepository.delete(slide.id);
-      }
+      // Create a map of existing slides for easy lookup
+      const existingSlidesMap = new Map(deck.slides.map(s => [s.id, s]));
+      const updatedSlides: Slide[] = [];
 
       for (const slideDto of updateData.slides) {
+        const { headline, hook, keyPoints } = this.extractSlideContentParts(slideDto.content);
+
         if (slideDto.id) {
-          const existingSlide = deck.slides.find((s) => s.id === slideDto.id);
+          // Existing slide: update in-memory entity
+          const existingSlide = existingSlidesMap.get(slideDto.id);
           if (existingSlide) {
-            await this.slideRepository.update(slideDto.id, slideDto);
+            Object.assign(existingSlide, {
+              ...slideDto,
+              headline,
+              hook,
+              key_points: keyPoints,
+            });
+            updatedSlides.push(existingSlide);
+            existingSlidesMap.delete(slideDto.id); // Mark as processed
           }
         } else {
-          const newSlide = this.slideRepository.create({
+          // New slide: create new entity
+          const newSlide = new Slide();
+          Object.assign(newSlide, {
             ...slideDto,
+            headline,
+            hook,
+            key_points: keyPoints,
             deckId: deck.id,
           });
-          await this.slideRepository.save(newSlide);
+          updatedSlides.push(newSlide);
         }
       }
+
+      // Slides to remove are those remaining in existingSlidesMap
+      const slidesToRemove = Array.from(existingSlidesMap.values());
+      await this.slideRepository.remove(slidesToRemove); // Use remove for cascade delete
+
+      deck.slides = updatedSlides; // Assign the updated list of slides to the deck
     }
 
-    await this.deckRepository.save(deck);
+    await this.deckRepository.save(deck); // This should cascade all changes
     return this.getDeck(id);
   }
 
@@ -158,10 +188,8 @@ export class DeckService {
       throw new Error("Slide not found in the specified deck.");
     }
 
-    this.logger.log(`Regenerating content for slide ${slideId} with prompt: ${prompt}`);
     const generatedContent = await this.openAIService.generateSlideContent(
       prompt,
-      currentContent,
     );
 
     slide.content = generatedContent;

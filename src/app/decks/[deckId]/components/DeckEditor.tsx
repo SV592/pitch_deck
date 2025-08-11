@@ -25,6 +25,8 @@ interface DeckEditorProps {
   deleteSlide: () => void;
   onSave: () => void;
   regenerateSlideContent: (prompt: string) => Promise<void>;
+  isSaving: boolean;
+  saveSuccess: boolean | null;
   moveSlide: (fromIndex: number, toIndex: number) => void;
   isGeneratingContent: boolean;
   generatedContent: string | null;
@@ -46,6 +48,8 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
   deleteSlide,
   onSave,
   regenerateSlideContent,
+  isSaving,
+  saveSuccess,
   moveSlide,
   isGeneratingContent,
   generatedContent,
@@ -201,15 +205,25 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
             onToggleSlideList={toggleSlideList}
             showSlideList={showSlideList}
             isGeneratingContent={isGeneratingContent} // Added back
+            isSaving={isSaving}
+            saveSuccess={saveSuccess}
           />
         </div>
 
-        {showSpeakerNotes && (
+        {/* Speaker Notes Panel */}
+        <div
+          className={`
+            flex flex-col
+            transition-all duration-300 ease-in-out
+            bg-gray-800
+            ${showSpeakerNotes ? "w-full lg:w-80 xl:w-96 border-l border-gray-700" : "w-0 border-transparent"}
+          `}
+        >
           <SpeakerNotes
             speakerNotesEditor={speakerNotesEditor}
             onClose={() => setShowSpeakerNotes(false)}
           />
-        )}
+        </div>
 
         <PromptModal
           isOpen={isPromptModalOpen}
