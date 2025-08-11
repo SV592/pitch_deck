@@ -17,6 +17,10 @@ export class DeckService {
     private openAIService: OpenAIService,
   ) {}
 
+  private stripHtmlTags(html: string): string {
+    return html.replace(/<[^>]*>/g, '');
+  }
+
   async createDeck(
     title: string,
     userId: string,
@@ -29,21 +33,7 @@ export class DeckService {
       theme,
     });
     const savedDeck = await this.deckRepository.save(deck);
-
-    if (slidesData.length > 0) {
-      for (const slideData of slidesData) {
-        const slide = this.slideRepository.create({
-          ...slideData,
-          deckId: savedDeck.id,
-        });
-        await this.slideRepository.save(slide);
-      }
-    }
-
-    return this.deckRepository.findOne({
-      where: { id: savedDeck.id },
-      relations: ["slides"],
-    });
+    return savedDeck; // Return savedDeck directly
   }
 
   async generateDeck(companyInfo: any, userId: string): Promise<Deck> {
@@ -56,7 +46,8 @@ export class DeckService {
     if (generatedOutline && generatedOutline.slides && generatedOutline.slides.length > 0) {
       for (const slideData of generatedOutline.slides) {
         const slide = this.slideRepository.create({
-          title: slideData.headline || "",
+          title: this.stripHtmlTags(slideData.headline || ""), // Extract plain text for title
+          headline: this.stripHtmlTags(slideData.headline || ""), // Store plain text in headline
           hook: slideData.hook || "",
           key_points: slideData.key_points || [],
           speaker_notes: slideData.speaker_notes || "",

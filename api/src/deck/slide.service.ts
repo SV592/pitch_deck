@@ -39,6 +39,12 @@ export class SlideService {
       2.  **Generate Content:** Create new content for the slide that directly addresses the user's request. The content should be concise, impactful, and tailored to the presentation's topic.
       3.  **Constraints:** Do not include any text or explanations outside of the request and keep the content brief. Aim for a maximum of 5-7 lines of text or bullet points to avoid cluttering the slide.
       4.  **Format**: Return the responce in HTML format with appropriate use of bold, italic or bullets etc.
+          **HTML Structure Guidelines:**
+          - Use <h1> for the main headline of the slide.
+          - Use <p> for paragraphs.
+          - Use <ul> and <li> for bullet points.
+          - Use <strong> for bold text.
+          - Use <em> for italic text.
 
       User Prompt: "${prompt}"
       Current Slide Content: "${slide.content}"

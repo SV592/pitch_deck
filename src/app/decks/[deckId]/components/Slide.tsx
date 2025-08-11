@@ -22,9 +22,9 @@ const Slide: React.FC<SlideProps> = ({ slide, editor, onTitleChange }) => {
       let editorContent = slide.content;
 
       if (!editorContent) {
-        const headlineContent = slide.headline ? `<h1><strong>${slide.headline}</strong></h1>` : '';
-        const hookContent = slide.hook ? `<p><strong>${slide.hook}</strong></p>` : '';
-        const keyPointsContent = (slide.key_points && slide.key_points.length > 0) ? `<ul>${slide.key_points.map(point => `<li>${point}</li>`).join('')}</ul>` : '';
+        const headlineContent = slide.headline ? `${slide.headline}` : ''; // Use directly
+        const hookContent = slide.hook ? `${slide.hook}` : ''; // Use directly
+        const keyPointsContent = (slide.key_points && slide.key_points.length > 0) ? `${slide.key_points.join('')}` : ''; // Join directly, assuming each key_point is already <li>
         editorContent = `${headlineContent}${hookContent}${keyPointsContent}`.trim();
       }
 
