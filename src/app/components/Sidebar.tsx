@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
     {
       label: "Decks",
       href: "/decks",
-      icon: <DeckIcon />,
+      icon: <DeckIcon className="w-6 h-6" />,
     },
     {
       label: "Profile",
