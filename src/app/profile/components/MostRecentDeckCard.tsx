@@ -1,11 +1,10 @@
-'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import ArrowRightIcon from '../../icons/ArrowRightIcon';
+import React from "react";
+import Link from "next/link";
 
 const timeAgo = (date: string) => {
-  const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+  const seconds = Math.floor(
+    (new Date().getTime() - new Date(date).getTime()) / 1000
+  );
   let interval = seconds / 31536000;
   if (interval > 1) {
     return Math.floor(interval) + " years ago";
@@ -35,19 +34,20 @@ export default function MostRecentDeckCard({ deck }) {
   }
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg">
+    <div className="bg-gray-800 rounded-lg">
       <h4 className="text-lg font-semibold mb-3">Last Deck Worked On</h4>
       <div className="bg-gray-700/50 p-4 rounded-lg flex items-center justify-between">
         <div>
           <p className="font-semibold text-white">{deck.title}</p>
-          <p className="text-sm text-gray-400">Updated {timeAgo(deck.updatedAt)}</p>
+          <p className="text-sm text-gray-400">
+            Updated {timeAgo(deck.updatedAt)}
+          </p>
         </div>
         <Link
           href={`/decks/${deck.id}`}
           className="flex items-center space-x-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors text-white"
         >
           <span>Open</span>
-          <ArrowRightIcon className="w-4 h-4" />
         </Link>
       </div>
     </div>
