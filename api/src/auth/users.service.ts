@@ -55,8 +55,11 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.findById(id);
+  async update(auth0Id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findByAuth0Id(auth0Id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     
     // If the name is being updated, split it into firstName and lastName
     if (updateUserDto.name) {

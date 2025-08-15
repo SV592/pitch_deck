@@ -90,8 +90,8 @@ export class AuthService {
     };
   }
 
-  async updateProfile(userId: string, updateUserDto: UpdateUserDto) {
-    return this.usersService.update(userId, updateUserDto);
+  async updateProfile(auth0Id: string, updateUserDto: UpdateUserDto) {
+    return this.usersService.update(auth0Id, updateUserDto);
   }
 }
 
