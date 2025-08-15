@@ -1,201 +1,82 @@
-"use client";
-import { useState, useEffect } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import ProfileHeader from "./components/ProfileHeader";
-import ProfileCard from "./components/ProfileCard";
-import Tabs from "./components/Tabs";
-import PersonalInformation from "./components/PersonalInformation";
-import UsageStatistics from "./components/UsageStatistics";
-import AccountSettings from "./components/AccountSettings";
+import { getSession } from '@auth0/nextjs-auth0';
+import { redirect } from 'next/navigation';
+import ProfileView from './components/ProfileView';
 
 const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) return "0 Bytes";
+  if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-const Profile: React.FC = () => {
-  const { user, isLoading: isAuth0Loading } = useUser();
-  const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
-
-  const [profileData, setProfileData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    location: "",
-    joinDate: "",
-    bio: "",
-    plan: "",
-    usage: {
-      decksCreated: 0,
-      dataProcessed: "0 GB",
-    },
-    picture: "",
-  });
-
-  const [editData, setEditData] = useState(profileData);
-
-  useEffect(() => {
-    if (isAuth0Loading) {
-      return; // Wait for Auth0 user to load
-    }
-
-    if (user) {
-      // Populate basic profile data from Auth0 session
-      const basicProfileData = {
-        name: user.name || user.nickname || user.email || "",
-        email: user.email || "",
-        picture: user.picture || "",
-        phone: "",
-        location: "",
-        joinDate: user.updated_at
-          ? new Date(user.updated_at).toLocaleDateString("en-US", {
-              month: "long",
-              year: "numeric",
-            })
-          : "",
-        bio: "",
-        plan: "",
-        usage: {
-          chatMessages: 0,
-          templatesUsed: 0,
-          decksCreated: 0,
-          dataProcessed: "0 GB",
-        },
-      };
-      setProfileData(basicProfileData);
-      setEditData(basicProfileData);
-
-      // Now fetch additional data from backend
-      const fetchAdditionalProfileData = async () => {
-        try {
-          const response = await fetch("/api/profile");
-          if (!response.ok) {
-            if (response.status === 401) {
-              // If backend says unauthorized, it means JWT failed, redirect to login
-              window.location.href = "/login";
-              return;
-            }
-            throw new Error(`Backend error: ${response.statusText}`);
-          }
-          const data = await response.json();
-          // Merge additional data from backend with existing basic data
-          setProfileData((prev) => ({
-            ...prev,
-            phone: data.phone || "",
-            location: data.location || "",
-            bio: data.bio || "",
-            plan: data.plan || "",
-            usage: {
-              ...prev.usage,
-              decksCreated: data.decks?.length || 0,
-              dataProcessed: formatBytes(data.dataProcessed || 0),
-            },
-          }));
-          setEditData((prev) => ({
-            ...prev,
-            phone: data.phone || "",
-            location: data.location || "",
-            bio: data.bio || "",
-            plan: data.plan || "",
-            usage: {
-              ...prev.usage,
-              decksCreated: data.decks?.length || 0,
-              dataProcessed: formatBytes(data.dataProcessed || 0),
-            },
-          }));
-        } catch (error: any) {}
-      };
-      fetchAdditionalProfileData();
-    } else {
-      // If not loading and no user, redirect to login
-      window.location.href = "/login";
-    }
-  }, [user, isAuth0Loading]);
-
-  const handleSave = async () => {
-    try {
-      const response = await fetch("/api/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editData),
-      });
-
-      if (response.ok) {
-        const updatedUser = await response.json();
-        setProfileData(updatedUser);
-        setIsEditing(false);
-      } else {
-      }
-    } catch (error) {}
-  };
-
-  const handleCancel = () => {
-    setEditData(profileData);
-    setIsEditing(false);
-  };
-
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "usage", label: "Usage Stats" },
-    { id: "settings", label: "Settings" },
-  ];
-
-  if (isAuth0Loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
-        Loading profile...
-      </div>
-    );
+async function getProfileData(session) {
+  if (!process.env.BACKEND_URL) {
+    throw new Error('BACKEND_URL environment variable is not set.');
   }
 
-  return (
-    <div className="min-h-screen bg-gray-900 items-center text-white ">
-      <ProfileHeader />
+  if (!session?.accessToken) {
+    console.log('No access token found, redirecting to login.');
+    redirect('/api/auth/login');
+  }
 
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 lg:items-start gap-8">
-          <ProfileCard profileData={profileData} />
+  const backendUrl = `${process.env.BACKEND_URL}/auth/profile`;
+  console.log(`Fetching profile data from: ${backendUrl}`);
 
-          <div className="lg:col-span-3">
-            <div className="bg-[#1E2939] rounded-xl mb-6">
-              <Tabs
-                tabs={tabs}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-              />
+  try {
+    const response = await fetch(backendUrl, {
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      cache: 'no-store',
+    });
 
-              <div className="p-6">
-                {activeTab === "overview" && (
-                  <PersonalInformation
-                    isEditing={isEditing}
-                    setIsEditing={setIsEditing}
-                    editData={editData}
-                    setEditData={setEditData}
-                    handleSave={handleSave}
-                    handleCancel={handleCancel}
-                    profileData={profileData}
-                  />
-                )}
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`Backend error: ${response.status} ${response.statusText}`, errorBody);
+      if (response.status === 401) {
+        redirect('/api/auth/login');
+      }
+      throw new Error(`Backend request failed: ${response.statusText}`);
+    }
 
-                {activeTab === "usage" && (
-                  <UsageStatistics usageData={profileData.usage} />
-                )}
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to fetch profile data:', error);
+    redirect('/api/auth/login');
+  }
+}
 
-                {activeTab === "settings" && <AccountSettings />}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+export default async function ProfilePage() {
+  const session = await getSession();
+  if (!session) {
+    redirect('/api/auth/login');
+  }
 
-export default Profile;
+  const rawProfileData = await getProfileData(session);
+
+  const initialProfileData = {
+    name: session.user.name || session.user.nickname || session.user.email || '',
+    email: session.user.email || '',
+    picture: session.user.picture || '',
+    joinDate: session.user.updated_at
+      ? new Date(session.user.updated_at).toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric',
+        })
+      : '',
+    phone: rawProfileData.phone || '',
+    location: rawProfileData.location || '',
+    bio: rawProfileData.bio || '',
+    plan: rawProfileData.plan || 'Free Plan',
+    usage: {
+      decksCreated: rawProfileData.decks?.length || 0,
+      dataProcessed: formatBytes(rawProfileData.dataProcessed || 0),
+      chatMessages: 0,
+      templatesUsed: 0,
+    },
+  };
+
+  return <ProfileView initialProfileData={initialProfileData} />;
+}

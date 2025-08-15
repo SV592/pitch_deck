@@ -64,8 +64,29 @@ export class AuthService {
     };
   }
 
-  async getProfile(userId: string) {
-    return this.usersService.findById(userId);
+  async getProfile(auth0Id: string) {
+    const user = await this.usersService.findByAuth0Id(auth0Id);
+    // Manually construct a plain object to avoid circular dependency issues
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      location: user.location,
+      bio: user.bio,
+      plan: user.plan,
+      dataProcessed: user.dataProcessed,
+      createdAt: user.createdAt,
+      // Map over the decks to remove the circular reference back to the user
+      decks: user.decks.map((deck) => ({
+        id: deck.id,
+        title: deck.title,
+        description: deck.description,
+        theme: deck.theme,
+        createdAt: deck.createdAt,
+        updatedAt: deck.updatedAt,
+      })),
+    };
   }
 
   async updateProfile(userId: string, updateUserDto: UpdateUserDto) {

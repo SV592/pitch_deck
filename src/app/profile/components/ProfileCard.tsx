@@ -80,13 +80,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profileData }) => {
         </div>
 
         <div className="mt-6 pt-4 border-t border-gray-700">
-          <div className="grid grid-cols-2 gap-4 text-center">
-            <div className="">
-              <div className="text-2xl font-bold text-orange-500">
-                {profileData.usage.decksCreated}
-              </div>
-              <div className="text-xs text-gray-400">Decks</div>
+          <div className="flex justify-center flex-col items-center">
+            <div className="text-2xl font-bold text-orange-500">
+              {profileData.usage.decksCreated}
             </div>
+            <div className="text-xs text-gray-400">Decks</div>
           </div>
         </div>
       </div>
