@@ -85,6 +85,7 @@ export class AuthService {
         theme: deck.theme,
         createdAt: deck.createdAt,
         updatedAt: deck.updatedAt,
+        slides: deck.slides, // Include the slides for each deck
       })),
     };
   }

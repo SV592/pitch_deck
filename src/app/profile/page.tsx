@@ -56,6 +56,16 @@ export default async function ProfilePage() {
 
   const rawProfileData = await getProfileData(session);
 
+  // Calculate additional stats on the server
+  const totalSlides = rawProfileData.decks?.reduce(
+    (acc, deck) => acc + (deck.slides?.length || 0),
+    0,
+  );
+
+  const mostRecentDeck = rawProfileData.decks?.sort((a, b) => {
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+  })[0];
+
   const initialProfileData = {
     name: session.user.name || session.user.nickname || session.user.email || '',
     email: session.user.email || '',
@@ -72,11 +82,13 @@ export default async function ProfilePage() {
     plan: rawProfileData.plan || 'Free Plan',
     usage: {
       decksCreated: rawProfileData.decks?.length || 0,
-      dataProcessed: formatBytes(rawProfileData.dataProcessed || 0),
+      dataProcessed: formatBytes(Number(rawProfileData.dataProcessed) || 0),
       chatMessages: 0,
       templatesUsed: 0,
+      totalSlides: totalSlides || 0,
     },
+    mostRecentDeck: mostRecentDeck || null,
   };
 
-  return <ProfileView initialProfileData={initialProfileData} />;
+  return <ProfileView initialProfileData={initialProfileData} />; 
 }

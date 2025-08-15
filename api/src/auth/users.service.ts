@@ -29,7 +29,10 @@ export class UsersService {
   }
 
   async findByAuth0Id(auth0Id: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { auth0Id }, relations: ["decks"] });
+    return this.userRepository.findOne({
+      where: { auth0Id },
+      relations: ["decks", "decks.slides"],
+    });
   }
 
   async findOrCreateByAuth0Id(

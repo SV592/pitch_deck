@@ -7,6 +7,7 @@ import Tabs from './Tabs';
 import PersonalInformation from './PersonalInformation';
 import UsageStatistics from './UsageStatistics';
 import AccountSettings from './AccountSettings';
+import MostRecentDeckCard from './MostRecentDeckCard';
 
 const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
@@ -52,7 +53,7 @@ export default function ProfileView({ initialProfileData }) {
           usage: {
             ...profileData.usage, // Keep original usage stats
             decksCreated: updatedUser.decks?.length ?? profileData.usage.decksCreated,
-            dataProcessed: formatBytes(updatedUser.dataProcessed ?? 0),
+            dataProcessed: formatBytes(Number(updatedUser.dataProcessed) || 0),
           },
         };
         setProfileData(formattedData);
@@ -101,17 +102,20 @@ export default function ProfileView({ initialProfileData }) {
                 setActiveTab={setActiveTab}
               />
 
-              <div className="p-6">
+              <div className="p-6 space-y-8">
                 {activeTab === 'overview' && (
-                  <PersonalInformation
-                    isEditing={isEditing}
-                    setIsEditing={setIsEditing}
-                    editData={editData}
-                    setEditData={setEditData}
-                    handleSave={handleSave}
-                    handleCancel={handleCancel}
-                    profileData={profileData}
-                  />
+                  <>
+                    <MostRecentDeckCard deck={profileData.mostRecentDeck} />
+                    <PersonalInformation
+                      isEditing={isEditing}
+                      setIsEditing={setIsEditing}
+                      editData={editData}
+                      setEditData={setEditData}
+                      handleSave={handleSave}
+                      handleCancel={handleCancel}
+                      profileData={profileData}
+                    />
+                  </>
                 )}
 
                 {activeTab === 'usage' && (
