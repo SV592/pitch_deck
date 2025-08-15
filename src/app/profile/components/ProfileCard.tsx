@@ -11,6 +11,7 @@ interface ProfileCardProps {
     email: string;
     location: string;
     joinDate: string;
+    plan: string;
     usage: {
       decksCreated: number;
       templatesUsed: number;
@@ -68,6 +69,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profileData }) => {
               </div>
             )}
           </div>
+
+          {profileData.plan && (
+            <div className="mt-4">
+              <span className="inline-block bg-green-500/20 text-green-300 text-xs font-semibold px-3 py-1 rounded-full">
+                {profileData.plan}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 pt-4 border-t border-gray-700">

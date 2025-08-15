@@ -13,6 +13,9 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Column({ nullable: true })
+  name: string;
+
   @Column({ unique: true, nullable: true })
   email: string;
 
@@ -27,6 +30,21 @@ export class User {
 
   @Column({ nullable: true })
   lastName: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
+  location: string;
+
+  @Column("text", { nullable: true })
+  bio: string;
+
+  @Column({ default: "Free Plan" })
+  plan: string;
+
+  @Column({ type: "bigint", default: 0 })
+  dataProcessed: number;
 
   @Column({ default: true })
   isActive: boolean;

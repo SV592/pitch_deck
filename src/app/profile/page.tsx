@@ -1,12 +1,21 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useState, useEffect } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileCard from "./components/ProfileCard";
 import Tabs from "./components/Tabs";
 import PersonalInformation from "./components/PersonalInformation";
 import UsageStatistics from "./components/UsageStatistics";
 import AccountSettings from "./components/AccountSettings";
+
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
 
 const Profile: React.FC = () => {
   const { user, isLoading: isAuth0Loading } = useUser();
@@ -20,10 +29,8 @@ const Profile: React.FC = () => {
     location: "",
     joinDate: "",
     bio: "",
-    plan: "Pro Plan",
+    plan: "",
     usage: {
-      chatMessages: 0,
-      templatesUsed: 0,
       decksCreated: 0,
       dataProcessed: "0 GB",
     },
@@ -40,25 +47,24 @@ const Profile: React.FC = () => {
     if (user) {
       // Populate basic profile data from Auth0 session
       const basicProfileData = {
-        name: user.name || user.nickname || user.email || '',
-        email: user.email || '',
-        picture: user.picture || '',
-        // Add other basic fields if available directly from user object
-        phone: '',
-        location: '',
+        name: user.name || user.nickname || user.email || "",
+        email: user.email || "",
+        picture: user.picture || "",
+        phone: "",
+        location: "",
         joinDate: user.updated_at
-          ? new Date(user.updated_at).toLocaleDateString('en-US', {
-              month: 'long',
-              year: 'numeric',
+          ? new Date(user.updated_at).toLocaleDateString("en-US", {
+              month: "long",
+              year: "numeric",
             })
-          : '',
-        bio: '',
-        plan: 'Pro Plan',
+          : "",
+        bio: "",
+        plan: "",
         usage: {
           chatMessages: 0,
           templatesUsed: 0,
           decksCreated: 0,
-          dataProcessed: '0 GB',
+          dataProcessed: "0 GB",
         },
       };
       setProfileData(basicProfileData);
@@ -67,11 +73,11 @@ const Profile: React.FC = () => {
       // Now fetch additional data from backend
       const fetchAdditionalProfileData = async () => {
         try {
-          const response = await fetch('/api/profile');
+          const response = await fetch("/api/profile");
           if (!response.ok) {
             if (response.status === 401) {
               // If backend says unauthorized, it means JWT failed, redirect to login
-              window.location.href = '/login';
+              window.location.href = "/login";
               return;
             }
             throw new Error(`Backend error: ${response.statusText}`);
@@ -80,32 +86,43 @@ const Profile: React.FC = () => {
           // Merge additional data from backend with existing basic data
           setProfileData((prev) => ({
             ...prev,
-            phone: data.phone || '',
-            location: data.location || '',
-            bio: data.bio || '',
+            phone: data.phone || "",
+            location: data.location || "",
+            bio: data.bio || "",
+            plan: data.plan || "",
+            usage: {
+              ...prev.usage,
+              decksCreated: data.decks?.length || 0,
+              dataProcessed: formatBytes(data.dataProcessed || 0),
+            },
           }));
           setEditData((prev) => ({
             ...prev,
-            phone: data.phone || '',
-            location: data.location || '',
-            bio: data.bio || '',
+            phone: data.phone || "",
+            location: data.location || "",
+            bio: data.bio || "",
+            plan: data.plan || "",
+            usage: {
+              ...prev.usage,
+              decksCreated: data.decks?.length || 0,
+              dataProcessed: formatBytes(data.dataProcessed || 0),
+            },
           }));
-        } catch (error: any) {
-        }
+        } catch (error: any) {}
       };
       fetchAdditionalProfileData();
     } else {
       // If not loading and no user, redirect to login
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
   }, [user, isAuth0Loading]);
 
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
+      const response = await fetch("/api/profile", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(editData),
       });
@@ -116,8 +133,7 @@ const Profile: React.FC = () => {
         setIsEditing(false);
       } else {
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handleCancel = () => {
