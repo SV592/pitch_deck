@@ -16,13 +16,13 @@ It uses AI to generate and customize pitch presentations.
 ---
 
 ### Screenshots
-    <img width="1919" height="905" alt="image" src="https://github.com/user-attachments/assets/aea6da31-6092-4dab-8250-2b79206c5df2" />
-    <img width="1918" height="905" alt="image" src="https://github.com/user-attachments/assets/651917d4-7918-4d9a-b8e1-475d4cf7314c" />
-    <img width="1917" height="912" alt="image" src="https://github.com/user-attachments/assets/726bb98b-1ebf-42e4-b7f9-9bd1d9e14c8c" />
-    <img width="1915" height="884" alt="image" src="https://github.com/user-attachments/assets/c567c9da-a359-4bfb-ac70-1eb89ad305df" />
-    <img width="3834" height="1905" alt="image" src="https://github.com/user-attachments/assets/d44b89e7-977c-4edd-a4d9-a9c35914992c" />
-    <img width="3830" height="1902" alt="image" src="https://github.com/user-attachments/assets/99781da5-90ab-46c8-ab75-c3b94066c76e" />
-    <img width="1914" height="911" alt="image" src="https://github.com/user-attachments/assets/556c0b3d-d920-405f-8ab3-a00b2b40e24e" />
+    ![screenshoots](https://github.com/user-attachments/assets/aea6da31-6092-4dab-8250-2b79206c5df2)
+    ![screenshoots](https://github.com/user-attachments/assets/651917d4-7918-4d9a-b8e1-475d4cf7314c)
+    ![screenshoots](https://github.com/user-attachments/assets/726bb98b-1ebf-42e4-b7f9-9bd1d9e14c8c)
+    ![screenshoots](https://github.com/user-attachments/assets/c567c9da-a359-4bfb-ac70-1eb89ad305df)
+    ![screenshoots](https://github.com/user-attachments/assets/d44b89e7-977c-4edd-a4d9-a9c35914992c)
+    ![screenshoots(https://github.com/user-attachments/assets/99781da5-90ab-46c8-ab75-c3b94066c76e)
+    ![screenshoots](https://github.com/user-attachments/assets/556c0b3d-d920-405f-8ab3-a00b2b40e24e)
 ---
 
 ### Stack
