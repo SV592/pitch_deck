@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+###  Overview (IN PROGRESS)
+This is an **AI-powered pitch deck generator**, a tool designed to streamline pitch deck creation. 
+It uses AI to generate and customize pitch presentations.
 
-## Getting Started
+---
 
-First, run the development server:
+### Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **AI Content Generation:** Uses the **OpenAI API** to generate initial pitch deck content based on user input.
+* **Dynamic UI:** Allows for **drag-and-drop** slide reordering and dynamic editing.
+* **Individual Slide Regeneration:** Users can regenerate content for a specific slide based on new instructions.
+* **AI-Generated Speaker Notes:** Automatically creates speaker notes for each slide to assist with presentation delivery.
+* **User Management:** Implements **Auth0** for secure user authentication and data persistence via a **PostgreSQL** database.
+* **Export:** Saves pitch decks in **PowerPoint (.pptx)** format.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Screenshots
+    <img width="1919" height="905" alt="image" src="https://github.com/user-attachments/assets/aea6da31-6092-4dab-8250-2b79206c5df2" />
+    <img width="1918" height="905" alt="image" src="https://github.com/user-attachments/assets/651917d4-7918-4d9a-b8e1-475d4cf7314c" />
+    <img width="1917" height="912" alt="image" src="https://github.com/user-attachments/assets/726bb98b-1ebf-42e4-b7f9-9bd1d9e14c8c" />
+    <img width="1915" height="884" alt="image" src="https://github.com/user-attachments/assets/c567c9da-a359-4bfb-ac70-1eb89ad305df" />
+    <img width="3834" height="1905" alt="image" src="https://github.com/user-attachments/assets/d44b89e7-977c-4edd-a4d9-a9c35914992c" />
+    <img width="3830" height="1902" alt="image" src="https://github.com/user-attachments/assets/99781da5-90ab-46c8-ab75-c3b94066c76e" />
+    <img width="1914" height="911" alt="image" src="https://github.com/user-attachments/assets/556c0b3d-d920-405f-8ab3-a00b2b40e24e" />
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Stack
 
-## Learn More
+* **Frontend:** **Next.js** and **Tailwind CSS** for the frontend.
+* **Backend:** **NestJS** microservices handle API requests and interact with the **OpenAI API**.
+* **Database:** **PostgreSQL** for data management and persistence.
+* **Authentication:** **Auth0** for user authentication and authorization.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Todo
+* Improve formatting
+* Implement the save to PPTX function
+* Incorporate AI-generated images
+* Improve responsiveness
+* Sanitize free-form prompts for regenerating individual slides
+* Version control
+* Improve progress indicator
+* Add keyboard shortcuts
+* Add a color palette
