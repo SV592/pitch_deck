@@ -16,14 +16,14 @@ It uses AI to generate and customize pitch presentations.
 ---
 
 ### Screenshots
-    ![screenshoots](https://github.com/user-attachments/assets/aea6da31-6092-4dab-8250-2b79206c5df2)
-    ![screenshoots](https://github.com/user-attachments/assets/651917d4-7918-4d9a-b8e1-475d4cf7314c)
-    ![screenshoots](https://github.com/user-attachments/assets/726bb98b-1ebf-42e4-b7f9-9bd1d9e14c8c)
-    ![screenshoots](https://github.com/user-attachments/assets/c567c9da-a359-4bfb-ac70-1eb89ad305df)
-    ![screenshoots](https://github.com/user-attachments/assets/d44b89e7-977c-4edd-a4d9-a9c35914992c)
-    ![screenshoots(https://github.com/user-attachments/assets/99781da5-90ab-46c8-ab75-c3b94066c76e)
-    ![screenshoots](https://github.com/user-attachments/assets/556c0b3d-d920-405f-8ab3-a00b2b40e24e)
----
+
+![generating a new pitch deck](screenshots/generate.png)
+![deck editor ](screenshots/deck.png)
+![all pitch decks](screenshots/decks.png)
+![login and authentication](screenshots/login.png)
+![profile page](screenshots/profile.png)
+![regenerating an individual slide](screenshots/regen.png)
+![sidebar menu for navigation](screenshots/side-bar.png)
 
 ### Stack
 
