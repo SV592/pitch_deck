@@ -1,0 +1,133 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import Hero from "./Hero";
+import ProgressSteps from "./ProgressSteps";
+import CompanyInfoForm from "./CompanyInfoForm";
+import Generation from "./Generation";
+
+interface HomePageClientProps {
+  user: any;
+}
+
+export default function HomePageClient({ user }: HomePageClientProps) {
+  const router = useRouter();
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const [formData, setFormData] = useState({
+    companyName: "",
+    industry: "",
+    problemStatement: "",
+    solution: "",
+    businessModel: "",
+    targetMarket: "",
+    financials: "",
+    fundingGoal: "",
+    teamSize: "",
+    stage: "idea",
+  });
+
+  const industries = [
+    "Technology",
+    "Healthcare",
+    "Finance",
+    "Education",
+    "E-commerce",
+    "Manufacturing",
+    "Real Estate",
+    "Entertainment",
+    "Food & Beverage",
+    "Transportation",
+    "Energy",
+    "Other",
+  ];
+
+  const stages = [
+    { value: "idea", label: "Idea Stage" },
+    { value: "prototype", label: "Prototype" },
+    { value: "mvp", label: "MVP" },
+    { value: "growth", label: "Growth Stage" },
+    { value: "expansion", label: "Expansion" },
+  ];
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const generatePitchDeck = async () => {
+    setIsGenerating(true);
+    console.log("Attempting to generate pitch deck with formData:", formData);
+    try {
+      const response = await fetch("/api/generate-deck", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      console.log("Response status:", response.status);
+      console.log("Response OK:", response.ok);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push("/login");
+          return;
+        }
+        const errorData = await response.json();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorData.message || "Unknown error"}`
+        );
+      }
+
+      const newDeck = await response.json();
+      console.log("Deck generated successfully:", newDeck);
+      console.log("Redirecting to deck ID:", newDeck.id);
+      router.push(`/decks/${newDeck.id}`);
+    } catch (error: any) {
+      console.error("Error generating pitch deck:", error.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const steps = [
+    {
+      number: 1,
+      title: "Company Info",
+      description: "Tell us about your company",
+    },
+    { number: 2, title: "Generate", description: "AI creates your outline" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Hero />
+
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <ProgressSteps steps={steps} currentStep={currentStep} />
+
+        {currentStep === 1 && (
+          <CompanyInfoForm
+            formData={formData}
+            handleInputChange={handleInputChange}
+            industries={industries}
+            stages={stages}
+            setCurrentStep={setCurrentStep}
+          />
+        )}
+
+        {currentStep === 2 && (
+          <Generation
+            isGenerating={isGenerating}
+            generatePitchDeck={generatePitchDeck}
+          />
+        )}
+      </div>
+    </div>
+  );
+}

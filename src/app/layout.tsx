@@ -1,10 +1,7 @@
-'use client';
-
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
-import AppContent from './components/AppContent';
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+import ClientLayout from './components/ClientLayout';
 
 const geistSans = GeistSans.variable;
 const geistMono = GeistMono.variable;
@@ -20,9 +17,7 @@ export default function RootLayout({
         className={`${geistSans} ${geistMono} antialiased`}
         suppressHydrationWarning
       >
-        <UserProvider scope="openid profile email offline_access">
-          <AppContent>{children}</AppContent>
-        </UserProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
