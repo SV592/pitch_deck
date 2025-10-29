@@ -69,10 +69,26 @@ export class DeckService {
   }
 
   async getDecksByUser(userId: string): Promise<Deck[]> {
-    return this.deckRepository.find({
-      where: { userId },
-      relations: ["slides"],
-    });
+    // Optimized query: only fetch fields needed for deck list view
+    return this.deckRepository
+      .createQueryBuilder('deck')
+      .leftJoinAndSelect('deck.slides', 'slide')
+      .where('deck.userId = :userId', { userId })
+      .select([
+        'deck.id',
+        'deck.title',
+        'deck.description',
+        'deck.theme',
+        'deck.createdAt',
+        'deck.updatedAt',
+        'slide.id',
+        'slide.title',
+        'slide.order',
+        // Exclude heavy fields like content, speaker_notes, key_points
+      ])
+      .orderBy('deck.updatedAt', 'DESC')
+      .addOrderBy('slide.order', 'ASC')
+      .getMany();
   }
 
   private extractSlideContentParts(htmlContent: string) {

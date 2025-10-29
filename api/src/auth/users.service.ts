@@ -55,6 +55,28 @@ export class UsersService {
     return user;
   }
 
+  // Lightweight method to get user ID without loading relations
+  async getUserIdFromAuth0(auth0Id: string, email?: string): Promise<string> {
+    const user = await this.userRepository.findOne({
+      where: { auth0Id },
+      select: ['id'], // Only select the ID field
+    });
+
+    if (!user) {
+      // Create new user if doesn't exist
+      const newUser = this.userRepository.create({
+        auth0Id,
+        provider: "auth0",
+        isActive: true,
+        email: email || `user-${auth0Id}@auth0.com`,
+      });
+      const savedUser = await this.userRepository.save(newUser);
+      return savedUser.id;
+    }
+
+    return user.id;
+  }
+
   async update(auth0Id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findByAuth0Id(auth0Id);
     if (!user) {

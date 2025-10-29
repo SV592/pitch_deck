@@ -13,7 +13,13 @@ async function bootstrap() {
     logger: ['error', 'warn'],
   });
 
+  // Add cache headers for GET requests to improve performance
   app.use((req: Request, res: Response, next: NextFunction) => {
+    // Only cache GET requests for deck-related endpoints
+    if (req.method === 'GET' && req.path.startsWith('/decks')) {
+      // Cache for 60 seconds, allow stale responses while revalidating
+      res.setHeader('Cache-Control', 'private, max-age=60, stale-while-revalidate=120');
+    }
     next();
   });
 

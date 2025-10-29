@@ -46,10 +46,11 @@ export class DeckController {
 
   @Get()
   async findAll(@Request() req) {
-    const user = await this.usersService.findOrCreateByAuth0Id(req.user.sub, {
-      email: req.user.email || `user-${req.user.sub}@auth0.com`, // Fallback email if not available
-    });
-    return this.deckService.getDecksByUser(user.id); // Use the UUID from the User entity
+    const userId = await this.usersService.getUserIdFromAuth0(
+      req.user.sub,
+      req.user.email
+    );
+    return this.deckService.getDecksByUser(userId);
   }
 
   @Get(":id")
