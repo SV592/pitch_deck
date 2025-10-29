@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  Index,
 } from "typeorm";
 import { User } from "../auth/user.entity";
 import { Slide } from "../deck/slide.entity";
@@ -34,6 +35,7 @@ export class Deck {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Index('idx_decks_user_id')
   @Column("uuid")
   userId: string;
 

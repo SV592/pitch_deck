@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Index,
 } from "typeorm";
 import { Deck } from "../deck/deck.entity";
 
@@ -22,6 +23,7 @@ export class User {
   @Column({ nullable: true })
   password: string; // nullable for Auth0 users
 
+  @Index('idx_users_auth0_id')
   @Column({ nullable: true, unique: true })
   auth0Id: string; // Auth0 user ID
 

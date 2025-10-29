@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from "typeorm";
 import { Deck } from "./deck.entity";
 
@@ -44,6 +45,7 @@ export class Slide {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Index('idx_slides_deck_id')
   @Column("uuid")
   deckId: string;
 
