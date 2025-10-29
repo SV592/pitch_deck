@@ -1,7 +1,8 @@
 import React from "react";
 import DeckEditorWrapper from "./components/DeckEditorWrapper";
 import { Deck } from "./types";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { getSession } from "@auth0/nextjs-auth0";
+import { redirect } from "next/navigation";
 
 interface DeckEditorPageProps {
   params: { deckId: string };
@@ -10,21 +11,21 @@ interface DeckEditorPageProps {
 const DeckEditorPage = async ({ params }: DeckEditorPageProps) => {
   const { deckId } = params;
 
-  let deck: Deck | null = null;
-  let accessToken: string | null = null;
-  try {
-    const tokenResult = await getAccessToken();
-    accessToken = tokenResult.accessToken || null;
-    if (!accessToken) {
-      throw new Error("No access token found.");
-    }
+  const session = await getSession();
 
+  if (!session?.accessToken) {
+    redirect('/api/auth/login');
+  }
+
+  let deck: Deck | null = null;
+  try {
     const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
     const response = await fetch(`${backendUrl}/decks/${deckId}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${session.accessToken}`,
         Accept: "application/json",
       },
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -38,17 +39,14 @@ const DeckEditorPage = async ({ params }: DeckEditorPageProps) => {
     console.log("Fetched deck:", deck);
   } catch (error: any) {
     console.error("Error loading deck:", error);
+    redirect('/decks');
   }
 
   if (!deck) {
-    return (
-      <div>
-        Error: Deck not found or could not be loaded. Check console for details.
-      </div>
-    );
+    redirect('/decks');
   }
 
-  return <DeckEditorWrapper deck={deck} accessToken={accessToken} />;
+  return <DeckEditorWrapper deck={deck} accessToken={session.accessToken} />;
 };
 
 export default DeckEditorPage;
