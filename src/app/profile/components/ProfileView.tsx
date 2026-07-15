@@ -18,7 +18,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-export default function ProfileView({ initialProfileData }) {
+export default function ProfileView({ initialProfileData }: { initialProfileData: any }) {
   const { user, isLoading: isAuth0Loading } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");

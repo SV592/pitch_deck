@@ -128,6 +128,10 @@ export class DeckService {
       deck.title = updateData.title;
     }
 
+    if (updateData.theme !== undefined) {
+      deck.theme = updateData.theme;
+    }
+
     if (updateData.slides) {
       // Create a map of existing slides for easy lookup
       const existingSlidesMap = new Map(deck.slides.map(s => [s.id, s]));

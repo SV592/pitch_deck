@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Deck, Slide as SlideType } from "../types";
+import { Deck, Slide as SlideType, Theme } from "../types";
 import { UseDeckEditorProps } from "./useDeckEditor"; // Import UseDeckEditorProps
 import SlideList from "./SlideList";
 import EditorPanel from "./EditorPanel";
@@ -11,6 +11,7 @@ import SpeakerNotes from "./SpeakerNotes";
 import DeckEditorActions from "./DeckEditorActions";
 import MobileSidebarToggle from "./MobileSidebarToggle";
 import PromptModal from "./PromptModal";
+import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 
 // Define the new props interface for DeckEditor
 interface DeckEditorProps {
@@ -34,6 +35,9 @@ interface DeckEditorProps {
   onAcceptGeneratedContent: (content: string) => void;
   onDiscardGeneratedContent: () => void;
   accessToken: string;
+  theme: Theme;
+  themeId: string;
+  onThemeChange: (id: string) => void;
 }
 
 const DeckEditor: React.FC<DeckEditorProps> = ({
@@ -57,6 +61,9 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
   onAcceptGeneratedContent,
   onDiscardGeneratedContent,
   accessToken,
+  theme,
+  themeId,
+  onThemeChange,
 }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showSpeakerNotes, setShowSpeakerNotes] = useState(true);
@@ -65,14 +72,13 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
   const [showSlideList, setShowSlideList] = useState(true); // New state for slide list toggle
 
   const handleDownload = async () => {
-    const { generatePptx } = await import("./pptx-generator");
-    const updatedDeck = { ...deck, slides };
-    generatePptx(updatedDeck);
-  };
-
-  const handlePromptSubmit = async (prompt: string) => {
-    await regenerateSlideContent(prompt);
-    // Do NOT close modal here, wait for user to accept/discard
+    try {
+      const { generatePptx } = await import("./pptx-generator");
+      const updatedDeck = { ...deck, slides, theme };
+      await generatePptx(updatedDeck);
+    } catch (error) {
+      console.error("Failed to export PPTX:", error);
+    }
   };
 
   const handleSlideSelect = useCallback(
@@ -86,6 +92,23 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
   const toggleSlideList = () => {
     setShowSlideList(!showSlideList);
   };
+
+  const slideCount = slides?.length || 0;
+  const shortcutHandlers = useMemo(
+    () => ({
+      onSave,
+      onPrevSlide: () => onSlideChange(Math.max(0, selectedSlide - 1)),
+      onNextSlide: () =>
+        onSlideChange(Math.min(Math.max(0, slideCount - 1), selectedSlide + 1)),
+      onAddSlide: addSlide,
+      onDeleteSlide: () => {
+        if (slideCount > 1) deleteSlide();
+      },
+      onRegenerate: () => setIsPromptModalOpen(true),
+    }),
+    [onSave, onSlideChange, selectedSlide, slideCount, addSlide, deleteSlide]
+  );
+  useKeyboardShortcuts(shortcutHandlers);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -192,8 +215,11 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
             selectedSlide={selectedSlide}
             onTitleChange={handleTitleChange}
             onDeleteSlide={deleteSlide}
+            theme={theme}
           />
           <DeckEditorActions
+            themeId={themeId}
+            onThemeChange={onThemeChange}
             onDownload={handleDownload}
             onSave={onSave}
             onAddSlide={addSlide}
@@ -228,14 +254,13 @@ const DeckEditor: React.FC<DeckEditorProps> = ({
         <PromptModal
           isOpen={isPromptModalOpen}
           onClose={() => setIsPromptModalOpen(false)}
-          onSubmit={handlePromptSubmit} // This will be removed later
           initialPrompt={currentPrompt}
           originalContent={originalContent}
           generatedContent={generatedContent}
           onAcceptGeneratedContent={onAcceptGeneratedContent}
           onDiscardGeneratedContent={onDiscardGeneratedContent}
-          onGenerateContent={regenerateSlideContent} // New prop
-          isGeneratingContent={isGeneratingContent} // New prop
+          onGenerateContent={regenerateSlideContent}
+          isGeneratingContent={isGeneratingContent}
         />
       </div>
     </DndProvider>

@@ -5,7 +5,7 @@ export const PUT = withApiAuthRequired(async function updateProfile(
   req: NextRequest,
 ) {
   try {
-    const { accessToken } = await getAccessToken(req);
+    const { accessToken } = await getAccessToken();
     const body = await req.json();
 
     const response = await fetch(`${process.env.BACKEND_URL}/auth/profile`, {

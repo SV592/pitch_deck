@@ -1,7 +1,10 @@
 
 import React from "react";
+import ThemePicker from "./ThemePicker";
 
 interface DeckEditorActionsProps {
+  themeId: string;
+  onThemeChange: (id: string) => void;
   onDownload: () => void;
   onSave: () => void;
   onAddSlide: () => void;
@@ -18,6 +21,8 @@ interface DeckEditorActionsProps {
 }
 
 const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
+  themeId,
+  onThemeChange,
   onDownload,
   onSave,
   onAddSlide,
@@ -35,8 +40,12 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
   return (
     <div className="flex-shrink-0 p-4 lg:p-6 border-t border-gray-700 bg-gray-900">
       <div className="flex flex-wrap gap-4 justify-center lg:justify-end items-center">
+        <div className="mr-auto">
+          <ThemePicker value={themeId} onChange={onThemeChange} />
+        </div>
         <button
           onClick={onAddSlide}
+          title="Add slide (N)"
           className="bg-green-500 hover:bg-green-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <svg
@@ -57,6 +66,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
         <button
           onClick={onDeleteSlide}
           disabled={isDeleteDisabled}
+          title="Delete slide (Del)"
           className="bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <svg
@@ -76,6 +86,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
         </button>
         <button
           onClick={onDownload}
+          title="Export to PowerPoint"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <svg
@@ -96,6 +107,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
         <button
           onClick={onSave}
           disabled={isSaving} // Disable button when saving
+          title="Save deck (Ctrl/Cmd+S)"
           className={`
             bg-purple-500 hover:bg-purple-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl flex items-center space-x-2
             ${isSaving ? "opacity-50 cursor-not-allowed" : ""}
@@ -128,6 +140,7 @@ const DeckEditorActions: React.FC<DeckEditorActionsProps> = ({
         
         <button
           onClick={onOpenPromptModal}
+          title="Regenerate slide content (R)"
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 lg:px-6 py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 text-sm"
         >
           <svg
