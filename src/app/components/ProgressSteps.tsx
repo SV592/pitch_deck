@@ -21,12 +21,29 @@ const ProgressSteps = ({
           <div key={step.number} className="flex items-center">
             <div className="flex flex-col items-center">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold transition-colors duration-200 ${
                   currentStep >= step.number
                     ? "bg-orange-500 text-white"
                     : "bg-gray-700 text-gray-400"
                 }`}
               >
+                {currentStep > step.number ? (
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                ) : (
+                  step.number
+                )}
               </div>
               <div className="mt-2 text-center">
                 <div className="font-medium text-white">{step.title}</div>
@@ -35,10 +52,8 @@ const ProgressSteps = ({
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-6 h-6 mx-4 ${
-                  currentStep > step.number
-                    ? "text-orange-500"
-                    : "text-gray-600"
+                className={`h-1 w-10 sm:w-16 mx-2 sm:mx-4 rounded-full self-start mt-6 transition-colors duration-200 ${
+                  currentStep > step.number ? "bg-orange-500" : "bg-gray-700"
                 }`}
               />
             )}
