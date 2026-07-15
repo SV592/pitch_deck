@@ -1,10 +1,10 @@
 import { getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const PATCH = withApiAuthRequired(async function updateDeck(req: NextRequest, { params }: { params: { deckId: string } }) {
-  
+export const PATCH = withApiAuthRequired(async function updateDeck(req: NextRequest, { params }: { params?: Record<string, string | string[]> }) {
+
   try {
-    const { deckId } = params;
+    const deckId = params?.deckId as string;
     const { accessToken } = await getAccessToken();
 
     if (!accessToken) {
@@ -42,9 +42,9 @@ export const PATCH = withApiAuthRequired(async function updateDeck(req: NextRequ
   }
 });
 
-export const DELETE = withApiAuthRequired(async function deleteDeck(req: NextRequest, { params }: { params: { deckId: string } }) {
+export const DELETE = withApiAuthRequired(async function deleteDeck(req: NextRequest, { params }: { params?: Record<string, string | string[]> }) {
   try {
-    const { deckId } = params;
+    const deckId = params?.deckId as string;
     const { accessToken } = await getAccessToken();
 
     if (!accessToken) {

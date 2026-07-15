@@ -28,7 +28,7 @@ const timeAgo = (date: string) => {
   return Math.floor(seconds) + " seconds ago";
 };
 
-export default function MostRecentDeckCard({ deck }) {
+export default function MostRecentDeckCard({ deck }: { deck: any }) {
   if (!deck) {
     return null;
   }

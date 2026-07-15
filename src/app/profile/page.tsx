@@ -1,4 +1,4 @@
-import { getSession } from '@auth0/nextjs-auth0';
+import { getSession, Session } from '@auth0/nextjs-auth0';
 import { redirect } from 'next/navigation';
 import ProfileView from './components/ProfileView';
 
@@ -11,7 +11,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-async function getProfileData(session) {
+async function getProfileData(session: Session) {
   if (!process.env.BACKEND_URL) {
     throw new Error('BACKEND_URL environment variable is not set.');
   }
@@ -58,11 +58,11 @@ export default async function ProfilePage() {
 
   // Calculate additional stats on the server
   const totalSlides = rawProfileData.decks?.reduce(
-    (acc, deck) => acc + (deck.slides?.length || 0),
+    (acc: number, deck: any) => acc + (deck.slides?.length || 0),
     0,
   );
 
-  const mostRecentDeck = rawProfileData.decks?.sort((a, b) => {
+  const mostRecentDeck = rawProfileData.decks?.sort((a: any, b: any) => {
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   })[0];
 

@@ -9,7 +9,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   return (
-    <UserProvider scope="openid profile email offline_access">
+    <UserProvider>
       <AppContent>{children}</AppContent>
     </UserProvider>
   );

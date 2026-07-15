@@ -146,7 +146,9 @@ const AuthForm: React.FC<AuthFormProps> = ({
           </label>
           <button
             type="button"
-            onClick={() => loginWithRedirect({ screen_hint: 'forgot_password' })}
+            onClick={() => {
+              window.location.href = '/api/auth/login';
+            }}
             className="text-sm text-orange-500 hover:text-orange-400"
           >
             Forgot password?
