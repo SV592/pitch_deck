@@ -12,12 +12,13 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import TextAlign from "@tiptap/extension-text-align";
 
-import { Deck, Slide as SlideType } from "../types";
+import { Deck, Slide as SlideType, Theme } from "../types";
 
 
 
 export interface UseDeckEditorProps {
   deck: Deck;
+  theme?: Theme;
   selectedSlide: number;
   onSlideChange: (slideIndex: number) => void;
   onSave: (updatedDeck: Deck) => void;
@@ -27,6 +28,7 @@ export interface UseDeckEditorProps {
 
 export const useDeckEditor = ({
   deck,
+  theme,
   selectedSlide,
   onSlideChange,
   onSave,
@@ -94,7 +96,7 @@ export const useDeckEditor = ({
     if (editor && !editor.isDestroyed && slides[selectedSlide]) {
       const slideContent = slides[selectedSlide].content || "";
       if (editor.getHTML() !== slideContent) {
-        editor.commands.setContent(slideContent, false);
+        editor.commands.setContent(slideContent, { emitUpdate: false });
       }
     }
     if (
@@ -159,14 +161,12 @@ export const useDeckEditor = ({
     setOriginalContent(slides[selectedSlide].content); // Store original content
     setGeneratedContent(null); // Clear previous generated content
     try {
-      const response = await fetch(`http://localhost:3001/decks/slides/regenerate`, {
+      const response = await fetch(`/api/decks/${deck.id}/slides/regenerate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          deckId: deck.id,
           slideId: slides[selectedSlide].id,
           prompt: prompt,
           deckDescription: deck.description,
@@ -200,9 +200,9 @@ export const useDeckEditor = ({
   }, []);
 
   const handleSave = useCallback(() => {
-    const updatedDeck = { ...deck, slides: slides || [] };
+    const updatedDeck = { ...deck, slides: slides || [], theme: theme ?? deck.theme };
     onSave(updatedDeck);
-  }, [deck, slides, onSave]);
+  }, [deck, slides, theme, onSave]);
 
   const isInitialMount = useRef(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);

@@ -9,8 +9,8 @@ interface PromptModalProps {
   isLoading?: boolean;
   isGeneratingContent?: boolean;
   slideTitle?: string;
-  originalContent?: string;
-  generatedContent?: string;
+  originalContent?: string | null;
+  generatedContent?: string | null;
   onAcceptGeneratedContent?: (content: string) => void;
   onDiscardGeneratedContent?: () => void;
 }

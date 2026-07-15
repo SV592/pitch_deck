@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import DeckEditor from "./DeckEditor";
-import { Deck } from "../types";
+import { Deck, Theme } from "../types";
 import { useDeckEditor } from "./useDeckEditor"; // Import useDeckEditor
+import { getPresetById, matchPresetId, DEFAULT_THEME_ID } from "./deck-themes";
 
 interface DeckEditorWrapperProps {
   deck: Deck;
@@ -16,6 +17,41 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
   const [selectedSlide, setSelectedSlide] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean | null>(null); // null: no save attempt, true: success, false: error
+  const [theme, setTheme] = useState<Theme>(
+    deck.theme ?? getPresetById(DEFAULT_THEME_ID).theme
+  );
+
+  // Single persistence path, shared by autosave, the Save button, and theme
+  // changes so no writer can clobber another's fields.
+  const saveDeck = useCallback(
+    async (updatedDeck: Deck) => {
+      setIsSaving(true);
+      setSaveSuccess(null); // Reset status on new save attempt
+      try {
+        const response = await fetch(`/api/decks/${deck.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(updatedDeck),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save deck");
+        }
+        setSaveSuccess(true);
+      } catch (error) {
+        console.error("Error saving deck:", error);
+        setSaveSuccess(false);
+      } finally {
+        setIsSaving(false);
+        // Reset save success/error message after a few seconds
+        setTimeout(() => setSaveSuccess(null), 3000);
+      }
+    },
+    [deck.id, accessToken]
+  );
 
   // Consume useDeckEditor hook
   const {
@@ -35,38 +71,24 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
     onDiscardGeneratedContent,
   } = useDeckEditor({
     deck,
+    theme,
     selectedSlide,
     onSlideChange: setSelectedSlide,
-    onSave: async (updatedDeck: Deck) => { // Define the actual save logic here
-      setIsSaving(true);
-      setSaveSuccess(null); // Reset status on new save attempt
-      try {
-        const response = await fetch(`/api/decks/${deck.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(updatedDeck),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to save deck");
-        }
-        console.log("Deck saved successfully!");
-        setSaveSuccess(true);
-      } catch (error) {
-        console.error("Error saving deck:", error);
-        setSaveSuccess(false);
-      } finally {
-        setIsSaving(false);
-        // Reset save success/error message after a few seconds
-        setTimeout(() => setSaveSuccess(null), 3000);
-      }
-    },
+    onSave: saveDeck,
     accessToken,
     onClosePromptModal: () => setIsPromptModalOpen(false), // Assuming setIsPromptModalOpen is defined
   });
+
+  const themeId = matchPresetId(theme);
+
+  const handleThemeChange = useCallback(
+    (id: string) => {
+      const next = getPresetById(id).theme;
+      setTheme(next);
+      saveDeck({ ...deck, slides, theme: next });
+    },
+    [deck, slides, saveDeck]
+  );
 
   const totalSlides = slides.length; // Use slides from useDeckEditor
 
@@ -75,34 +97,6 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState('');
 
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Don't interfere with typing in inputs or when editor is focused
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        (event.target as HTMLElement)?.closest('[contenteditable="true"]')
-      ) {
-        return;
-      }
-
-      switch (event.key) {
-        case "ArrowLeft":
-          event.preventDefault();
-          setSelectedSlide((prev) => Math.max(0, prev - 1));
-          break;
-        case "ArrowRight":
-          event.preventDefault();
-          setSelectedSlide((prev) => Math.min(totalSlides - 1, prev + 1));
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [totalSlides]);
 
   const handleNavigateBack = () => {
     router.push("/decks");
@@ -242,6 +236,9 @@ const DeckEditorWrapper: React.FC<DeckEditorWrapperProps> = ({ deck, accessToken
         accessToken={accessToken}
         isSaving={isSaving}
         saveSuccess={saveSuccess}
+        theme={theme}
+        themeId={themeId}
+        onThemeChange={handleThemeChange}
       />
     </div>
   );

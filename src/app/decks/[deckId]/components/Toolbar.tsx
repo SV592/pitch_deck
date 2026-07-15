@@ -5,15 +5,11 @@ import { Editor } from "@tiptap/react";
 
 interface ToolbarProps {
   editor: Editor | null;
-  onDeleteSlide: () => void;
-  onSaveSlide: () => void;
+  onDeleteSlide?: () => void;
+  onSaveSlide?: () => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({
-  editor,
-  onDeleteSlide,
-  onSaveSlide,
-}) => {
+const Toolbar: React.FC<ToolbarProps> = ({ editor }) => {
   if (!editor) {
     return null;
   }

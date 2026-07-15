@@ -3,7 +3,7 @@ import React from "react";
 import { Editor } from "@tiptap/react";
 import Slide from "./Slide";
 import Toolbar from "./Toolbar";
-import { Slide as SlideType } from "../types";
+import { Slide as SlideType, Theme } from "../types";
 
 interface EditorPanelProps {
   editor: Editor | null;
@@ -11,6 +11,7 @@ interface EditorPanelProps {
   selectedSlide: number;
   onTitleChange: (newTitle: string) => void;
   onDeleteSlide: () => void;
+  theme: Theme;
 }
 
 const EditorPanel: React.FC<EditorPanelProps> = ({
@@ -19,6 +20,7 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
   selectedSlide,
   onTitleChange,
   onDeleteSlide,
+  theme,
 }) => {
   return (
     <div
@@ -51,6 +53,7 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
                 slide={slides[selectedSlide]}
                 editor={editor}
                 onTitleChange={onTitleChange}
+                theme={theme}
               />
             )}
           </div>
